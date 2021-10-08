@@ -1,0 +1,25 @@
+오목놀이.aab
+
+Library/
+Temp/
+obj/
+Logs/
+.vs/
+Assets/Editor Default Resources/
+Assets/ExternalDependencyManager/
+Assets/GeneratedLocalRepo/
+Assets/Parse/
+Assets/Plugins/
+Assets/Scenes/
+Assets/Firebase/
+Assets/Icons UI/
+Assets/Resources/
+Assets/XR/
+Packages/
+ProjectSettings/
+UserSettings/
+
+*.csproj
+*.sln
+*.meta
+*.keystore

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "91721955365",
+    "project_id": "omokgame-9424b",
+    "storage_bucket": "omokgame-9424b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:91721955365:android:e8b7d4715290b96348a7cc",
+        "android_client_info": {
+          "package_name": "com.RimeFox.omock_game"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "91721955365-let13eejahn9r478cktrmo07bg25hhb8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaHSq0eVUhzVDsENID0ISguSO8s05afSY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "91721955365-let13eejahn9r478cktrmo07bg25hhb8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
