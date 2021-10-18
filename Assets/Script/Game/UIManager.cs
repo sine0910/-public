@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,10 +28,10 @@ public class UIManager : SingletonMonobehaviour<UIManager>
     public Button zoomin_button;
     public Button zoomout_button;
 
-    //°ËÀº µ¹
+    //ê²€ì€ ëŒ
     //public GameObject black;
     public Sprite Black;
-    //Èò µ¹
+    //í° ëŒ
     //public GameObject white;
     public Sprite White;
 
@@ -240,9 +240,32 @@ public class UIManager : SingletonMonobehaviour<UIManager>
 
                             Recorder.instance.save_game_play_record(winner);
                         }
+                        else
+                        {
+                            if (winner == byte.MaxValue)
+                            {
+
+                            }
+                            else if (winner == player_me_index)
+                            {
+                                //AIìƒëŒ€ë¡œ ìŠ¹ë¦¬í•˜ì˜€ì„ ê²½ìš°ì—ëŠ” ì´ˆë‹¨ ë¯¸ë§Œì˜ ë“±ê¸‰ì—ì„œë§Œ ë ˆì´íŒ… ì ìˆ˜ë¥¼ íšë“í•  ìˆ˜ ìˆë‹¤
+                                if (DataManager.instance.my_tier <= TIER.GRADE_1TH)
+                                {
+                                    DataManager.instance.rating_score += 1;
+                                }
+                            }
+                            else
+                            {
+                                DataManager.instance.rating_score -= 1;
+                            }
+
+                            DataManager.instance.save_my_play_data();
+                        }
 
                         game_result.SetActive(true);
                         game_result.GetComponent<GameResult>().on_result(win, send_message);
+
+                        TierManager.instance.update_tier_check();
                     }
                     break;
             }
@@ -274,9 +297,10 @@ public class UIManager : SingletonMonobehaviour<UIManager>
 
         disable_collition();
         mark.SetActive(false);
+        put_mark.SetActive(false);
     }
 
-    //ÇÃ·¹ÀÌ¾î°¡ ¼±ÅÃÇÒ ½½·ÔÀ» »ı¼ºÇÑ´Ù.
+    //í”Œë ˆì´ì–´ê°€ ì„ íƒí•  ìŠ¬ë¡¯ì„ ìƒì„±í•œë‹¤.
     void make_slot_point()
     {
         board = new PointSlot[15, 15];
@@ -334,10 +358,10 @@ public class UIManager : SingletonMonobehaviour<UIManager>
         send_message(msg);
     }
 
-    //ÇÃ·¹ÀÌ¾î°¡ ¼±ÅÃÇÑ pointÀÇ µ¥ÀÌÅÍ¸¦ °¡Á®¿Â´Ù.
+    //í”Œë ˆì´ì–´ê°€ ì„ íƒí•œ pointì˜ ë°ì´í„°ë¥¼ ê°€ì ¸ì˜¨ë‹¤.
     public void get_select_point(Point point)
     {
-        //ÇÃ·¹ÀÌ¾î°¡ ¼±ÅÃÇÒ ¼ö ¾ø´Â »óÅÂÀÏ °æ¿ì return
+        //í”Œë ˆì´ì–´ê°€ ì„ íƒí•  ìˆ˜ ì—†ëŠ” ìƒíƒœì¼ ê²½ìš° return
         if (select || point.state != STATE.None)
         {
             return;
@@ -349,10 +373,10 @@ public class UIManager : SingletonMonobehaviour<UIManager>
         select_omok_slot = point;
     }
 
-    //ÇÃ·¹ÀÌ¾î°¡ ¼±ÅÃÇÑ pointÀÇ µ¥ÀÌÅÍ¸¦ gameroom¿¡ Àü´ŞÇÑ´Ù
+    //í”Œë ˆì´ì–´ê°€ ì„ íƒí•œ pointì˜ ë°ì´í„°ë¥¼ gameroomì— ì „ë‹¬í•œë‹¤
     public void send_select_point()
     {
-        //¼±ÅÃÇÑ ½½·ÔÀÌ ¾øÀ» °æ¿ì¿Í ÀÌ¹Ì ¼±ÅÃÇÑ °æ¿ì¿¡´Â returnÀ» ÇØÁØ´Ù
+        //ì„ íƒí•œ ìŠ¬ë¡¯ì´ ì—†ì„ ê²½ìš°ì™€ ì´ë¯¸ ì„ íƒí•œ ê²½ìš°ì—ëŠ” returnì„ í•´ì¤€ë‹¤
         if (select || select_omok_slot == null)
         {
             return;
@@ -622,6 +646,31 @@ public class UIManager : SingletonMonobehaviour<UIManager>
 
     public void save_record()
     {
-        Recorder.instance.save_game_record("»ç¿ëÀÚ ´ë±¹", win_count, lose_count, tie_count);
+        string mode = "";
+        switch (DataManager.instance.language)
+        {
+            case 0:
+                {
+                    mode = "ì‚¬ìš©ì ëŒ€êµ­";
+                }
+                break;
+            case 1:
+                {
+                    mode = "ãƒ¦ãƒ¼ã‚¶ãƒ¼å¤§å›½";
+                }
+                break;
+            case 2:
+                {
+                    mode = "User competition";
+                }
+                break;
+            case 3:
+                {
+                    mode = "ç”¨æˆ·å¤§å›½";
+                }
+                break;
+        }
+
+        Recorder.instance.save_game_record(mode, win_count, lose_count, tie_count);
     }
 }

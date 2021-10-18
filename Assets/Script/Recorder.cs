@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ public class Recorder : SingletonMonobehaviour<Recorder>
     public List<Record> play_data = new List<Record>();
     public List<RecordList> game_play_data = new List<RecordList>();
 
-    public GameRecord replay_record;
+    public GameRecord replay_record = null;
 
     public REPLAY_MODE replay_mode;
 
@@ -25,11 +25,13 @@ public class Recorder : SingletonMonobehaviour<Recorder>
 
     public float play_game_time = 0f;
     IEnumerator timeStamp;
-
+     
     // Start is called before the first frame update
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
+
+        replay_record = null;
     }
 
     void reset()
@@ -77,10 +79,46 @@ public class Recorder : SingletonMonobehaviour<Recorder>
         PlayerData other_data = ProfileManager.instance.get_player_data(1);
 
         string key = DataManager.instance.accountID + TimeStamp.GetUnixTimeStamp();
-        string score = win_count + lose_count + tie_count + "�� " + win_count + "�� " + lose_count + "��";
-        if (tie_count > 0)
+        string score = "";
+
+        switch (DataManager.instance.language)
         {
-            score += " " + tie_count + "��";
+            case 0:
+                {
+                    score = win_count + lose_count + tie_count + "전 " + win_count + "승 " + lose_count + "패";
+                    if (tie_count > 0)
+                    {
+                        score += " " + tie_count + "무";
+                    }
+                }
+                break;
+            case 1:
+                {
+                    score = win_count + lose_count + tie_count + "戦" + win_count + "勝" + lose_count + "敗";
+                    if (tie_count > 0)
+                    {
+                        score += tie_count + "分け";
+                    }
+                }
+                break;
+            case 2:
+                {
+                    score = win_count + lose_count + tie_count + " matches " + win_count + " win " + lose_count + " lose";
+                    if (tie_count > 0)
+                    {
+                        score += " " + tie_count + " tie";
+                    }
+                }
+                break;
+            case 3:
+                {
+                    score = win_count + lose_count + tie_count + "场比赛" + win_count + "胜" + lose_count + "负";
+                    if (tie_count > 0)
+                    {
+                        score += " " + tie_count + "平";
+                    }
+                }
+                break;
         }
 
         GameRecord save_record = new GameRecord(key, mode, score,

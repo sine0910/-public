@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -52,11 +52,31 @@ public class Converter
         {
             case RATING.NOMAL:
                 {
-                    return "�Ϲ�ȸ��";
+                    string val = "";
+
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "일반";
+                            }
+                        case 1:
+                            {
+                                return "一般";
+                            }
+                        case 2:
+                            {
+                                return "None";
+                            }
+                        default:
+                            {
+                                return "普通的";
+                            }
+                    }
                 }
             case RATING.VIP:
                 {
-                    return "VIPȸ��";
+                    return "VIP";
                 }
             default:
                 {
@@ -76,112 +96,490 @@ public class Converter
         {
             case TIER.GRADE_12TH:
                 {
-                    return "12��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "12급";
+                            }
+                        case 1:
+                            {
+                                return "12級";
+                            }
+                        case 2:
+                            {
+                                return "Grade 12";
+                            }
+                        default:
+                            {
+                                return "12级";
+                            }
+                    }
                 }
 
             case TIER.GRADE_11TH:
                 {
-                    return "11��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "11급";
+                            }
+                        case 1:
+                            {
+                                return "11級";
+                            }
+                        case 2:
+                            {
+                                return "Grade 11";
+                            }
+                        default:
+                            {
+                                return "11级";
+                            }
+                    }
                 }
 
             case TIER.GRADE_10TH:
                 {
-                    return "10��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "10급";
+                            }
+                        case 1:
+                            {
+                                return "10級";
+                            }
+                        case 2:
+                            {
+                                return "Grade 10";
+                            }
+                        default:
+                            {
+                                return "10级";
+                            }
+                    }
                 }
 
             case TIER.GRADE_9TH:
                 {
-                    return "9��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "9급";
+                            }
+                        case 1:
+                            {
+                                return "9級";
+                            }
+                        case 2:
+                            {
+                                return "Grade 9";
+                            }
+                        default:
+                            {
+                                return "9级";
+                            }
+                    }
                 }
 
             case TIER.GRADE_8TH:
                 {
-                    return "8��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "8급";
+                            }
+                        case 1:
+                            {
+                                return "8級";
+                            }
+                        case 2:
+                            {
+                                return "Grade 8";
+                            }
+                        default:
+                            {
+                                return "8级";
+                            }
+                    }
                 }
 
             case TIER.GRADE_7TH:
                 {
-                    return "7��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "7급";
+                            }
+                        case 1:
+                            {
+                                return "7級";
+                            }
+                        case 2:
+                            {
+                                return "Grade 7";
+                            }
+                        default:
+                            {
+                                return "7级";
+                            }
+                    }
                 }
 
             case TIER.GRADE_6TH:
                 {
-                    return "6��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "6급";
+                            }
+                        case 1:
+                            {
+                                return "6級";
+                            }
+                        case 2:
+                            {
+                                return "Grade 6";
+                            }
+                        default:
+                            {
+                                return "6级";
+                            }
+                    }
                 }
 
             case TIER.GRADE_5TH:
                 {
-                    return "5��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "5급";
+                            }
+                        case 1:
+                            {
+                                return "5級";
+                            }
+                        case 2:
+                            {
+                                return "Grade 5";
+                            }
+                        default:
+                            {
+                                return "5级";
+                            }
+                    }
                 }
 
             case TIER.GRADE_4TH:
                 {
-                    return "4��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "4급";
+                            }
+                        case 1:
+                            {
+                                return "4級";
+                            }
+                        case 2:
+                            {
+                                return "Grade 4";
+                            }
+                        default:
+                            {
+                                return "4级";
+                            }
+                    }
                 }
 
             case TIER.GRADE_3TH:
                 {
-                    return "3��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "3급";
+                            }
+                        case 1:
+                            {
+                                return "3級";
+                            }
+                        case 2:
+                            {
+                                return "Grade 3";
+                            }
+                        default:
+                            {
+                                return "3级";
+                            }
+                    }
                 }
 
             case TIER.GRADE_2TH:
                 {
-                    return "2��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "2급";
+                            }
+                        case 1:
+                            {
+                                return "2級";
+                            }
+                        case 2:
+                            {
+                                return "Grade 2";
+                            }
+                        default:
+                            {
+                                return "2级";
+                            }
+                    }
                 }
 
             case TIER.GRADE_1TH:
                 {
-                    return "1��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "1급";
+                            }
+                        case 1:
+                            {
+                                return "1級";
+                            }
+                        case 2:
+                            {
+                                return "Grade 1";
+                            }
+                        default:
+                            {
+                                return "1级";
+                            }
+                    }
                 }
 
             case TIER.SUJOL:
                 {
-                    return "�ʴ�";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "초단";
+                            }
+                        case 1:
+                            {
+                                return "一段";
+                            }
+                        case 2:
+                            {
+                                return "1st Lavel";
+                            }
+                        default:
+                            {
+                                return "一段";
+                            }
+                    }
                 }
 
             case TIER.YAKWOO:
                 {
-                    return "2��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "2단";
+                            }
+                        case 1:
+                            {
+                                return "二段";
+                            }
+                        case 2:
+                            {
+                                return "2st Lavel";
+                            }
+                        default:
+                            {
+                                return "二段";
+                            }
+                    }
                 }
 
             case TIER.TULYEOK:
                 {
-                    return "3��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "3단";
+                            }
+                        case 1:
+                            {
+                                return "三段";
+                            }
+                        case 2:
+                            {
+                                return "3st Lavel";
+                            }
+                        default:
+                            {
+                                return "三段";
+                            }
+                    }
                 }
 
             case TIER.SOGYO:
                 {
-                    return "4��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "4단";
+                            }
+                        case 1:
+                            {
+                                return "四段";
+                            }
+                        case 2:
+                            {
+                                return "4st Lavel";
+                            }
+                        default:
+                            {
+                                return "四段";
+                            }
+                    }
                 }
 
             case TIER.YONGJI:
                 {
-                    return "5��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "5단";
+                            }
+                        case 1:
+                            {
+                                return "五段";
+                            }
+                        case 2:
+                            {
+                                return "5st Lavel";
+                            }
+                        default:
+                            {
+                                return "五段";
+                            }
+                    }
                 }
 
             case TIER.TONGYU:
                 {
-                    return "6��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "6단";
+                            }
+                        case 1:
+                            {
+                                return "六段";
+                            }
+                        case 2:
+                            {
+                                return "6st Lavel";
+                            }
+                        default:
+                            {
+                                return "六段";
+                            }
+                    }
                 }
 
             case TIER.GUCHE:
                 {
-                    return "7��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "7단";
+                            }
+                        case 1:
+                            {
+                                return "七段";
+                            }
+                        case 2:
+                            {
+                                return "7st Lavel";
+                            }
+                        default:
+                            {
+                                return "七段";
+                            }
+                    }
                 }
 
             case TIER.JWAJO:
                 {
-                    return "8��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "8단";
+                            }
+                        case 1:
+                            {
+                                return "八段";
+                            }
+                        case 2:
+                            {
+                                return "8st Lavel";
+                            }
+                        default:
+                            {
+                                return "八段";
+                            }
+                    }
                 }
 
             case TIER.RIW:
                 {
-                    return "9��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "9단";
+                            }
+                        case 1:
+                            {
+                                return "九段";
+                            }
+                        case 2:
+                            {
+                                return "9st Lavel";
+                            }
+                        default:
+                            {
+                                return "九段";
+                            }
+                    }
                 }
 
             default:
                 {
-                    return "����";
+                    return "";
                 }
         }
     }
@@ -197,37 +595,163 @@ public class Converter
         {
             case OLD.TEN:
                 {
-                    return "10��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "10대";
+                            }
+                        case 1:
+                            {
+                                return "10代";
+                            }
+                        case 2:
+                            {
+                                return "10's";
+                            }
+                        default:
+                            {
+                                return "10年代";
+                            }
+                    }
                 }
 
             case OLD.TWENTY:
                 {
-                    return "20��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "20대";
+                            }
+                        case 1:
+                            {
+                                return "20代";
+                            }
+                        case 2:
+                            {
+                                return "20's";
+                            }
+                        default:
+                            {
+                                return "20年代";
+                            }
+                    }
                 }
 
             case OLD.THIRTY:
                 {
-                    return "30��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "30대";
+                            }
+                        case 1:
+                            {
+                                return "30代";
+                            }
+                        case 2:
+                            {
+                                return "30's";
+                            }
+                        default:
+                            {
+                                return "30年代";
+                            }
+                    }
                 }
 
             case OLD.FORTY:
                 {
-                    return "40��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "40대";
+                            }
+                        case 1:
+                            {
+                                return "40代";
+                            }
+                        case 2:
+                            {
+                                return "40's";
+                            }
+                        default:
+                            {
+                                return "40年代";
+                            }
+                    }
                 }
 
             case OLD.FIFTY:
                 {
-                    return "50��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "50대";
+                            }
+                        case 1:
+                            {
+                                return "50代";
+                            }
+                        case 2:
+                            {
+                                return "50's";
+                            }
+                        default:
+                            {
+                                return "50年代";
+                            }
+                    }
                 }
 
             case OLD.SIXTY:
                 {
-                    return "60��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "60대";
+                            }
+                        case 1:
+                            {
+                                return "60代";
+                            }
+                        case 2:
+                            {
+                                return "60's";
+                            }
+                        default:
+                            {
+                                return "60年代";
+                            }
+                    }
                 }
 
             case OLD.SEVENTY:
                 {
-                    return "70��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "70대";
+                            }
+                        case 1:
+                            {
+                                return "70代";
+                            }
+                        case 2:
+                            {
+                                return "70's";
+                            }
+                        default:
+                            {
+                                return "70年代";
+                            }
+                    }
                 }
 
             default:
@@ -248,12 +772,48 @@ public class Converter
         {
             case GENDER.MALE:
                 {
-                    return "��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "남";
+                            }
+                        case 1:
+                            {
+                                return "男";
+                            }
+                        case 2:
+                            {
+                                return "male";
+                            }
+                        default:
+                            {
+                                return "男性";
+                            }
+                    }
                 }
 
             case GENDER.FEMALE:
                 {
-                    return "��";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "여";
+                            }
+                        case 1:
+                            {
+                                return "女";
+                            }
+                        case 2:
+                            {
+                                return "female";
+                            }
+                        default:
+                            {
+                                return "女性";
+                            }
+                    }
                 }
 
             default:
@@ -274,17 +834,71 @@ public class Converter
         {
             case COUNTRY.KOREA:
                 {
-                    return "���ѹα�";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "대한민국";
+                            }
+                        case 1:
+                            {
+                                return "韓国";
+                            }
+                        case 2:
+                            {
+                                return "Korea";
+                            }
+                        default:
+                            {
+                                return "朝鲜";
+                            }
+                    }
                 }
 
             case COUNTRY.JAPAN:
                 {
-                    return "�Ϻ�";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "일본";
+                            }
+                        case 1:
+                            {
+                                return "日本";
+                            }
+                        case 2:
+                            {
+                                return "Japan";
+                            }
+                        default:
+                            {
+                                return "日本";
+                            }
+                    }
                 }
 
             case COUNTRY.CHINA:
                 {
-                    return "�߱�";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "중국";
+                            }
+                        case 1:
+                            {
+                                return "中国";
+                            }
+                        case 2:
+                            {
+                                return "China";
+                            }
+                        default:
+                            {
+                                return "中国";
+                            }
+                    }
                 }
 
             default:
@@ -305,12 +919,48 @@ public class Converter
         {
             case PLAYER_TYPE.BLACK:
                 {
-                    return "���";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "흑돌";
+                            }
+                        case 1:
+                            {
+                                return "黒石";
+                            }
+                        case 2:
+                            {
+                                return "Black";
+                            }
+                        default:
+                            {
+                                return "黑石";
+                            }
+                    }
                 }
 
             case PLAYER_TYPE.WHITE:
                 {
-                    return "���";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "백돌";
+                            }
+                        case 1:
+                            {
+                                return "白石";
+                            }
+                        case 2:
+                            {
+                                return "White";
+                            }
+                        default:
+                            {
+                                return "白石";
+                            }
+                    }
                 }
 
             default:
@@ -326,23 +976,113 @@ public class Converter
         {
             case EMOTICON.HELLO:
                 {
-                    return "�ȳ��ϼ���";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "안녕하세요";
+                            }
+                        case 1:
+                            {
+                                return "ハロー";
+                            }
+                        case 2:
+                            {
+                                return "Hello";
+                            }
+                        default:
+                            {
+                                return "你好";
+                            }
+                    }
                 }
             case EMOTICON.HURRY:
                 {
-                    return "�������ּ���";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "빨리해주세요";
+                            }
+                        case 1:
+                            {
+                                return "早くしてください";
+                            }
+                        case 2:
+                            {
+                                return "Please do it quickly";
+                            }
+                        default:
+                            {
+                                return "请快点做";
+                            }
+                    }
                 }
             case EMOTICON.ZEALOUSLY:
                 {
-                    return "�������غ���";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "열심히해봐요";
+                            }
+                        case 1:
+                            {
+                                return "ハードみ";
+                            }
+                        case 2:
+                            {
+                                return "work hard";
+                            }
+                        default:
+                            {
+                                return "努力工作";
+                            }
+                    }
                 }
             case EMOTICON.HELP:
                 {
-                    return "����ּ���";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "살려주세요";
+                            }
+                        case 1:
+                            {
+                                return "助けて下さい";
+                            }
+                        case 2:
+                            {
+                                return "Help me";
+                            }
+                        default:
+                            {
+                                return "帮我";
+                            }
+                    }
                 }
             case EMOTICON.WELL:
                 {
-                    return "���Ͻó׿�";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                return "잘하시네요";
+                            }
+                        case 1:
+                            {
+                                return "上手ですね";
+                            }
+                        case 2:
+                            {
+                                return "you are doing well";
+                            }
+                        default:
+                            {
+                                return "你做得很好";
+                            }
+                    }
                 }
             default:
                 {

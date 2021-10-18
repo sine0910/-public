@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -50,7 +50,30 @@ public class InviteFriendPopup : MonoBehaviour
         this.f_old = old;
         this.f_gender = gender;
 
-        this.main_text.text = "'" + this.f_name + "'�Կ���\nģ����û�� �޾ҽ��ϴ�";
+        switch (DataManager.instance.language)
+        {
+            case 0:
+                {
+                    this.main_text.text = this.f_name + " 님에게\n친구신청을 받았습니다";
+                }
+                break;
+            case 1:
+                {
+                    this.main_text.text = this.f_name + "さんに友達申請を受けた";
+                }
+                break;
+            case 2:
+                {
+                    this.main_text.text = "I received a friend request from " + this.f_name;
+                }
+                break;
+            case 3:
+                {
+                    this.main_text.text = "我收到了来自" + this.f_name + "的好友请求";
+                }
+                break;
+        }
+
         this.country_text.text = Converter.country_to_string(this.f_country);
         this.country_image.sprite = CountryManager.instance.get_country_sprite(this.f_country);
         this.tier_text.text = Converter.tier_to_string(this.f_tier);

@@ -225,6 +225,7 @@ public class StartServiceManager : SingletonMonobehaviour<StartServiceManager>
         {
             FirebaseManager.instance.offline();
             //MatchingManager.not_match_mode = true;
+
             StartCoroutine(check_noticeBoard("https://okgostop.kr/55/noticeBoard/noticeKOREABoard.html"));
         }
     }

@@ -14,6 +14,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "91721955365-8vkpunmtlkolb87j9m2fj7n6550v2kbo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.RimeFox.omock_game",
+            "certificate_hash": "9a6d30ade6bdf4bef6e1f34b8c5db34c0417b306"
+          }
+        },
+        {
+          "client_id": "91721955365-hcc7m0ndf800qj7s7lbhe6ilaavfetj8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.RimeFox.omock_game",
+            "certificate_hash": "ef58b215f5b25eec570878c46e9b1ffe587d6616"
+          }
+        },
+        {
+          "client_id": "91721955365-jdb0gl0advr9qm6fjbet71v8j6ulk58e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.RimeFox.omock_game",
+            "certificate_hash": "e980f77c822b1fa36496b8d562128d15be968129"
+          }
+        },
+        {
           "client_id": "91721955365-let13eejahn9r478cktrmo07bg25hhb8.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -27,8 +51,15 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "91721955365-let13eejahn9r478cktrmo07bg25hhb8.apps.googleusercontent.com",
+              "client_id": "91721955365-9kn4dpcfvk00lvct4nb26tt595epuije.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "91721955365-9d9tn794sgrkf60elu3khdv6srrthufc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.RimeFox.omockgame"
+              }
             }
           ]
         }

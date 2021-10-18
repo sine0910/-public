@@ -1,0 +1,742 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: UI Text_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 4f2a17ad586f8b14fb0cd1ef9023dece, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 12693180416
+    m_Localized: Everyone enjoys together
+    m_Metadata:
+      m_Items: []
+  - m_Id: 808537198592
+    m_Localized: GomokuGame
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18819377696768
+    m_Localized: Account
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23951423213568
+    m_Localized: Language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25058643972096
+    m_Localized: Confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 26606241484800
+    m_Localized: Please try again after connecting to the internet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 34840213884928
+    m_Localized: Successfully become a VIP member Joined
+    m_Metadata:
+      m_Items: []
+  - m_Id: 36701947990016
+    m_Localized: 'We don''t have enough hearts.
+
+      We can''t proceed.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38612411518976
+    m_Localized: Current rating score
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39890738909184
+    m_Localized: Country
+    m_Metadata:
+      m_Items: []
+  - m_Id: 40236450222080
+    m_Localized: Age
+    m_Metadata:
+      m_Items: []
+  - m_Id: 40794921799680
+    m_Localized: Please choose the age you want.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 41313664929792
+    m_Localized: Choose the age group.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82206765780992
+    m_Localized: Gender
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82680831184896
+    m_Localized: Please select your desired gender
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83139432189952
+    m_Localized: Male
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83222517157888
+    m_Localized: Female
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83575400730624
+    m_Localized: Select
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84204273700864
+    m_Localized: Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 85343660576768
+    m_Localized: Enter the name you want.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 86045589934080
+    m_Localized: '*You can enter up to 2-6 letters*'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 86536336084992
+    m_Localized: The name is not available.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 87223132393472
+    m_Localized: 'The names are from 2 to 6 letters.
+
+      You can enter it.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 88656422539264
+    m_Localized: Please choose the login method you want.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 88661992574976
+    m_Localized: Log in to GomokuGame account
+    m_Metadata:
+      m_Items: []
+  - m_Id: 88664303636480
+    m_Localized: Kakao login.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 88689859530752
+    m_Localized: Google login.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 90829600493568
+    m_Localized: C/S
+    m_Metadata:
+      m_Items: []
+  - m_Id: 92394398846976
+    m_Localized: Enter your ID.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 92740974186496
+    m_Localized: Enter the password.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 94724586377216
+    m_Localized: Login
+    m_Metadata:
+      m_Items: []
+  - m_Id: 94813203632128
+    m_Localized: 'Create '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 103520721342464
+    m_Localized: Please enter the ID you want.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 104555506470912
+    m_Localized: Confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105617546186752
+    m_Localized: It's a usable ID.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105984904302592
+    m_Localized: You can enter up to 4-12 characters, no special characters.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106668059955200
+    m_Localized: Please enter your password.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 107850841100288
+    m_Localized: Please re-enter the password.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 112587497967616
+    m_Localized: The password doesn't match.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 113162100838400
+    m_Localized: 'To other users.
+
+      I''ve received an application for a match.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 113764813934592
+    m_Localized: Choose the opponent.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 114475656187904
+    m_Localized: 'It''s a big competition.
+
+      It''s been canceled.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 116587442114560
+    m_Localized: Accept
+    m_Metadata:
+      m_Items: []
+  - m_Id: 116949272137728
+    m_Localized: Reject
+    m_Metadata:
+      m_Items: []
+  - m_Id: 658261473923072
+    m_Localized: User competition
+    m_Metadata:
+      m_Items: []
+  - m_Id: 668671291854848
+    m_Localized: AI practice
+    m_Metadata:
+      m_Items: []
+  - m_Id: 669822791880704
+    m_Localized: Ranking
+    m_Metadata:
+      m_Items: []
+  - m_Id: 670666715205632
+    m_Localized: Friend
+    m_Metadata:
+      m_Items: []
+  - m_Id: 671123261001728
+    m_Localized: Gomoku TV
+    m_Metadata:
+      m_Items: []
+  - m_Id: 672818317660160
+    m_Localized: Please choose the color you want
+    m_Metadata:
+      m_Items: []
+  - m_Id: 673729211437056
+    m_Localized: Black
+    m_Metadata:
+      m_Items: []
+  - m_Id: 674000993947648
+    m_Localized: White
+    m_Metadata:
+      m_Items: []
+  - m_Id: 674609881059328
+    m_Localized: Do you want to end the game?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 674993630515200
+    m_Localized: End
+    m_Metadata:
+      m_Items: []
+  - m_Id: 675400331202560
+    m_Localized: Cancel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 678537360216064
+    m_Localized: 'My account information:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 678781619703808
+    m_Localized: 'My heart:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 679194393743360
+    m_Localized: 'Manage my account:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 680856160210944
+    m_Localized: 'Name:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 680858706153472
+    m_Localized: 'Membership:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 682295385296896
+    m_Localized: 'Grade:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 682441913307136
+    m_Localized: 'Country:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 683336508018688
+    m_Localized: 'Age:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 683455336845312
+    m_Localized: 'Gender:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 684427509403648
+    m_Localized: Ch
+    m_Metadata:
+      m_Items: []
+  - m_Id: 688074381234176
+    m_Localized: VIP registration
+    m_Metadata:
+      m_Items: []
+  - m_Id: 688583238389760
+    m_Localized: Initialize Account
+    m_Metadata:
+      m_Items: []
+  - m_Id: 689257648918528
+    m_Localized: Logout Account
+    m_Metadata:
+      m_Items: []
+  - m_Id: 690100674662400
+    m_Localized: Total
+    m_Metadata:
+      m_Items: []
+  - m_Id: 694237357314048
+    m_Localized: Monthly
+    m_Metadata:
+      m_Items: []
+  - m_Id: 694343011831808
+    m_Localized: Daily
+    m_Metadata:
+      m_Items: []
+  - m_Id: 695073147883520
+    m_Localized: Black
+    m_Metadata:
+      m_Items: []
+  - m_Id: 695086720651264
+    m_Localized: White
+    m_Metadata:
+      m_Items: []
+  - m_Id: 696610758758400
+    m_Localized: Play count
+    m_Metadata:
+      m_Items: []
+  - m_Id: 697501360492544
+    m_Localized: Win count
+    m_Metadata:
+      m_Items: []
+  - m_Id: 697622533935104
+    m_Localized: Lose count
+    m_Metadata:
+      m_Items: []
+  - m_Id: 697638279352320
+    m_Localized: Tie count
+    m_Metadata:
+      m_Items: []
+  - m_Id: 697652170887168
+    m_Localized: Winning rate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 699421542223872
+    m_Localized: Current grade / Rating score.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 700411293110272
+    m_Localized: Grade list.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 701099695837184
+    m_Localized: 'Grade 12
+
+      Grade 11
+
+      Grade 10
+
+      Grade 9
+
+      Grade
+      8
+
+      Grade 7
+
+      Grade 6
+
+      Grade 5
+
+      Grade 4
+
+      Grade
+      3
+
+      Grade 2
+
+      Grade 1'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 701538461978624
+    m_Localized: '0 p
+
+      20 p
+
+      40 p
+
+      80 p
+
+      150 p
+
+      250
+      p
+
+      400 p
+
+      650 p
+
+      700 p
+
+      950 p
+
+      1000 p
+
+      1200
+      p'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 702012170866688
+    m_Localized: '1st Lavel
+
+      2st Lavel
+
+      3st Lavel
+
+      4st Lavel
+
+      5st
+      Lavel
+
+      6st Lavel
+
+      7st Lavel
+
+      8st Lavel
+
+      9st Lavel'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 703278456410112
+    m_Localized: '1400 p
+
+      1600 p
+
+      1800 p
+
+      2000 p
+
+      2200 p
+
+      2400
+      p
+
+      2600 p
+
+      3000 p
+
+      3500 p'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 703993832706048
+    m_Localized: Account information
+    m_Metadata:
+      m_Items: []
+  - m_Id: 704451901034496
+    m_Localized: Play information
+    m_Metadata:
+      m_Items: []
+  - m_Id: 704746626387968
+    m_Localized: Grade information.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 705273917509632
+    m_Localized: 'Reset Account,
+
+      starts from the beginning.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 705665296404480
+    m_Localized: Do you reset your account?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 753461496025088
+    m_Localized: Yes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 753579662151680
+    m_Localized: No
+    m_Metadata:
+      m_Items: []
+  - m_Id: 754802373070848
+    m_Localized: 'The changes were successful.
+
+      It''s saved.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 756066993475584
+    m_Localized: The game ends when you log out.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 756345855971328
+    m_Localized: Do you want to log out?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 756650286944256
+    m_Localized: Do you want to join as a VIP member?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 756867254095872
+    m_Localized: The daily heart bonus increased to 50.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 758058172190720
+    m_Localized: Event
+    m_Metadata:
+      m_Items: []
+  - m_Id: 758288640806912
+    m_Localized: All recipients.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 758477023776768
+    m_Localized: 'Event reward period
+
+      take it inside'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 759457320701952
+    m_Localized: 'Rewards that have expired
+
+      Can''t get it.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 759864633757696
+    m_Localized: 'able to receive
+
+      There are no event rewards.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 760489996095488
+    m_Localized: 'We are accepting all events
+
+      Please wait'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 760935930302464
+    m_Localized: All event rewards
+    m_Metadata:
+      m_Items: []
+  - m_Id: 761497887346688
+    m_Localized: Sound
+    m_Metadata:
+      m_Items: []
+  - m_Id: 761806911082496
+    m_Localized: BGM
+    m_Metadata:
+      m_Items: []
+  - m_Id: 763541553582080
+    m_Localized: Sound effect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 764558949126144
+    m_Localized: Please choose the item you want to do.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 765627611648000
+    m_Localized: Notice
+    m_Metadata:
+      m_Items: []
+  - m_Id: 765780984762368
+    m_Localized: Iquiry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 766378614362112
+    m_Localized: Please enter what you want to send.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 807085190320128
+    m_Localized: My play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 807703514615808
+    m_Localized: Recent play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 808041894285312
+    m_Localized: Popular play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 808226284277760
+    m_Localized: Friend's play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 809642923036672
+    m_Localized: Country play.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 815936341970944
+    m_Localized: Exit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 815955287642112
+    m_Localized: Next
+    m_Metadata:
+      m_Items: []
+  - m_Id: 818434557513728
+    m_Localized: Upload
+    m_Metadata:
+      m_Items: []
+  - m_Id: 819015284068352
+    m_Localized: 'The record to be uploaded.
+
+      Please enter the title.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 819680186109952
+    m_Localized: (Up to 24 characters can be entered)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 820363777970176
+    m_Localized: It was uploaded successfully.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 822550591606784
+    m_Localized: It's a record that can't be uploaded.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 823537251291136
+    m_Localized: I played all the records.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 824942598983680
+    m_Localized: Replay.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 826675354046464
+    m_Localized: Do you want to end the replay?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1485492160991232
+    m_Localized: Confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1486455777169408
+    m_Localized: replay
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1487106997391360
+    m_Localized: 'AI practice is all about
+
+      not reflected'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1491868396457984
+    m_Localized: Chat Room
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1493780369936384
+    m_Localized: Do you want to abstain and exit the game?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1494844548747264
+    m_Localized: abstain
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1495138770784256
+    m_Localized: 'Opponent withdrew
+
+      You won.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1541905050669056
+    m_Localized: 'the other''s response
+
+      I am waiting.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1542730695217152
+    m_Localized: 'opponent playing the game
+
+      Ended.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1747924636831744
+    m_Localized: 70 years or older
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1747911290556416
+    m_Localized: 60's
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1747885516558336
+    m_Localized: 50's
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1747870760996864
+    m_Localized: 40's
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1747853736316928
+    m_Localized: 30's
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1747832903208960
+    m_Localized: 20's
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1747803794739200
+    m_Localized: 10's
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1753799443255296
+    m_Localized: Hello
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1753898584018944
+    m_Localized: Please do it quickly
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1754053769072640
+    m_Localized: work hard
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1754117610573824
+    m_Localized: Help me
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1754222648528896
+    m_Localized: you are doing well
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1776334574620672
+    m_Localized: Up to 50 My Plays are saved.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1776710908547072
+    m_Localized: Prev
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1776732672790528
+    m_Localized: Next
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1832434619551744
+    m_Localized: You can enter up to 6-12 characters, no special characters.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1861203547820032
+    m_Localized: Accept
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1861302097186816
+    m_Localized: Reject
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 1

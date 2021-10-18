@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,15 +7,15 @@ using UnityEngine.SceneManagement;
 
 public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 {
-    //ÀÚ½ÅÀÇ ¸ÅÄª »óÅÂ¸¦ È®ÀÎÇÏ´Â º¯¼ö
+    //ìì‹ ì˜ ë§¤ì¹­ ìƒíƒœë¥¼ í™•ì¸í•˜ëŠ” ë³€ìˆ˜
     bool matching;
 
     string received_data;
 
     public Sprite black_sprite;
-    public Sprite white_sprite;
+    public Sprite white_sprite; 
 
-    //½ÅÃ»À» ¹Ş¾ÒÀ» °æ¿ì ÀÌ ¿ÀºêÁ§Æ®¸¦ Ç¥½Ã
+    //ì‹ ì²­ì„ ë°›ì•˜ì„ ê²½ìš° ì´ ì˜¤ë¸Œì íŠ¸ë¥¼ í‘œì‹œ
     public GameObject matching_info_page;
     public Text name_text;
     public Text tier_text;
@@ -64,6 +64,8 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 
         if (!matching)
         {
+            FirebaseManager.AnalyticsLog("matching_start", null, null);
+
             matching = true;
 
             FirebaseManager.instance.ready_to_matching(DataManager.instance.accountID);
@@ -72,10 +74,39 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 
             FirebaseManager.instance.create_matching_room(matching_key);
 
-            matching_status_info_page_text.text = "´ë±¹À» ½ÅÃ»ÇÒ »ç¿ëÀÚ¸¦\nÃ£°íÀÖ½À´Ï´Ù.";
+            switch (DataManager.instance.language)
+            {
+                case 0:
+                    {
+                        matching_status_info_page_button_text.text = "ì·¨ì†Œ";
+                        matching_status_info_page_text.text = "ëŒ€êµ­ì„ ì‹ ì²­í•  ì‚¬ìš©ìë¥¼\nì°¾ê³ ìˆìŠµë‹ˆë‹¤.";
+                    }
+                    break;
+
+                case 1:
+                    {
+                        matching_status_info_page_button_text.text = "ã‚­ãƒ£ãƒ³ã‚»ãƒ«";
+                        matching_status_info_page_text.text = "å¤§å›½ã‚’ç”³è«‹ã™ã‚‹ãƒ¦ãƒ¼ã‚¶ãƒ¼ã‚’æ¢ã—ã¦ã„ã¾ã™ã€‚";
+                    }
+                    break;
+
+                case 2:
+                    {
+                        matching_status_info_page_button_text.text = "Cancel";
+                        matching_status_info_page_text.text = "Looking for users to apply for a match.";
+                    }
+                    break;
+
+                case 3:
+                    {
+                        matching_status_info_page_button_text.text = "å–æ¶ˆ";
+                        matching_status_info_page_text.text = "æˆ‘ä»¬æ­£åœ¨å¯»æ‰¾ç”¨æˆ·ç”³è¯·åŒ¹é…ã€‚";
+                    }
+                    break;
+            }
             matching_status_info_page_button.onClick.AddListener(cancle_matching);
             matching_status_info_page_button.gameObject.SetActive(true);
-            matching_status_info_page_button_text.text = "Ãë¼Ò";
+
             matching_status_info_page.SetActive(true);
         }
     }
@@ -131,9 +162,21 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
         if (!select)
         {
             select = true;
-            StopCoroutine(auto_select);
-            matching_info_page.SetActive(false);
-            FirebaseManager.instance.accept_multi_game(matching_key, matching_id);
+            if (DataManager.instance.my_heart > 0)
+            {
+                StopCoroutine(auto_select);
+                matching_info_page.SetActive(false);
+                FirebaseManager.instance.accept_multi_game(matching_key, matching_id);
+            }
+            else
+            {
+                GameManager.instance.on_empty_heart();
+
+                StopCoroutine(auto_select);
+                matching_info_page.SetActive(false);
+                FirebaseManager.instance.reject_multi_game(matching_key, matching_id);
+                StartCoroutine(reject_game_delay());
+            }
         }
     }
 
@@ -185,7 +228,33 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 
     void ready_to_move_scene()
     {
-        matching_status_info_page_text.text = "´ë°áÀ» ¼ö¶ôÇÏ¿´½À´Ï´Ù\nÀá½ÃÈÄ ÀÌµ¿ÇÕ´Ï´Ù.";
+        switch (DataManager.instance.language)
+        {
+            case 0:
+                {
+                    matching_status_info_page_text.text = "ëŒ€êµ­ì„ ìˆ˜ë½í•˜ì˜€ìŠµë‹ˆë‹¤\nì ì‹œí›„ ì´ë™í•©ë‹ˆë‹¤.";
+                }
+                break;
+
+            case 1:
+                {
+                    matching_status_info_page_text.text = "å¤§å›½ã‚’å—ã‘å…¥ã‚Œã‚‹ã¾ã—ãŸã€‚ã—ã°ã‚‰ãã—ã¦ç§»å‹•ã—ã¾ã™ã€‚";
+                }
+                break;
+
+            case 2:
+                {
+                    matching_status_info_page_text.text = "Accepted the game. I'll move on after a while.";
+                }
+                break;
+
+            case 3:
+                {
+                    matching_status_info_page_text.text = "æˆ‘æ¥å—äº†è¿™ä¸ªæ¸¸æˆã€‚\nè¿‡ä¸€ä¼šå„¿æˆ‘ä¼šç»§ç»­å‰è¿›ã€‚";
+                }
+                break;
+        }
+
         matching_status_info_page_button.gameObject.SetActive(false);
         matching_status_info_page_button.onClick.RemoveAllListeners();
         matching_status_info_page_button_text.text = "";
@@ -196,30 +265,94 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 
     IEnumerator check_ghost_user()
     {
+        Debug.Log("check_ghost_user");
         yield return new WaitForSecondsRealtime(15f);
+        Debug.Log("check_ghost_user after 15sc");
         if (matching)
         {
-            StartCoroutine(re_find_user());
+            yield return StartCoroutine(re_find_user());
+        }
+        else
+        {
+            Debug.Log("check_ghost_user after 15sc matching false!");
         }
     }
 
     IEnumerator re_find_user()
     {
         yield return new WaitForSecondsRealtime(1.5f);
+        matching = false;
         matching_start();
     }
 
     public void not_find_user()
     {
-        matching_status_info_page_text.text = "»ç¿ëÀÚ¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù\nÀá½ÃÈÄ¿¡ Àç½ÃµµÇØÁÖ¼¼¿ä.";
-        matching_status_info_page_button_text.text = "È®ÀÎ";
+        switch (DataManager.instance.language)
+        {
+            case 0:
+                {
+                    matching_status_info_page_text.text = "ì‚¬ìš©ìë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤\nì ì‹œí›„ì— ì¬ì‹œë„í•´ì£¼ì„¸ìš”.";
+                    matching_status_info_page_button_text.text = "í™•ì¸";
+                }
+                break;
+
+            case 1:
+                {
+                    matching_status_info_page_text.text = "ãƒ¦ãƒ¼ã‚¶ãƒ¼ã‚’è¦‹ã¤ã‘ã‚‹ã“ã¨ãŒã§ãã¾ã›ã‚“ã€‚ã—ã°ã‚‰ãå†è©¦è¡Œã—ã¦ãã ã•ã„ã€‚";
+                    matching_status_info_page_button_text.text = "ç¢ºèª";
+                }
+                break;
+
+            case 2:
+                {
+                    matching_status_info_page_text.text = "User not found\nPlease try again later.";
+                    matching_status_info_page_button_text.text = "Confirm";
+                }
+                break;
+
+            case 3:
+                {
+                    matching_status_info_page_text.text = "æœªæ‰¾åˆ°ç”¨æˆ·ã€‚ è¯·ç¨åå†è¯•ã€‚";
+                    matching_status_info_page_button_text.text = "ç¡®è®¤";
+                }
+                break;
+        }
         matching_status_info_page.SetActive(true);
     }
 
     void success_find_user()
     {
-        matching_status_info_page_text.text = "»ç¿ëÀÚ¸¦ Ã£¾Ò½À´Ï´Ù\n´ëÀüÀ» ½ÅÃ»ÇÕ´Ï´Ù.";
-        matching_status_info_page_button_text.text = "Ãë¼Ò";
+        switch (DataManager.instance.language)
+        {
+            case 0:
+                {
+                    matching_status_info_page_text.text = "ì‚¬ìš©ìë¥¼ ì°¾ì•˜ìŠµë‹ˆë‹¤\nëŒ€ì „ì„ ì‹ ì²­í•©ë‹ˆë‹¤.";
+                    matching_status_info_page_button_text.text = "ì·¨ì†Œ";
+                }
+                break;
+
+            case 1:
+                {
+                    matching_status_info_page_text.text = "ãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒè¦‹ã¤ã‹ã‚Šã¾ã—ãŸã€‚å¯¾æˆ¦ã‚’ç”³ã—è¾¼ã¿ã¾ã™ã€‚";
+                    matching_status_info_page_button_text.text = "ã‚­ãƒ£ãƒ³ã‚»ãƒ«";
+                }
+                break;
+
+            case 2:
+                {
+                    matching_status_info_page_text.text = "User found. Apply for battle.";
+                    matching_status_info_page_button_text.text = "Cancel";
+                }
+                break;
+
+            case 3:
+                {
+                    matching_status_info_page_text.text = "ç”¨æˆ·æ‰¾åˆ°ã€‚ ç”³è¯·æˆ˜æ–—ã€‚";
+                    matching_status_info_page_button_text.text = "å–æ¶ˆ";
+                }
+                break;
+        }
+
         matching_status_info_page.SetActive(true);
     }
 
@@ -279,6 +412,8 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 
         if (!matching)
         {
+            FirebaseManager.AnalyticsLog("friend_matching_start", null, null);
+
             matching = true;
 
             FirebaseManager.instance.ready_to_matching(DataManager.instance.accountID);
@@ -289,10 +424,39 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 
             friend_accountID = "";
 
-            matching_status_info_page_text.text = "Ä£±¸¿¡°Ô ´ë±¹À»\n½ÅÃ»ÇÏ°í ÀÖ½À´Ï´Ù.";
+            switch (DataManager.instance.language)
+            {
+                case 0:
+                    {
+                        matching_status_info_page_text.text = "ì¹œêµ¬ì—ê²Œ ëŒ€êµ­ì„\nì‹ ì²­í•˜ê³  ìˆìŠµë‹ˆë‹¤.";
+                        matching_status_info_page_button_text.text = "ì·¨ì†Œ";
+                    }
+                    break;
+
+                case 1:
+                    {
+                        matching_status_info_page_text.text = "å‹é”ã«å¤§å›½ã‚’ç”³è«‹ã—ã¦ã„ã¾ã™ã€‚";
+                        matching_status_info_page_button_text.text = "ã‚­ãƒ£ãƒ³ã‚»ãƒ«";
+                    }
+                    break;
+
+                case 2:
+                    {
+                        matching_status_info_page_text.text = "You are asking a friend to play a game.";
+                        matching_status_info_page_button_text.text = "Cancel";
+                    }
+                    break;
+
+                case 3:
+                    {
+                        matching_status_info_page_text.text = "æ‚¨æ­£åœ¨é‚€è¯·æœ‹å‹ç©æ¸¸æˆã€‚";
+                        matching_status_info_page_button_text.text = "å–æ¶ˆ";
+                    }
+                    break;
+            }
+
             matching_status_info_page_button.onClick.AddListener(cancle_matching);
             matching_status_info_page_button.gameObject.SetActive(true);
-            matching_status_info_page_button_text.text = "Ãë¼Ò";
             matching_status_info_page.SetActive(true);
         }
     }
@@ -329,7 +493,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
                             {
                                 case 1:
                                     {
-                                        Debug.Log("RandomMatching case 1 / °Ô½ºÆ®°¡ ´ë°á ½ÅÃ»À» ¹ŞÀ½");
+                                        Debug.Log("RandomMatching case 1 / ê²ŒìŠ¤íŠ¸ê°€ ëŒ€ê²° ì‹ ì²­ì„ ë°›ìŒ");
 
                                         string key = PopAt(matching_data);
 
@@ -338,11 +502,11 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
                                             matching = true;
                                             matching_key = key;
 
-                                            //¸ÅÄª Á¤º¸
+                                            //ë§¤ì¹­ ì •ë³´
                                             //byte matching_type = Convert.ToByte(PopAt(matching_data));
                                             string roomID = PopAt(matching_data);
 
-                                            //ÇÃ·¹ÀÌ¾î Á¤º¸
+                                            //í”Œë ˆì´ì–´ ì •ë³´
                                             account = PopAt(matching_data);
                                             name = PopAt(matching_data);
                                             country = Converter.to_country(PopAt(matching_data));
@@ -366,7 +530,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
                                         else
                                         {
                                             string roomID = PopAt(matching_data);
-                                            //ÇÃ·¹ÀÌ¾î Á¤º¸
+                                            //í”Œë ˆì´ì–´ ì •ë³´
                                             string acount = PopAt(matching_data);
 
                                             FirebaseManager.instance.reject_multi_game(key, acount);
@@ -376,7 +540,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 
                                 case 2:
                                     {
-                                        Debug.Log("RandomMatching case 2 / °Ô½ºÆ®°¡ ´ë°á ½ÅÃ»À» ¼ö¶ôÇÑ °ÍÀ» È£½ºÆ®¿¡¼­ ¹ŞÀ½");
+                                        Debug.Log("RandomMatching case 2 / ê²ŒìŠ¤íŠ¸ê°€ ëŒ€ê²° ì‹ ì²­ì„ ìˆ˜ë½í•œ ê²ƒì„ í˜¸ìŠ¤íŠ¸ì—ì„œ ë°›ìŒ");
 
                                         if (check_ghost != null)
                                         {
@@ -414,7 +578,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 
                                 case 3:
                                     {
-                                        Debug.Log("RandomMatching case 3 / °Ô½ºÆ®°¡ ´ë°á ½ÅÃ»À» °ÅÀıÇÑ °ÍÀ» È£½ºÆ®¿¡¼­ ¹ŞÀ½");
+                                        Debug.Log("RandomMatching case 3 / ê²ŒìŠ¤íŠ¸ê°€ ëŒ€ê²° ì‹ ì²­ì„ ê±°ì ˆí•œ ê²ƒì„ í˜¸ìŠ¤íŠ¸ì—ì„œ ë°›ìŒ");
 
                                         if (check_ghost != null)
                                         {
@@ -431,7 +595,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 
                                 case 4:
                                     {
-                                        Debug.Log("RandomMatching case 4 / ¼­¹ö¿¡¼­ ´ë°á ½ÅÃ»¿¡ ¼º°øÇÑ °ÍÀ» ¹ŞÀ½");
+                                        Debug.Log("RandomMatching case 4 / ì„œë²„ì—ì„œ ëŒ€ê²° ì‹ ì²­ì— ì„±ê³µí•œ ê²ƒì„ ë°›ìŒ");
                                         if (matching)
                                         {
                                             success_find_user();
@@ -443,7 +607,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 
                                 case 5:
                                     {
-                                        Debug.Log("RandomMatching case 5 / ½ÅÃ»ÇÒ »ó´ë°¡ ¾ø¾î ¼­¹ö¿¡¼­ ´ë°á ½ÅÃ»ÀÌ Ãë¼ÒµÈ °ÍÀ» È£½ºÆ®°¡ ¹ŞÀ½");
+                                        Debug.Log("RandomMatching case 5 / ì‹ ì²­í•  ìƒëŒ€ê°€ ì—†ì–´ ì„œë²„ì—ì„œ ëŒ€ê²° ì‹ ì²­ì´ ì·¨ì†Œëœ ê²ƒì„ í˜¸ìŠ¤íŠ¸ê°€ ë°›ìŒ");
                                         if (matching)
                                         {
                                             not_find_user();
@@ -453,14 +617,14 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 
                                 case 6:
                                     {
-                                        Debug.Log("RandomMatching case 6 / ¸ÖÆ¼°ÔÀÓ ¾ÀÀ¸·Î ÀÌµ¿");
+                                        Debug.Log("RandomMatching case 6 / ë©€í‹°ê²Œì„ ì”¬ìœ¼ë¡œ ì´ë™");
                                         move_scene();
                                     }
                                     break;
 
                                 case 99:
                                     {
-                                        Debug.Log("RandomMatching case 99 / È£½ºÆ®¿¡¼­ ´ë°á ½ÅÃ»À» Ãë¼ÒÇÑ °ÍÀ» °Ô½ºÆ®°¡ ¹ŞÀ½");
+                                        Debug.Log("RandomMatching case 99 / í˜¸ìŠ¤íŠ¸ì—ì„œ ëŒ€ê²° ì‹ ì²­ì„ ì·¨ì†Œí•œ ê²ƒì„ ê²ŒìŠ¤íŠ¸ê°€ ë°›ìŒ");
 
                                         string key = PopAt(matching_data);
 

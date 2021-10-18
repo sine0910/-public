@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -81,9 +81,9 @@ public class AccountManager : SingletonMonobehaviour<AccountManager>
         game_play_info_page = transform.Find("AccountPage/Main/MyPlayData").gameObject;
         tier_info_page = transform.Find("AccountPage/Main/MyTier").gameObject;
 
-        account_info_button = transform.Find("AccountPage/Main/Buttons/MyDataButton").GetComponent<Button>();
-        game_play_info_button = transform.Find("AccountPage/Main/Buttons/MyPlayDataButton").GetComponent<Button>();
-        tier_info_button = transform.Find("AccountPage/Main/Buttons/MyTierButton").GetComponent<Button>();
+        account_info_button = transform.Find("AccountPage/Buttons/MyDataButton").GetComponent<Button>();
+        game_play_info_button = transform.Find("AccountPage/Buttons/MyPlayDataButton").GetComponent<Button>();
+        tier_info_button = transform.Find("AccountPage/Buttons/MyTierButton").GetComponent<Button>();
 
         account_info_button.onClick.AddListener(on_account_info_page);
         game_play_info_button.onClick.AddListener(on_game_play_info_page);
@@ -191,7 +191,32 @@ public class AccountManager : SingletonMonobehaviour<AccountManager>
         gender_text.text = Converter.gender_to_string(data_manager.my_gender);
         gender_image.sprite = GenderManager.instance.get_gender_sprite(data_manager.my_gender);
 
-        heart_text.text = data_manager.my_heart + "°³";
+        switch (data_manager.language)
+        {
+            case 0:
+                {
+                    heart_text.text = data_manager.my_heart + "ê°œ";
+                }
+                break;
+
+            case 1:
+                {
+                    heart_text.text = data_manager.my_heart + "";
+                }
+                break;
+
+            case 2:
+                {
+                    heart_text.text = data_manager.my_heart + "";
+                }
+                break;
+
+            case 3:
+                {
+                    heart_text.text = data_manager.my_heart + "";
+                }
+                break;
+        }
     }
 
     public void change_name()
@@ -212,6 +237,11 @@ public class AccountManager : SingletonMonobehaviour<AccountManager>
     public void change_gender()
     {
         GenderManager.instance.player_change_gender();
+    }
+
+    public void change_language()
+    {
+        LanguageManager.instance.on_select_change_language_page(); 
     }
 
     public void success_change()
@@ -369,11 +399,48 @@ public class AccountManager : SingletonMonobehaviour<AccountManager>
 
     void set_tier_info_page()
     {
-        now_tier_text.text = "µî±Ş: " + Converter.tier_to_string(data_manager.my_tier);
-        now_rating_text.text = "·¹ÀÌÆÃ Á¡¼ö: " + data_manager.rating_score + "Á¡";
+        switch (data_manager.language)
+        {
+            case 0:
+                {
+                    now_tier_text.text = "ë“±ê¸‰: " + Converter.tier_to_string(data_manager.my_tier);
+                    now_rating_text.text = "ë ˆì´íŒ… ì ìˆ˜: " + data_manager.rating_score + "ì ";
 
-        TIER next = TierManager.instance.get_next_tier(data_manager.my_tier);
-        more_rating_text.text = "´ÙÀ½ µî±Ş±îÁö " + (TierManager.instance.get_tier_rating(next) - data_manager.rating_score) + "Á¡";
+                    TIER next = TierManager.instance.get_next_tier(data_manager.my_tier);
+                    more_rating_text.text = "ë‹¤ìŒ ë“±ê¸‰ê¹Œì§€ " + (TierManager.instance.get_tier_rating(next) - data_manager.rating_score) + "ì ";
+                }
+                break;
+
+            case 1:
+                {
+                    now_tier_text.text = "è©•ä¾¡ï¼š" + Converter.tier_to_string(data_manager.my_tier);
+                    now_rating_text.text = "ãƒ¬ãƒ¼ãƒ†ã‚£ãƒ³ã‚°ã‚¹ã‚³ã‚¢ï¼š" + data_manager.rating_score + "ç‚¹";
+
+                    TIER next = TierManager.instance.get_next_tier(data_manager.my_tier);
+                    more_rating_text.text = "æ¬¡ã®è©•ä¾¡ã¾ã§ã€" + (TierManager.instance.get_tier_rating(next) - data_manager.rating_score) + "ç‚¹";
+                }
+                break;
+
+            case 2:
+                {
+                    now_tier_text.text = "ranking: " + Converter.tier_to_string(data_manager.my_tier);
+                    now_rating_text.text = "Rating Score: " + data_manager.rating_score + "p";
+
+                    TIER next = TierManager.instance.get_next_tier(data_manager.my_tier);
+                    more_rating_text.text = (TierManager.instance.get_tier_rating(next) - data_manager.rating_score) + " point to the next level";
+                }
+                break;
+
+            case 3:
+                {
+                    now_tier_text.text = "æ’è¡Œï¼š" + Converter.tier_to_string(data_manager.my_tier);
+                    now_rating_text.text = "è¯„åˆ†ï¼š" + data_manager.rating_score + "åˆ†";
+
+                    TIER next = TierManager.instance.get_next_tier(data_manager.my_tier);
+                    more_rating_text.text = (TierManager.instance.get_tier_rating(next) - data_manager.rating_score) + "åˆ†åˆ°ä¸‹ä¸€çº§åˆ«";
+                }
+                break;
+        }
     }
     #endregion
 

@@ -39,6 +39,8 @@ public class HomeManager : SingletonMonobehaviour<HomeManager>
 
         player_set_game.SetActive(false);
 
+        FirebaseManager.instance.send_dailey_event();
+
         if (DataManager.instance.other_day)
         {
             DataManager.instance.other_day = false;
@@ -53,11 +55,18 @@ public class HomeManager : SingletonMonobehaviour<HomeManager>
 
         FirebaseManager.instance.online();
         Home();
+
+        if (Recorder.instance.replay_record != null)
+        {
+            Debug.Log("Recorder.instance.replay_record = " + Recorder.instance.replay_record);
+            Recorder.instance.replay_record = null;
+
+            ReplayManager.instance.on_omoktube_page();
+        }
     }
 
     public void Home()
     {
-        TierManager.instance.update_tier_check();
         home_profile.Set();
     }
 

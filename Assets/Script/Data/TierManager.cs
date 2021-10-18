@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,30 +6,30 @@ using UnityEngine.UI;
 public enum TIER : int
 {
     NONE,
-    PRACTICE,//AIÀü¿ë
+    PRACTICE,//AIì „ìš©
 
-    GRADE_12TH,//12±Ş
-    GRADE_11TH,//11±Ş
-    GRADE_10TH,//10±Ş
-    GRADE_9TH,//9±Ş
-    GRADE_8TH,//8±Ş
-    GRADE_7TH,//7±Ş
-    GRADE_6TH,//6±Ş
-    GRADE_5TH,//5±Ş
-    GRADE_4TH,//4±Ş
-    GRADE_3TH,//3±Ş
-    GRADE_2TH,//2±Ş
-    GRADE_1TH,//1±Ş
+    GRADE_12TH,//12ê¸‰
+    GRADE_11TH,//11ê¸‰
+    GRADE_10TH,//10ê¸‰
+    GRADE_9TH,//9ê¸‰
+    GRADE_8TH,//8ê¸‰
+    GRADE_7TH,//7ê¸‰
+    GRADE_6TH,//6ê¸‰
+    GRADE_5TH,//5ê¸‰
+    GRADE_4TH,//4ê¸‰
+    GRADE_3TH,//3ê¸‰
+    GRADE_2TH,//2ê¸‰
+    GRADE_1TH,//1ê¸‰
 
-    SUJOL,//ÃÊ´Ü(¼öÁ¹)
-    YAKWOO,//2´Ü(¾à¿ì)
-    TULYEOK,//3´Ü(Åõ·Â)
-    SOGYO,//4´Ü(¼Ò±³)
-    YONGJI,//5´Ü(¿ëÁö)
-    TONGYU,//6´Ü(ÅëÀ¯)
-    GUCHE,//7´Ü(±¸Ã¼)
-    JWAJO,//8´Ü(ÁÂÁ¶)
-    RIW//9´Ü(ÀÔ½Å)
+    SUJOL,//ì´ˆë‹¨(ìˆ˜ì¡¸)
+    YAKWOO,//2ë‹¨(ì•½ìš°)
+    TULYEOK,//3ë‹¨(íˆ¬ë ¥)
+    SOGYO,//4ë‹¨(ì†Œêµ)
+    YONGJI,//5ë‹¨(ìš©ì§€)
+    TONGYU,//6ë‹¨(í†µìœ )
+    GUCHE,//7ë‹¨(êµ¬ì²´)
+    JWAJO,//8ë‹¨(ì¢Œì¡°)
+    RIW//9ë‹¨(ì…ì‹ )
 }
 
 public class TierManager : SingletonMonobehaviour<TierManager>
@@ -187,23 +187,107 @@ public class TierManager : SingletonMonobehaviour<TierManager>
     void on_tier_up_panel()
     {
         tier_update_panel.SetActive(true);
-        tier_update_title_text.text = "µî±Ş »ó½Â";
-        tier_update_ex_text.text = Converter.tier_to_string(DataManager.instance.my_tier) + "·Î µî±ŞÀÌ »ó½ÀÇÏ¿´½À´Ï´Ù";
-        rating_score_text.text = DataManager.instance.rating_score + "Á¡";
 
-        TIER next_tier = get_next_tier(DataManager.instance.my_tier);
-        next_tier_text.text = "´ÙÀ½ µî±Ş" + Converter.tier_to_string(next_tier) + "/µî±Ş Á¡¼ö" + get_tier_rating(next_tier) + "Á¡";
+        switch (DataManager.instance.language)
+        {
+            case 0:
+                {
+                    tier_update_title_text.text = "ë“±ê¸‰ ìƒìŠ¹";
+                    tier_update_ex_text.text = Converter.tier_to_string(DataManager.instance.my_tier) + "ë¡œ ë“±ê¸‰ì´ ìƒìŠµí•˜ì˜€ìŠµë‹ˆë‹¤";
+                    rating_score_text.text = DataManager.instance.rating_score + "ì ";
+
+                    TIER next_tier = get_next_tier(DataManager.instance.my_tier);
+                    next_tier_text.text = "ë‹¤ìŒ ë“±ê¸‰" + Converter.tier_to_string(next_tier) + "/ë ˆì´íŒ… ì ìˆ˜" + get_tier_rating(next_tier) + "ì ";
+                }
+                break;
+
+            case 1:
+                {
+                    tier_update_title_text.text = "è©•ä¾¡ä¸Šæ˜‡";
+                    tier_update_ex_text.text = Converter.tier_to_string(DataManager.instance.my_tier) + "ã§è©•ä¾¡ãŒä¸Šæ˜‡ã—ã¾ã—ãŸ";
+                    rating_score_text.text = DataManager.instance.rating_score + "ç‚¹";
+
+                    TIER next_tier = get_next_tier(DataManager.instance.my_tier);
+                    next_tier_text.text = "æ¬¡ã®è©•ä¾¡: " + Converter.tier_to_string(next_tier) + "/ãƒ¬ãƒ¼ãƒ†ã‚£ãƒ³ã‚°ã‚¹ã‚³ã‚¢" + get_tier_rating(next_tier) + "ç‚¹";
+                }
+                break;
+
+            case 2:
+                {
+                    tier_update_title_text.text = "Rank up";
+                    tier_update_ex_text.text = "Ranked up to " + Converter.tier_to_string(DataManager.instance.my_tier);
+                    rating_score_text.text = DataManager.instance.rating_score + "p";
+
+                    TIER next_tier = get_next_tier(DataManager.instance.my_tier);
+                    next_tier_text.text = "Next Rank" + Converter.tier_to_string(next_tier) + "/rating score" + get_tier_rating(next_tier) + "p";
+                }
+                break;
+
+            case 3:
+                {
+                    tier_update_title_text.text = "å‡çº§";
+                    tier_update_ex_text.text = "æ’åé«˜è¾¾ " + Converter.tier_to_string(DataManager.instance.my_tier);
+                    rating_score_text.text = DataManager.instance.rating_score + "åˆ†";
+
+                    TIER next_tier = get_next_tier(DataManager.instance.my_tier);
+                    next_tier_text.text = "ä¸‹ä¸€ä¸ªå¹´çº§: " + Converter.tier_to_string(next_tier) + "/è¯„åˆ†" + get_tier_rating(next_tier) + "åˆ†";
+                }
+                break;
+        }
+
+        FirebaseManager.instance.update_my_tier();
     }
 
     void on_tier_down_panel()
     {
         tier_update_panel.SetActive(true);
-        tier_update_title_text.text = "µî±Ş °­µî";
-        tier_update_ex_text.text = Converter.tier_to_string(DataManager.instance.my_tier) + "·Î µî±ŞÀÌ °­µîµÇ¾ú½À´Ï´Ù";
-        rating_score_text.text = DataManager.instance.rating_score + "Á¡";
 
-        TIER next_tier = get_next_tier(DataManager.instance.my_tier);
-        next_tier_text.text = "´ÙÀ½ µî±Ş" + Converter.tier_to_string(next_tier) + "/µî±Ş Á¡¼ö" + get_tier_rating(next_tier) + "Á¡";
+        switch (DataManager.instance.language)
+        {
+            case 0:
+                {
+                    tier_update_title_text.text = "ë“±ê¸‰ ê°•ë“±";
+                    tier_update_ex_text.text = Converter.tier_to_string(DataManager.instance.my_tier) + "ë¡œ ë“±ê¸‰ì´ ê°•ë“±ë˜ì—ˆìŠµë‹ˆë‹¤";
+                    rating_score_text.text = DataManager.instance.rating_score + "ì ";
+
+                    TIER next_tier = get_next_tier(DataManager.instance.my_tier);
+                    next_tier_text.text = "ë‹¤ìŒ ë“±ê¸‰" + Converter.tier_to_string(next_tier) + "/ë“±ê¸‰ ì ìˆ˜" + get_tier_rating(next_tier) + "ì ";
+                }
+                break;
+
+            case 1:
+                {
+                    tier_update_title_text.text = "æ ¼ä¸‹ã’";
+                    tier_update_ex_text.text = Converter.tier_to_string(DataManager.instance.my_tier) + "ã§è©•ä¾¡ãŒé™æ ¼ã•ã‚Œã¾ã—ãŸ";
+                    rating_score_text.text = DataManager.instance.rating_score + "ç‚¹";
+
+                    TIER next_tier = get_next_tier(DataManager.instance.my_tier);
+                    next_tier_text.text = "æ¬¡ã®è©•ä¾¡: " + Converter.tier_to_string(next_tier) + "/ãƒ¬ãƒ¼ãƒ†ã‚£ãƒ³ã‚°ã‚¹ã‚³ã‚¢" + get_tier_rating(next_tier) + "ç‚¹";
+                }
+                break;
+
+            case 2:
+                {
+                    tier_update_title_text.text = "Rank Relegation";
+                    tier_update_ex_text.text = "Rank relegation to  " + Converter.tier_to_string(DataManager.instance.my_tier);
+                    rating_score_text.text = DataManager.instance.rating_score + "p";
+
+                    TIER next_tier = get_next_tier(DataManager.instance.my_tier);
+                    next_tier_text.text = "Next Rank" + Converter.tier_to_string(next_tier) + "/rating score" + get_tier_rating(next_tier) + "p";
+                }
+                break;
+
+            case 3:
+                {
+                    tier_update_title_text.text = "é™çº§";
+                    tier_update_ex_text.text = "é™çº§ " + Converter.tier_to_string(DataManager.instance.my_tier);
+                    rating_score_text.text = DataManager.instance.rating_score + "åˆ†";
+
+                    TIER next_tier = get_next_tier(DataManager.instance.my_tier);
+                    next_tier_text.text = "ä¸‹ä¸€ä¸ªå¹´çº§: " + Converter.tier_to_string(next_tier) + "/è¯„åˆ†" + get_tier_rating(next_tier) + "åˆ†";
+                }
+                break;
+        }
     }
 
     public void close_tier_update_panel()

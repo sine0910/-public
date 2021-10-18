@@ -74,6 +74,8 @@ public class PurchaseManager : SingletonMonobehaviour<PurchaseManager>, IStoreLi
     {
         Debug.Log("SuccessPurchase");
 
+        FirebaseManager.AnalyticsLog("vip_purchase", null, null);
+
         purchasing = false;
         success_purchase.SetActive(true);
 

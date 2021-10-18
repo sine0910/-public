@@ -17,6 +17,7 @@ public class DataManager : SingletonMonobehaviour<DataManager>
     public class AccountData
     {
         public string acountID;
+        public byte language;
     }
     public AccountData account_data;
 
@@ -109,6 +110,7 @@ public class DataManager : SingletonMonobehaviour<DataManager>
     public PlayRecodData recordData;
 
     public string accountID;
+    public byte language;
 
     public string noticeToken;
 
@@ -173,6 +175,17 @@ public class DataManager : SingletonMonobehaviour<DataManager>
         DontDestroyOnLoad(this.gameObject);
 
         load_my_account();
+    }
+
+    public void save_language()
+    {
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Create(Application.persistentDataPath + "/AccountDataFile.data");
+
+        account_data.language = language;
+
+        bf.Serialize(file, account_data);
+        file.Close();
     }
 
     public void save_my_account_data(string account_id)
@@ -389,6 +402,7 @@ public class DataManager : SingletonMonobehaviour<DataManager>
         FirebaseManager.instance.update_my_data();
     }
 
+
     public void win(PLAYER_TYPE type)
     {
         switch (type)
@@ -410,7 +424,7 @@ public class DataManager : SingletonMonobehaviour<DataManager>
                 break;
         }
 
-        rating_score += 2;
+        rating_score += 3;
 
         save_my_play_data();
     }
@@ -436,7 +450,7 @@ public class DataManager : SingletonMonobehaviour<DataManager>
                 break;
         }
 
-        rating_score -= 2;
+        rating_score -= 1;
 
         save_my_play_data();
     }
@@ -543,7 +557,9 @@ public class DataManager : SingletonMonobehaviour<DataManager>
     }
 
     public void save_event_get_result_key_data(List<string> server_event_key_list)
-    {
+    { 
+        Debug.Log("save_event_get_result_key_data");
+
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Create(Application.persistentDataPath + "/" + accountID + "EventFile.data");
 
@@ -583,6 +599,7 @@ public class DataManager : SingletonMonobehaviour<DataManager>
                 account_data = (AccountData)bf.Deserialize(file);
 
                 accountID = account_data.acountID;
+                language = account_data.language;
             }
             file.Close();
         }
@@ -678,6 +695,8 @@ public class DataManager : SingletonMonobehaviour<DataManager>
         {
             set_default_data();
         }
+
+        rating_score = ((b_win_count + w_win_count) * 2) + (b_tie_count + w_tie_count) - (b_lose_count + w_lose_count);
     }
 
     public void reset_day_data()

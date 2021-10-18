@@ -216,8 +216,30 @@ public class ServiceManager : SingletonMonobehaviour<ServiceManager>
         else
         {
             FirebaseManager.instance.offline();
-            //MatchingManager.not_match_mode = true;
-            StartCoroutine(check_noticeBoard("https://okgostop.kr/55/noticeBoard/noticeBoard.html"));
+
+            switch (DataManager.instance.language)
+            {
+                case 0:
+                    {
+                        StartCoroutine(check_noticeBoard("https://okgostop.kr/55/noticeBoard/noticeKOREABoard.html"));
+                    }
+                    break;
+                case 1:
+                    {
+                        StartCoroutine(check_noticeBoard("https://okgostop.kr/55/noticeBoard/noticeJAPANBoard.html"));
+                    }
+                    break;
+                case 2:
+                    {
+                        StartCoroutine(check_noticeBoard("https://okgostop.kr/55/noticeBoard/noticeBoard.html"));
+                    }
+                    break;
+                case 3:
+                    {
+                        StartCoroutine(check_noticeBoard("https://okgostop.kr/55/noticeBoard/noticeCHINABoard.html"));
+                    }
+                    break;
+            }
         }
     }
 
@@ -227,7 +249,7 @@ public class ServiceManager : SingletonMonobehaviour<ServiceManager>
 
         yield return unityWebRequest.SendWebRequest();
 
-        if (!unityWebRequest.isDone || unityWebRequest.error != null || unityWebRequest.responseCode != 200)
+        if (!unityWebRequest.isDone || unityWebRequest.error != null || unityWebRequest.responseCode != 200) 
         {
             Debug.Log("check_noticeBoard unityWebRequest error " + unityWebRequest.responseCode);
             NetworkManager.Https_Error();

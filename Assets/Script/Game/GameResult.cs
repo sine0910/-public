@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,28 +32,94 @@ public class GameResult : MonoBehaviour
             case 0:
                 {
                     game_result_popup.sprite = win_sprite;
-                    result_text.text = "�¸�";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                result_text.text = "승리";
+                            }
+                            break;
+                        case 1:
+                            {
+                                result_text.text = "勝利";
+                            }
+                            break;
+                        case 2:
+                            {
+                                result_text.text = "Win";
+                            }
+                            break;
+                        case 3:
+                            {
+                                result_text.text = "胜利";
+                            }
+                            break;
+                    }
                 }
                 break;
 
             case 1:
                 {
                     game_result_popup.sprite = lose_sprite;
-                    result_text.text = "�й�";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                result_text.text = "패배";
+                            }
+                            break;
+                        case 1:
+                            {
+                                result_text.text = "敗北";
+                            }
+                            break;
+                        case 2:
+                            {
+                                result_text.text = "Lose";
+                            }
+                            break;
+                        case 3:
+                            {
+                                result_text.text = "打败";
+                            }
+                            break;
+                    }
                 }
                 break;
 
             default:
                 {
                     game_result_popup.sprite = lose_sprite;
-                    result_text.text = "���º�";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                result_text.text = "무승부";
+                            }
+                            break;
+                        case 1:
+                            {
+                                result_text.text = "引き分け";
+                            }
+                            break;
+                        case 2:
+                            {
+                                result_text.text = "Tie";
+                            }
+                            break;
+                        case 3:
+                            {
+                                result_text.text = "领带";
+                            }
+                            break;
+                    }
                 }
                 break;
         }
 
-        win_text.text = (DataManager.instance.b_win_count + DataManager.instance.w_win_count) + "ȸ";
-        lose_text.text = (DataManager.instance.b_lose_count + DataManager.instance.w_lose_count) + "ȸ";
-        tie_text.text = (DataManager.instance.b_tie_count + DataManager.instance.w_tie_count) + "ȸ";
+        win_text.text = (DataManager.instance.b_win_count + DataManager.instance.w_win_count) + "";
+        lose_text.text = (DataManager.instance.b_lose_count + DataManager.instance.w_lose_count) + "";
+        tie_text.text = (DataManager.instance.b_tie_count + DataManager.instance.w_tie_count) + "";
         winper_text.text = get_win_percent() + "%";
 
         panel.SetActive(false);
@@ -83,11 +149,11 @@ public class GameResult : MonoBehaviour
 
     public void quit_game()
     {
-        if (AIPlayManager.instance != null)
+        if (GameManager.instance.play_mode == PLAY.AI)
         {
             AIPlayManager.instance.GameQuit();
         }
-        else if (MultiPlayManager.instance != null)
+        else if (GameManager.instance.play_mode == PLAY.PVP)
         {
             MultiPlayManager.instance.QuitGame();
         }

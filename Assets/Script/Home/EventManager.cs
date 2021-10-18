@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -227,7 +227,7 @@ public class EventManager : SingletonMonobehaviour<EventManager>
         {
             DataManager.instance.my_heart += item_dictionary[EVENT_ITEM.HEART];
             all_confirm_heart_slot.SetActive(true);
-            all_confirm_heart_slot_text.text = item_dictionary[EVENT_ITEM.HEART] + "°³";
+            all_confirm_heart_slot_text.text = item_dictionary[EVENT_ITEM.HEART] + "";
         }
         DataManager.instance.save_heart();
 
@@ -239,8 +239,6 @@ public class EventManager : SingletonMonobehaviour<EventManager>
     {
         all_confirm_heart_slot.SetActive(false);
         all_confirm_result_page.SetActive(false);
-
-        TierManager.instance.update_tier_check();
     }
 
     public bool delete_event = false;
@@ -264,6 +262,7 @@ public class EventManager : SingletonMonobehaviour<EventManager>
                 server_event_key_list.Add(event_slot_list[i].key_value);
                 DataManager.instance.save_event_get_result_key_data(server_event_key_list);
 
+                delete_event = true;
                 //FirebaseManager.instance.send_get_event_history(event_slot_list[i].key_value,
                 //   event_slot_list[i].main,
                 //   event_slot_list[i].item,
@@ -339,14 +338,36 @@ public class EventManager : SingletonMonobehaviour<EventManager>
                 {
                     DataManager.instance.my_heart += count;
                     confirm_result_image.sprite = Resources.Load<Sprite>("Image/heart");
-                    confirm_result_text.text = "ÇÏÆ® " + count + "°³¸¦\nÈ¹µæÇÏ¿´½À´Ï´Ù";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                confirm_result_text.text = "í•˜íŠ¸ " + count + "ê°œë¥¼\níšë“í•˜ì˜€ìŠµë‹ˆë‹¤";
+                            }
+                            break;
+                        case 1:
+                            {
+                                confirm_result_text.text = "ãƒãƒ¼ãƒˆ" + count + "å€‹ã‚’ç²å¾—ã—ã¾ã—ãŸ";
+                            }
+                            break;
+                        case 2:
+                            {
+                                confirm_result_text.text = "You have earned " + count + "heart.";
+                            }
+                            break;
+                        case 3:
+                            {
+                                confirm_result_text.text = "ä½ èµ¢å¾—äº†" + count + "é¢—å¿ƒã€‚";
+                            }
+                            break;
+                    }
                 }
                 break;
             //case EVENT_ITEM.KEY:
             //    {
             //        DataManager.instance.my_key += (int)count;
             //        confirm_result_image.sprite = Resources.Load<Sprite>("Image/GoldKey");
-            //        confirm_result_text.text = "È²±İ¿­¼è " + MoneyManager.instance.convert_money_to_string(count) + "°³¸¦ È¹µæÇÏ¿´½À´Ï´Ù";
+            //        confirm_result_text.text = "í™©ê¸ˆì—´ì‡  " + MoneyManager.instance.convert_money_to_string(count) + "ê°œë¥¼ íšë“í•˜ì˜€ìŠµë‹ˆë‹¤";
             //    }
             //    break;
         }
@@ -357,7 +378,7 @@ public class EventManager : SingletonMonobehaviour<EventManager>
 
         event_slot_index = 0;
 
-        confirm_result_page.SetActive(true);
+        confirm_result_page.SetActive(false);
     }
 
     public void close_confirm_result()
@@ -365,8 +386,6 @@ public class EventManager : SingletonMonobehaviour<EventManager>
         select = false;
         panel_contect();
         TierManager.instance.update_tier_check();
-
-        confirm_result_page.SetActive(false);
     }
 
     public void panel_contect()

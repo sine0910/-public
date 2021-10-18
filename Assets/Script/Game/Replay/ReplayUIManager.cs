@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,10 +25,10 @@ public class ReplayUIManager : SingletonMonobehaviour<ReplayUIManager>
     public Button zoomin_button;
     public Button zoomout_button;
 
-    //°ËÀº µ¹
+    //ê²€ì€ ëŒ
     //public GameObject black;
     public Sprite Black;
-    //Èò µ¹
+    //í° ëŒ
     //public GameObject white;
     public Sprite White;
 
@@ -181,27 +181,6 @@ public class ReplayUIManager : SingletonMonobehaviour<ReplayUIManager>
                             win = 1;
                         }
 
-                        if (GameManager.instance.play_mode == PLAY.PVP)
-                        {
-                            if (winner == byte.MaxValue)
-                            {
-                                tie_count++;
-                                DataManager.instance.tie(my_player_type);
-                            }
-                            else if (winner == player_me_index)
-                            {
-                                win_count++;
-                                DataManager.instance.win(my_player_type);
-                            }
-                            else
-                            {
-                                lose_count++;
-                                DataManager.instance.lose(my_player_type);
-                            }
-
-                            Recorder.instance.save_game_play_record(winner);
-                        }
-
                         game_result.SetActive(true);
                         game_result.GetComponent<ReplayGameResult>().on_result(win);
                     }
@@ -245,7 +224,7 @@ public class ReplayUIManager : SingletonMonobehaviour<ReplayUIManager>
         mark.SetActive(false);
     }
 
-    //ÇÃ·¹ÀÌ¾î°¡ ¼±ÅÃÇÒ ½½·ÔÀ» »ı¼ºÇÑ´Ù.
+    //í”Œë ˆì´ì–´ê°€ ì„ íƒí•  ìŠ¬ë¡¯ì„ ìƒì„±í•œë‹¤.
     void make_slot_point()
     {
         board = new PointSlot[15, 15];
@@ -299,30 +278,6 @@ public class ReplayUIManager : SingletonMonobehaviour<ReplayUIManager>
                 }
                 break;
         }
-
-        if (camera_zoom_step < 4)
-        {
-            if (x < 5 || x > 10 || y < 5 || y > 10)
-            {
-                zoom_out();
-            }
-        }
-        else if (camera_zoom_step < 3)
-        {
-            if (x < 3 || x > 12 || y < 3 || y > 12)
-            {
-                zoom_out();
-            }
-        }
-        else if (camera_zoom_step < 2)
-        {
-            if (x < 1 || x > 14 || y < 1 || y > 14)
-            {
-                zoom_out();
-            }
-        }
-
-        //camera.transform.position = new Vector3(point_slot.transform.position.x, point_slot.transform.position.y, camera.transform.position.z);
 
         if (player_index == player_me_index)
         {
@@ -487,10 +442,5 @@ public class ReplayUIManager : SingletonMonobehaviour<ReplayUIManager>
                 camera.transform.position = camera.transform.position - (mouse_move - prev_pos);
             }
         }
-    }
-
-    public void save_record()
-    {
-        Recorder.instance.save_game_record("»ç¿ëÀÚ ´ë±¹", win_count, lose_count, tie_count);
     }
 }

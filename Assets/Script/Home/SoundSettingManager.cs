@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -49,23 +49,113 @@ public class SoundSettingManager : MonoBehaviour
         if (DataManager.instance.background_sound)
         {
             background.sprite = on;
-            background_text.text = "���Ұ�";
+
+            switch(DataManager.instance.language)
+            {
+                case 0:
+                    {
+                        background_text.text = "음소거";
+                    }
+                    break;
+                case 1:
+                    {
+                        background_text.text = "ミュート";
+                    }
+                    break;
+                case 2:
+                    {
+                        background_text.text = "mute";
+                    }
+                    break;
+                case 3:
+                    {
+                        background_text.text = "沉默的";
+                    }
+                    break;
+            }
         }
         else
         {
             background.sprite = off;
-            background_text.text = "���Ұ� ����";
+
+            switch (DataManager.instance.language)
+            {
+                case 0:
+                    {
+                        background_text.text = "음소거 해제";
+                    }
+                    break;
+                case 1:
+                    {
+                        background_text.text = "ミュート解除";
+                    }
+                    break;
+                case 2:
+                    {
+                        background_text.text = "unmute";
+                    }
+                    break;
+                case 3:
+                    {
+                        background_text.text = "取消静音";
+                    }
+                    break;
+            }
         }
 
         if (DataManager.instance.effect_sound)
         {
             effect.sprite = on;
-            effect_text.text = "���Ұ�";
+            switch (DataManager.instance.language)
+            {
+                case 0:
+                    {
+                        effect_text.text = "음소거";
+                    }
+                    break;
+                case 1:
+                    {
+                        effect_text.text = "ミュート";
+                    }
+                    break;
+                case 2:
+                    {
+                        effect_text.text = "mute";
+                    }
+                    break;
+                case 3:
+                    {
+                        effect_text.text = "沉默的";
+                    }
+                    break;
+            }
         }
         else
         {
             effect.sprite = off;
-            effect_text.text = "���Ұ� ����";
+            switch (DataManager.instance.language)
+            {
+                case 0:
+                    {
+                        effect_text.text = "음소거 해제";
+                    }
+                    break;
+                case 1:
+                    {
+                        effect_text.text = "ミュート解除";
+                    }
+                    break;
+                case 2:
+                    {
+                        effect_text.text = "unmute";
+                    }
+                    break;
+                case 3:
+                    {
+                        effect_text.text = "取消静音";
+                    }
+                    break;
+            }
         }
     }
 
@@ -75,13 +165,57 @@ public class SoundSettingManager : MonoBehaviour
         {
             DataManager.instance.background_sound = true;
             background.sprite = on;
-            background_text.text = "���Ұ�";
+            switch (DataManager.instance.language)
+            {
+                case 0:
+                    {
+                        background_text.text = "음소거";
+                    }
+                    break;
+                case 1:
+                    {
+                        background_text.text = "ミュート";
+                    }
+                    break;
+                case 2:
+                    {
+                        background_text.text = "mute";
+                    }
+                    break;
+                case 3:
+                    {
+                        background_text.text = "沉默的";
+                    }
+                    break;
+            }
         }
         else
         {
             DataManager.instance.background_sound = false;
             background.sprite = off;
-            background_text.text = "���Ұ� ����";
+            switch (DataManager.instance.language)
+            {
+                case 0:
+                    {
+                        background_text.text = "음소거 해제";
+                    }
+                    break;
+                case 1:
+                    {
+                        background_text.text = "ミュート解除";
+                    }
+                    break;
+                case 2:
+                    {
+                        background_text.text = "unmute";
+                    }
+                    break;
+                case 3:
+                    {
+                        background_text.text = "取消静音";
+                    }
+                    break;
+            }
         }
         HomeSoundManager.instance.mute_background(!DataManager.instance.background_sound);
         DataManager.instance.save_sound_data();
@@ -93,13 +227,57 @@ public class SoundSettingManager : MonoBehaviour
         {
             DataManager.instance.effect_sound = true;
             effect.sprite = on;
-            effect_text.text = "���Ұ�";
+            switch (DataManager.instance.language)
+            {
+                case 0:
+                    {
+                        effect_text.text = "음소거";
+                    }
+                    break;
+                case 1:
+                    {
+                        effect_text.text = "ミュート";
+                    }
+                    break;
+                case 2:
+                    {
+                        effect_text.text = "mute";
+                    }
+                    break;
+                case 3:
+                    {
+                        effect_text.text = "沉默的";
+                    }
+                    break;
+            }
         }
         else
         {
             DataManager.instance.effect_sound = false;
             effect.sprite = off;
-            effect_text.text = "���Ұ� ����";
+            switch (DataManager.instance.language)
+            {
+                case 0:
+                    {
+                        effect_text.text = "음소거 해제";
+                    }
+                    break;
+                case 1:
+                    {
+                        effect_text.text = "ミュート解除";
+                    }
+                    break;
+                case 2:
+                    {
+                        effect_text.text = "unmute";
+                    }
+                    break;
+                case 3:
+                    {
+                        effect_text.text = "取消静音";
+                    }
+                    break;
+            }
         }
         HomeSoundManager.instance.mute_effect(!DataManager.instance.effect_sound);
         DataManager.instance.save_sound_data();

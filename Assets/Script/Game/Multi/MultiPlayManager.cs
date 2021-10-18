@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -69,7 +69,7 @@ public class MultiPlayManager : SingletonMonobehaviour<MultiPlayManager>
         StartCoroutine(FirestoreHandleValueChangedForChatting());
     }
 
-    public void ProtocolToGameRoom(string msg)//È£½ºÆ®¿¡°Ô º¸³»´Â ¸Ş¼¼Áö
+    public void ProtocolToGameRoom(string msg)//í˜¸ìŠ¤íŠ¸ì—ê²Œ ë³´ë‚´ëŠ” ë©”ì„¸ì§€
     {
         Debug.Log(game_room_id + " To GameRoom: " + msg + " time: " + DateTime.Now.ToString());
         msg += "/" + TimeStamp.GetUnixTimeStamp();
@@ -81,7 +81,7 @@ public class MultiPlayManager : SingletonMonobehaviour<MultiPlayManager>
         docRef.SetAsync(user);
     }
 
-    public void ProtocolToHost(string msg)//È£½ºÆ®UI¿¡°Ô º¸³»´Â ¸Ş¼¼Áö
+    public void ProtocolToHost(string msg)//í˜¸ìŠ¤íŠ¸UIì—ê²Œ ë³´ë‚´ëŠ” ë©”ì„¸ì§€
     {
         Debug.Log(game_room_id + " To Host: " + msg + " time: " + DateTime.Now.ToString());
         msg += "/" + TimeStamp.GetUnixTimeStamp();
@@ -93,7 +93,7 @@ public class MultiPlayManager : SingletonMonobehaviour<MultiPlayManager>
         docRef.SetAsync(user);
     }
 
-    public void ProtocolToGuest(string msg)//°Ô½ºÆ®UI¿¡°Ô º¸³»´Â ¸Ş¼¼Áö
+    public void ProtocolToGuest(string msg)//ê²ŒìŠ¤íŠ¸UIì—ê²Œ ë³´ë‚´ëŠ” ë©”ì„¸ì§€
     {
         Debug.Log(game_room_id + " To Guest: " + msg + " time: " + DateTime.Now.ToString());
         msg += "/" + TimeStamp.GetUnixTimeStamp();
@@ -290,14 +290,14 @@ public class MultiPlayManager : SingletonMonobehaviour<MultiPlayManager>
     {
         error = true;
         yield return new WaitForSecondsRealtime(15f);
-        //2021-05-29 09:58 15ÃÊ µ¿¾È ¾Æ¹«·± ¼­¹ö ¸Ş¼¼Áö°¡ ¾ø´Â °æ¿ì ¿¡·¯·Î ÆÇ´Ü
+        //2021-05-29 09:58 15ì´ˆ ë™ì•ˆ ì•„ë¬´ëŸ° ì„œë²„ ë©”ì„¸ì§€ê°€ ì—†ëŠ” ê²½ìš° ì—ëŸ¬ë¡œ íŒë‹¨
         if (error)
         {
             on_error();
         }
     }
 
-    //»ç¿ëÀÚ ´ëÀü Áß ¿¡·¯°¡ »ı°åÀ» °æ¿ì È£Ãâ
+    //ì‚¬ìš©ì ëŒ€ì „ ì¤‘ ì—ëŸ¬ê°€ ìƒê²¼ì„ ê²½ìš° í˜¸ì¶œ
     public void on_error()
     {
         //Time.timeScale = 0;
@@ -654,13 +654,59 @@ public class MultiPlayManager : SingletonMonobehaviour<MultiPlayManager>
             chat_alarm.SetActive(false);
             chat_panel.SetActive(true);
 
-            if (DataManager.instance.preview == 1)
+            switch (DataManager.instance.language)
             {
-                preview_set_button_text.text = "Ã¤ÆÃ ¹Ì¸®º¸±â ÇØÁ¦";
-            }
-            else if (DataManager.instance.preview == 2)
-            {
-                preview_set_button_text.text = "Ã¤ÆÃ ¹Ì¸®º¸±â";
+                case 0:
+                    {
+                        if (DataManager.instance.preview == 1)
+                        {
+                            preview_set_button_text.text = "ì±„íŒ… ë¯¸ë¦¬ë³´ê¸° í•´ì œ";
+                        }
+                        else if (DataManager.instance.preview == 2)
+                        {
+                            preview_set_button_text.text = "ì±„íŒ… ë¯¸ë¦¬ë³´ê¸°";
+                        }
+                    }
+                    break;
+
+                case 1:
+                    {
+                        if (DataManager.instance.preview == 1)
+                        {
+                            preview_set_button_text.text = "é€šçŸ¥ã‚’ç„¡åŠ¹ã«";
+                        }
+                        else if (DataManager.instance.preview == 2)
+                        {
+                            preview_set_button_text.text = "ãƒãƒ£ãƒƒãƒˆé€šçŸ¥";
+                        }
+                    }
+                    break;
+
+                case 2:
+                    {
+                        if (DataManager.instance.preview == 1)
+                        {
+                            preview_set_button_text.text = "Disable chat popup";
+                        }
+                        else if (DataManager.instance.preview == 2)
+                        {
+                            preview_set_button_text.text = "Enable chat popup";
+                        }
+                    }
+                    break;
+
+                case 3:
+                    {
+                        if (DataManager.instance.preview == 1)
+                        {
+                            preview_set_button_text.text = "ç¦ç”¨èŠå¤©é€šçŸ¥";
+                        }
+                        else if (DataManager.instance.preview == 2)
+                        {
+                            preview_set_button_text.text = "èŠå¤©é€šçŸ¥";
+                        }
+                    }
+                    break;
             }
         }
     }
@@ -674,16 +720,61 @@ public class MultiPlayManager : SingletonMonobehaviour<MultiPlayManager>
 
     public void select_preview()
     {
-        if (DataManager.instance.preview == 1)
+        switch (DataManager.instance.language)
         {
-            DataManager.instance.preview = 2;
-            preview_set_button_text.text = "Ã¤ÆÃ ¹Ì¸®º¸±â";
+            case 0:
+                {
+                    if (DataManager.instance.preview == 1)
+                    {
+                        preview_set_button_text.text = "ì±„íŒ… ë¯¸ë¦¬ë³´ê¸° í•´ì œ";
+                    }
+                    else if (DataManager.instance.preview == 2)
+                    {
+                        preview_set_button_text.text = "ì±„íŒ… ë¯¸ë¦¬ë³´ê¸°";
+                    }
+                }
+                break;
+
+            case 1:
+                {
+                    if (DataManager.instance.preview == 1)
+                    {
+                        preview_set_button_text.text = "é€šçŸ¥ã‚’ç„¡åŠ¹ã«";
+                    }
+                    else if (DataManager.instance.preview == 2)
+                    {
+                        preview_set_button_text.text = "ãƒãƒ£ãƒƒãƒˆé€šçŸ¥";
+                    }
+                }
+                break;
+
+            case 2:
+                {
+                    if (DataManager.instance.preview == 1)
+                    {
+                        preview_set_button_text.text = "Disable chat popup";
+                    }
+                    else if (DataManager.instance.preview == 2)
+                    {
+                        preview_set_button_text.text = "Enable chat popup";
+                    }
+                }
+                break;
+
+            case 3:
+                {
+                    if (DataManager.instance.preview == 1)
+                    {
+                        preview_set_button_text.text = "ç¦ç”¨èŠå¤©é€šçŸ¥";
+                    }
+                    else if (DataManager.instance.preview == 2)
+                    {
+                        preview_set_button_text.text = "èŠå¤©é€šçŸ¥";
+                    }
+                }
+                break;
         }
-        else if (DataManager.instance.preview == 2)
-        {
-            DataManager.instance.preview = 1;
-            preview_set_button_text.text = "¹Ì¸®º¸±â ÇØÁ¦";
-        }
+
         DataManager.instance.save_preview_data();
     }
 

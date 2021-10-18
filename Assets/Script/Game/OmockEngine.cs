@@ -252,67 +252,169 @@ public class OmokEngine : MonoBehaviour
 
     public bool product_five_win(Point point, STATE playerColourOccupancyState)
     {
-        foreach (DIRECTION dir in Enum.GetValues(typeof(DIRECTION)))
+        if (playerColourOccupancyState == STATE.BLACK)
         {
-            Point fiveBefore = get_point_steps_after(point, -5, dir);
-            Point fourBefore = get_point_steps_after(point, -4, dir);
-            Point threeBefore = get_point_steps_after(point, -3, dir);
-            Point twoBefore = get_point_steps_after(point, -2, dir);
-            Point oneBefore = get_point_steps_after(point, -1, dir);
-            Point oneAfter = get_point_steps_after(point, 1, dir);
-            Point twoAfter = get_point_steps_after(point, 2, dir);
-            Point threeAfter = get_point_steps_after(point, 3, dir);
-            Point fourAfter = get_point_steps_after(point, 4, dir);
-            Point fiveAfter = get_point_steps_after(point, 5, dir);
-
-            if (get_point_state(fiveBefore) != playerColourOccupancyState &&
-                get_point_state(fourBefore) == playerColourOccupancyState &&
-                get_point_state(threeBefore) == playerColourOccupancyState &&
-                get_point_state(twoBefore) == playerColourOccupancyState &&
-                get_point_state(oneBefore) == playerColourOccupancyState &&
-                get_point_state(oneAfter) != playerColourOccupancyState)
+            foreach (DIRECTION dir in Enum.GetValues(typeof(DIRECTION)))
             {
-                return true;
+                Point fiveBefore = get_point_steps_after(point, -5, dir);
+                Point fourBefore = get_point_steps_after(point, -4, dir);
+                Point threeBefore = get_point_steps_after(point, -3, dir);
+                Point twoBefore = get_point_steps_after(point, -2, dir);
+                Point oneBefore = get_point_steps_after(point, -1, dir);
+                Point oneAfter = get_point_steps_after(point, 1, dir);
+                Point twoAfter = get_point_steps_after(point, 2, dir);
+                Point threeAfter = get_point_steps_after(point, 3, dir);
+                Point fourAfter = get_point_steps_after(point, 4, dir);
+                Point fiveAfter = get_point_steps_after(point, 5, dir);
+
+                if (get_point_state(fiveBefore) != playerColourOccupancyState &&
+                    get_point_state(fourBefore) == playerColourOccupancyState &&
+                    get_point_state(threeBefore) == playerColourOccupancyState &&
+                    get_point_state(twoBefore) == playerColourOccupancyState &&
+                    get_point_state(oneBefore) == playerColourOccupancyState &&
+                    get_point_state(oneAfter) != playerColourOccupancyState)
+                {
+                    return true;
+                }
+
+                if (get_point_state(fourBefore) != playerColourOccupancyState &&
+                    get_point_state(threeBefore) == playerColourOccupancyState &&
+                    get_point_state(twoBefore) == playerColourOccupancyState &&
+                    get_point_state(oneBefore) == playerColourOccupancyState &&
+                    get_point_state(oneAfter) == playerColourOccupancyState &&
+                    get_point_state(twoAfter) != playerColourOccupancyState)
+                {
+                    return true;
+                }
+
+                if (get_point_state(threeBefore) != playerColourOccupancyState &&
+                    get_point_state(twoBefore) == playerColourOccupancyState &&
+                    get_point_state(oneBefore) == playerColourOccupancyState &&
+                    get_point_state(oneAfter) == playerColourOccupancyState &&
+                    get_point_state(twoAfter) == playerColourOccupancyState &&
+                    get_point_state(threeAfter) != playerColourOccupancyState)
+                {
+                    return true;
+                }
+
+                if (get_point_state(twoBefore) != playerColourOccupancyState &&
+                    get_point_state(oneBefore) == playerColourOccupancyState &&
+                    get_point_state(oneAfter) == playerColourOccupancyState &&
+                    get_point_state(twoAfter) == playerColourOccupancyState &&
+                    get_point_state(threeAfter) == playerColourOccupancyState &&
+                    get_point_state(fourAfter) != playerColourOccupancyState)
+                {
+                    return true;
+                }
+
+                if (get_point_state(oneBefore) != playerColourOccupancyState &&
+                    get_point_state(oneAfter) == playerColourOccupancyState &&
+                    get_point_state(twoAfter) == playerColourOccupancyState &&
+                    get_point_state(threeAfter) == playerColourOccupancyState &&
+                    get_point_state(fourAfter) == playerColourOccupancyState &&
+                    get_point_state(fiveAfter) != playerColourOccupancyState)
+                {
+                    return true;
+                }
             }
-
-            if (get_point_state(fourBefore) != playerColourOccupancyState &&
-                get_point_state(threeBefore) == playerColourOccupancyState &&
-                get_point_state(twoBefore) == playerColourOccupancyState &&
-                get_point_state(oneBefore) == playerColourOccupancyState &&
-                get_point_state(oneAfter) == playerColourOccupancyState &&
-                get_point_state(twoAfter) != playerColourOccupancyState)
+        }
+        else if(playerColourOccupancyState == STATE.WHITE)
+        {
+            foreach (DIRECTION dir in Enum.GetValues(typeof(DIRECTION)))
             {
-                return true;
-            }
+                Point fiveBefore = get_point_steps_after(point, -5, dir);
+                Point fourBefore = get_point_steps_after(point, -4, dir);
+                Point threeBefore = get_point_steps_after(point, -3, dir);
+                Point twoBefore = get_point_steps_after(point, -2, dir);
+                Point oneBefore = get_point_steps_after(point, -1, dir);
+                Point oneAfter = get_point_steps_after(point, 1, dir);
+                Point twoAfter = get_point_steps_after(point, 2, dir);
+                Point threeAfter = get_point_steps_after(point, 3, dir);
+                Point fourAfter = get_point_steps_after(point, 4, dir);
+                Point fiveAfter = get_point_steps_after(point, 5, dir);
 
-            if (get_point_state(threeBefore) != playerColourOccupancyState &&
-                get_point_state(twoBefore) == playerColourOccupancyState &&
-                get_point_state(oneBefore) == playerColourOccupancyState &&
-                get_point_state(oneAfter) == playerColourOccupancyState &&
-                get_point_state(twoAfter) == playerColourOccupancyState &&
-                get_point_state(threeAfter) != playerColourOccupancyState)
-            {
-                return true;
-            }
+                if (get_point_state(fiveBefore) != playerColourOccupancyState &&
+                    get_point_state(fourBefore) == playerColourOccupancyState &&
+                    get_point_state(threeBefore) == playerColourOccupancyState &&
+                    get_point_state(twoBefore) == playerColourOccupancyState &&
+                    get_point_state(oneBefore) == playerColourOccupancyState &&
+                    get_point_state(oneAfter) != playerColourOccupancyState)
+                {
+                    return true;
+                }
 
-            if (get_point_state(twoBefore) != playerColourOccupancyState &&
-                get_point_state(oneBefore) == playerColourOccupancyState &&
-                get_point_state(oneAfter) == playerColourOccupancyState &&
-                get_point_state(twoAfter) == playerColourOccupancyState &&
-                get_point_state(threeAfter) == playerColourOccupancyState &&
-                get_point_state(fourAfter) != playerColourOccupancyState)
-            {
-                return true;
-            }
+                if (get_point_state(fourBefore) != playerColourOccupancyState &&
+                    get_point_state(threeBefore) == playerColourOccupancyState &&
+                    get_point_state(twoBefore) == playerColourOccupancyState &&
+                    get_point_state(oneBefore) == playerColourOccupancyState &&
+                    get_point_state(oneAfter) == playerColourOccupancyState &&
+                    get_point_state(twoAfter) != playerColourOccupancyState)
+                {
+                    return true;
+                }
 
-            if (get_point_state(oneBefore) != playerColourOccupancyState &&
-                get_point_state(oneAfter) == playerColourOccupancyState &&
-                get_point_state(twoAfter) == playerColourOccupancyState &&
-                get_point_state(threeAfter) == playerColourOccupancyState &&
-                get_point_state(fourAfter) == playerColourOccupancyState &&
-                get_point_state(fiveAfter) != playerColourOccupancyState)
-            {
-                return true;
+                if (get_point_state(threeBefore) != playerColourOccupancyState &&
+                    get_point_state(twoBefore) == playerColourOccupancyState &&
+                    get_point_state(oneBefore) == playerColourOccupancyState &&
+                    get_point_state(oneAfter) == playerColourOccupancyState &&
+                    get_point_state(twoAfter) == playerColourOccupancyState &&
+                    get_point_state(threeAfter) != playerColourOccupancyState)
+                {
+                    return true;
+                }
+
+                if (get_point_state(twoBefore) != playerColourOccupancyState &&
+                    get_point_state(oneBefore) == playerColourOccupancyState &&
+                    get_point_state(oneAfter) == playerColourOccupancyState &&
+                    get_point_state(twoAfter) == playerColourOccupancyState &&
+                    get_point_state(threeAfter) == playerColourOccupancyState &&
+                    get_point_state(fourAfter) != playerColourOccupancyState)
+                {
+                    return true;
+                }
+
+                if (get_point_state(oneBefore) != playerColourOccupancyState &&
+                    get_point_state(oneAfter) == playerColourOccupancyState &&
+                    get_point_state(twoAfter) == playerColourOccupancyState &&
+                    get_point_state(threeAfter) == playerColourOccupancyState &&
+                    get_point_state(fourAfter) == playerColourOccupancyState &&
+                    get_point_state(fiveAfter) != playerColourOccupancyState)
+                {
+                    return true;
+                }
+
+                //백돌은 6목으로 승리가 가능하다
+                if (get_point_state(oneBefore) == playerColourOccupancyState &&
+                    get_point_state(oneAfter) == playerColourOccupancyState)
+                {
+                    if (get_point_state(fourBefore) == playerColourOccupancyState &&
+                        get_point_state(threeBefore) == playerColourOccupancyState &&
+                        get_point_state(twoBefore) == playerColourOccupancyState)
+                    {
+                        return true;
+                    }
+
+                    if (get_point_state(threeBefore) == playerColourOccupancyState &&
+                        get_point_state(twoBefore) == playerColourOccupancyState &&
+                        get_point_state(twoAfter) == playerColourOccupancyState)
+                    {
+                        return true;
+                    }
+
+                    if (get_point_state(twoBefore) == playerColourOccupancyState &&
+                        get_point_state(twoAfter) == playerColourOccupancyState &&
+                        get_point_state(threeAfter) == playerColourOccupancyState)
+                    {
+                        return true;
+                    }
+
+                    if (get_point_state(twoAfter) == playerColourOccupancyState &&
+                        get_point_state(threeAfter) == playerColourOccupancyState &&
+                        get_point_state(fourAfter) == playerColourOccupancyState)
+                    {
+                        return true;
+                    }
+                }
             }
         }
 

@@ -137,7 +137,7 @@ public class ReplayRoom : SingletonMonobehaviour<ReplayRoom>
 
         if (replay_index < replay_record.record.Count)
         {
-            count_text.text = (replay_index + 1) + "/" + replay_record.record.Count + "ÆÇ";
+            count_text.text = (replay_index + 1) + "/" + replay_record.record.Count;
             recode_player = GameReplaying(Recorder.Clone(replay_record.record[replay_index].record));
             StartCoroutine(recode_player);
         }
@@ -382,8 +382,6 @@ public class ReplayRoom : SingletonMonobehaviour<ReplayRoom>
 
     public void stop_replay()
     {
-        Recorder.instance.replay_record = null;
-
         Time.timeScale = 1;
         SceneManager.LoadScene("HomeScene");
     }

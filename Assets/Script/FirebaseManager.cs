@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -18,9 +18,9 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
     DataManager data_manager;
 
     /// <summary>
-    /// 1: ¼º°ø
-    /// 2: ½ÇÆĞ/µ¥ÀÌÅÍ°¡ ¾øÀ½
-    /// 3: ½ÇÆĞ/ÀÎÅÍ³İ ¿¡·¯
+    /// 1: ì„±ê³µ
+    /// 2: ì‹¤íŒ¨/ë°ì´í„°ê°€ ì—†ìŒ
+    /// 3: ì‹¤íŒ¨/ì¸í„°ë„· ì—ëŸ¬
     /// </summary>
     /// <param name="success"></param>
     public delegate void Callback(byte success);
@@ -91,7 +91,7 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
 
         data_manager.save_my_notice_token_data(token.Token);
 
-        //firestore¿¡ ÀÚ½ÅÀÇ ÅäÅ« °æ·Î¸¦ ³Ö¾îÁÜ
+        //firestoreì— ìì‹ ì˜ í† í° ê²½ë¡œë¥¼ ë„£ì–´ì¤Œ
         DocumentReference docRef = firestore.Collection("Users").Document(DataManager.instance.accountID);
         Dictionary<string, object> token_data = new Dictionary<string, object>
         {
@@ -114,22 +114,22 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
             else if (task.IsCompleted)
             {
                 DocumentSnapshot snapshot = task.Result;
-                if (snapshot.Exists)//2021-05-07 14:37 ½ÇÁ¦ Á¸ÀçÇÏ´Â ¾ÆÀÌµğÀÎÁö È®ÀÎ Á¸ÀçÇÑ´Ù¸é ºñ¹Ğ¹øÈ£ È®ÀÎ
+                if (snapshot.Exists)//2021-05-07 14:37 ì‹¤ì œ ì¡´ì¬í•˜ëŠ” ì•„ì´ë””ì¸ì§€ í™•ì¸ ì¡´ì¬í•œë‹¤ë©´ ë¹„ë°€ë²ˆí˜¸ í™•ì¸
                 {
                     Dictionary<string, object> pairs = snapshot.ToDictionary();
-                    if (pairs.ContainsKey("Password"))//2021-05-07 17:37 È¸¿ø°¡ÀÔ ½Ã ÀÎ°ÔÀÓ µ¥ÀÌÅÍ¸¦ Á¦¿ÜÇÑ ¾ÆÀÌµğ¿Í ÆĞ½º¿öµå µ¥ÀÌÅÍ¸¸ ÀúÀå/ÀÎ°ÔÀÓ µ¥ÀÌÅÍ´Â °ÔÀÓ ½ÃÀÛ ÈÄ ÀúÀå
+                    if (pairs.ContainsKey("Password"))//2021-05-07 17:37 íšŒì›ê°€ì… ì‹œ ì¸ê²Œì„ ë°ì´í„°ë¥¼ ì œì™¸í•œ ì•„ì´ë””ì™€ íŒ¨ìŠ¤ì›Œë“œ ë°ì´í„°ë§Œ ì €ì¥/ì¸ê²Œì„ ë°ì´í„°ëŠ” ê²Œì„ ì‹œì‘ í›„ ì €ì¥
                     {
-                        if (pw == pairs["Password"].ToString())//2021-05-07 14:40 ºñ¹Ğ¹øÈ£¸¦ Á¤È®È÷ ÀÔ·ÂÇÏ¿´À» °æ¿ì
+                        if (pw == pairs["Password"].ToString())//2021-05-07 14:40 ë¹„ë°€ë²ˆí˜¸ë¥¼ ì •í™•íˆ ì…ë ¥í•˜ì˜€ì„ ê²½ìš°
                         {
                             callback(1);
                         }
-                        else//ºñ¹Ğ¹øÈ£°¡ Æ²·ÈÀ» °æ¿ì ·Î±×ÀÎ ½ÇÆĞ
+                        else//ë¹„ë°€ë²ˆí˜¸ê°€ í‹€ë ¸ì„ ê²½ìš° ë¡œê·¸ì¸ ì‹¤íŒ¨
                         {
                             callback(3);
                         }
                     }
                 }
-                else//2021-05-07 14:38 Á¸ÀçÇÏÁö ¾ÊÀº ¾ÆÀÌµğÀÎ °æ¿ì ·Î±×ÀÎ ½ÇÆĞ/ÃßÈÄ °èÁ¤ »ı¼ºÀ» ¿ä±¸
+                else//2021-05-07 14:38 ì¡´ì¬í•˜ì§€ ì•Šì€ ì•„ì´ë””ì¸ ê²½ìš° ë¡œê·¸ì¸ ì‹¤íŒ¨/ì¶”í›„ ê³„ì • ìƒì„±ì„ ìš”êµ¬
                 {
                     callback(2);
                 }
@@ -149,12 +149,12 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
             else if (task.IsCompleted)
             {
                 DocumentSnapshot snapshot = task.Result;
-                if (snapshot.Exists)//2021-07-18 13:48 ½ÇÁ¦ Á¸ÀçÇÏ´Â ¾ÆÀÌµğÀÎÁö È®ÀÎ Á¸ÀçÇÑ´Ù¸é »ı¼º ºÒ°¡´É
+                if (snapshot.Exists)//2021-07-18 13:48 ì‹¤ì œ ì¡´ì¬í•˜ëŠ” ì•„ì´ë””ì¸ì§€ í™•ì¸ ì¡´ì¬í•œë‹¤ë©´ ìƒì„± ë¶ˆê°€ëŠ¥
                 {
                     Dictionary<string, object> pairs = snapshot.ToDictionary();
                     callback(2);
                 }
-                else//2021-07-18 13:48 Á¸ÀçÇÏÁö ¾ÊÀº ¾ÆÀÌµğÀÎ °æ¿ì »ı¼º °¡´ÉÇÑ ¾ÆÀÌµğ
+                else//2021-07-18 13:48 ì¡´ì¬í•˜ì§€ ì•Šì€ ì•„ì´ë””ì¸ ê²½ìš° ìƒì„± ê°€ëŠ¥í•œ ì•„ì´ë””
                 {
                     callback(1);
                 }
@@ -261,7 +261,7 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
                 {
                     try
                     {
-                        //¼­¹ö¿¡ µî·ÏµÈ ¾ÆÀÌµğÀÇ µ¥ÀÌÅÍ¸¦ °¡Á®¿Í DataManager¿¡ ³Ö¾îÁÖ°í ±â±â¿¡ ÀúÀåÇÑ´Ù.
+                        //ì„œë²„ì— ë“±ë¡ëœ ì•„ì´ë””ì˜ ë°ì´í„°ë¥¼ ê°€ì ¸ì™€ DataManagerì— ë„£ì–´ì£¼ê³  ê¸°ê¸°ì— ì €ì¥í•œë‹¤.
                         Dictionary<string, object> pairs = snapshot.ToDictionary();
 
                         data_manager.my_name = pairs["Name"].ToString();
@@ -447,6 +447,15 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
         };
         firestore.Collection("Users").Document(data_manager.accountID).SetAsync(search_data, SetOptions.MergeAll);
     }
+
+    public void update_my_tier()
+    {
+        Dictionary<string, object> search_data = new Dictionary<string, object>
+        {
+            { "Tier", data_manager.my_tier.ToString() }
+        };
+        firestore.Collection("Users").Document(data_manager.accountID).Collection("Tier").Document("UpdateTier").SetAsync(search_data, SetOptions.MergeAll);
+    }
     #endregion
 
     #region NAME
@@ -576,16 +585,7 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
             { "score", null },
             { "status", 1 + "/" + key + "/" +  data_manager.accountID + "/" + data_manager.accountID + "/" 
             + data_manager.my_name + "/" + data_manager.my_country.ToString() + "/" + data_manager.my_tier.ToString() + "/" 
-            + data_manager.my_old.ToString() + "/" + data_manager.my_gender.ToString() + "/" + GameManager.instance.get_my_player_type() }
-            //{ "key", key },
-            //{ "roomID", data_manager.accountID },
-            //{ "accountID", data_manager.accountID },
-            //{ "name", data_manager.my_name },
-            //{ "country", data_manager.my_country.ToString() },
-            //{ "tier", data_manager.my_tier.ToString() },
-            //{ "old", data_manager.my_old.ToString() },
-            //{ "gender", data_manager.my_gender.ToString() },
-            //{ "type", GameManager.instance.get_my_player_type() }
+            + data_manager.my_old.ToString() + "/" + data_manager.my_gender.ToString() + "/" + (int)GameManager.instance.get_my_player_type() }
         };
         firestore.Collection("OnlineUser").Document(id).SetAsync(search_data);
     }
@@ -599,16 +599,42 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
     #region EVENT
     public void send_dailey_event()
     {
-        int heart = 20;
+        int heart = 10;
 
         if (data_manager.my_rating == RATING.VIP)
         {
-            heart += 30;
+            heart += 15;
+        }
+
+        string title = "";
+
+        switch (DataManager.instance.language)
+        {
+            case 0:
+                {
+                    title = "ì¼ì¼ ì¶œì„ ì´ë²¤íŠ¸ ë³´ìƒ";
+                }
+                break;
+            case 1:
+                {
+                    title = "æ¯æ—¥ã®å‡ºå¸­ã‚¤ãƒ™ãƒ³ãƒˆã®å ±é…¬";
+                }
+                break;
+            case 2:
+                {
+                    title = "Daily Attendance Event Rewards";
+                }
+                break;
+            case 3:
+                {
+                    title = "æ¯æ—¥å‡ºå¸­æ´»åŠ¨å¥–åŠ±";
+                }
+                break;
         }
 
         Dictionary<string, object> reward = new Dictionary<string, object>
         {
-            { "Main", "ÀÏÀÏ Ãâ¼® ÀÌº¥Æ® º¸»ó" },
+            { "Main", title },
             { "Reward", EVENT_ITEM.HEART.ToString() },
             { "RewardCount", heart },
             { "Deadline", DateTime.UtcNow.AddDays(3) }
@@ -953,7 +979,7 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
     #endregion
 
     #region REPLAY
-    //È­Æ©ºê¿¡ ¾÷·ÎµåµÇ¾î ÀÖ´Â ±â·ÏµéÀ» ¿øÇÏ´Â Å¸ÀÔ¿¡ µû¶ó Á¤·ÄÇÏ¿© ·ÎµåÇÑ´Ù.
+    //í™”íŠœë¸Œì— ì—…ë¡œë“œë˜ì–´ ìˆëŠ” ê¸°ë¡ë“¤ì„ ì›í•˜ëŠ” íƒ€ì…ì— ë”°ë¼ ì •ë ¬í•˜ì—¬ ë¡œë“œí•œë‹¤.
     public void load_omoktube_data(string type, Callback callback)
     {
         switch (type)
@@ -1109,7 +1135,7 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
         }
     }
 
-    //Ä£±¸°¡ ¾÷·ÎµåÇÑ ±â·ÏµéÀ» °¡Á®¿Â´Ù.
+    //ì¹œêµ¬ê°€ ì—…ë¡œë“œí•œ ê¸°ë¡ë“¤ì„ ê°€ì ¸ì˜¨ë‹¤.
     public IEnumerator load_friend_omoktube_data(List<string> friends_id_list)
     {
         bool end = false;
@@ -1351,7 +1377,7 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
 #region ANALYTICS
     public static void AnalyticsLog(string msg, string param, string param_val)
     {
-        if (param != null || param == "")
+        if (param == null || param == "" || param_val == null || param_val == "")
         {
             FirebaseAnalytics.LogEvent(msg);
         }

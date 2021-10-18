@@ -57,6 +57,7 @@ public class FriendManager : SingletonMonobehaviour<FriendManager>
     {
         if (ready)
         {
+            FirebaseManager.AnalyticsLog("accept_invite_friend", null, null);
             if (DataManager.instance.my_friend_id_list.Count < 10)
             {
                 ready = false;
@@ -78,6 +79,7 @@ public class FriendManager : SingletonMonobehaviour<FriendManager>
     {
         if (ready)
         {
+            FirebaseManager.AnalyticsLog("reject_invite_friend", null, null);
             ready = false;
 
             friend_key = key;
@@ -142,9 +144,33 @@ public class FriendManager : SingletonMonobehaviour<FriendManager>
         }
         else
         {
-            //Debug.Log(SystemInfo.operatingSystem);
-            StartCoroutine(check_friend_page(string.Format("https://okgostop.kr/55/friend/KOREAFriends.html?AccountID={0}&Gender={1}&Name={2}&Old={3}&Tier={4}&Country={5}",
-                DataManager.instance.accountID, DataManager.instance.my_gender.ToString(), DataManager.instance.my_name, DataManager.instance.my_old.ToString(), DataManager.instance.my_tier.ToString(), DataManager.instance.my_country.ToString())));
+            switch (DataManager.instance.language)
+            {
+                case 0:
+                    {
+                        StartCoroutine(check_friend_page(string.Format("https://okgostop.kr/55/friend/KOREAFriends.html?AccountID={0}&Gender={1}&Name={2}&Old={3}&Tier={4}&Country={5}",
+                            DataManager.instance.accountID, DataManager.instance.my_gender.ToString(), DataManager.instance.my_name, DataManager.instance.my_old.ToString(), DataManager.instance.my_tier.ToString(), DataManager.instance.my_country.ToString())));
+                    }
+                    break;
+                case 1:
+                    {
+                        StartCoroutine(check_friend_page(string.Format("https://okgostop.kr/55/friend/JAPANFriends.html?AccountID={0}&Gender={1}&Name={2}&Old={3}&Tier={4}&Country={5}",
+                            DataManager.instance.accountID, DataManager.instance.my_gender.ToString(), DataManager.instance.my_name, DataManager.instance.my_old.ToString(), DataManager.instance.my_tier.ToString(), DataManager.instance.my_country.ToString())));
+                    }
+                    break;
+                case 2:
+                    {
+                        StartCoroutine(check_friend_page(string.Format("https://okgostop.kr/55/friend/KOREAFriends.html?AccountID={0}&Gender={1}&Name={2}&Old={3}&Tier={4}&Country={5}",
+                            DataManager.instance.accountID, DataManager.instance.my_gender.ToString(), DataManager.instance.my_name, DataManager.instance.my_old.ToString(), DataManager.instance.my_tier.ToString(), DataManager.instance.my_country.ToString())));
+                    }
+                    break;
+                case 3:
+                    {
+                        StartCoroutine(check_friend_page(string.Format("https://okgostop.kr/55/friend/CHINAFriends.html?AccountID={0}&Gender={1}&Name={2}&Old={3}&Tier={4}&Country={5}",
+                            DataManager.instance.accountID, DataManager.instance.my_gender.ToString(), DataManager.instance.my_name, DataManager.instance.my_old.ToString(), DataManager.instance.my_tier.ToString(), DataManager.instance.my_country.ToString())));
+                    }
+                    break;
+            }
         }
     }
 

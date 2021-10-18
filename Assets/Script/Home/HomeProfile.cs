@@ -19,6 +19,6 @@ public class HomeProfile : MonoBehaviour
         country_text.text = Converter.country_to_string(DataManager.instance.my_country);
         old_text.text = Converter.old_to_string(DataManager.instance.my_old);
         gender_text.text = Converter.gender_to_string(DataManager.instance.my_gender);
-        heart_text.text = DataManager.instance.my_heart + "°³";
+        heart_text.text = DataManager.instance.my_heart + "";
     }
 }

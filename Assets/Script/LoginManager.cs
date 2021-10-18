@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Text;
 using System.Collections;
 using System.Threading.Tasks;
@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Google;
 
 public class LoginManager : SingletonMonobehaviour<LoginManager>
 {
@@ -32,22 +33,37 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
     public GameObject account_create_popup;
     public Text account_create_popup_text;
 
+    public GameObject google_login_panel;
+    public Text google_login_text;
+
+    string web_clientId = "91721955365-9kn4dpcfvk00lvct4nb26tt595epuije.apps.googleusercontent.com";
+    private GoogleSignInConfiguration configuration;
+
     string account;
+
+    public bool select_language;
 
     bool login = false;
 
     void Start()
     {
-        //Ä«Ä«¿À ¿¬µ¿½Ã Ä«Ä«¿À Å°¸¦ ¹Ş±â À§ÇÑ ÄÚµå
+        //ì¹´ì¹´ì˜¤ ì—°ë™ì‹œ ì¹´ì¹´ì˜¤ í‚¤ë¥¼ ë°›ê¸° ìœ„í•œ ì½”ë“œ
         androidJavaObject = new AndroidJavaObject("com.RimeFox.omock_game.Kakao_Plugin");
         androidJavaObject.Call("Global");
+
+        //êµ¬ê¸€ ë¡œê·¸ì¸
+        configuration = new GoogleSignInConfiguration
+        {
+            RequestIdToken = true,
+            WebClientId = web_clientId
+        };
     }
 
     public void check_login()
     {
 #if FALSE//DEVELOPMENT_BUILD//UNITY_EDITOR || DEVELOPMENT_BUILD
         DataManager.instance.accountID = SystemInfo.deviceUniqueIdentifier;
-        DataManager.instance.my_country = "´ëÇÑ¹Î±¹";
+        DataManager.instance.my_country = "ëŒ€í•œë¯¼êµ­";
         check_user_set_data();
         //SceneManager.LoadScene("HomeScene");
 #else
@@ -58,9 +74,14 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
     bool complete = false;
     public IEnumerator check_login_start()
     {
-        //·Î±×ÀÎ ÇÊ¿ä
+        //ë¡œê·¸ì¸ í•„ìš”
         if (DataManager.instance.accountID == "" || DataManager.instance.accountID == null)
         {
+            select_language = false;
+            LanguageManager.instance.on_select_language_page();
+
+            yield return new WaitUntil(() => select_language);
+
             StartServiceManager.instance.On();
             on_login_page();
         }
@@ -117,12 +138,41 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
 
         if (InputID.text == "" || InputPw.text == "")
         {
-            //¾ÆÀÌµğ¿Í ÆĞ½º¿öµå¸¦ ÀÔ·ÂÇÏ¶ó´Â ÆË¾÷À» ¶ç¿öÁØ´Ù.
+            //ì•„ì´ë””ì™€ íŒ¨ìŠ¤ì›Œë“œë¥¼ ì…ë ¥í•˜ë¼ëŠ” íŒì—…ì„ ë„ì›Œì¤€ë‹¤.
             login_popup.SetActive(true);
-            login_popup_text.text = "¾ÆÀÌµğ¿Í ºñ¹Ğ¹øÈ£¸¦\nÀÔ·ÂÇØÁÖ¼¼¿ä";
+
+            switch (DataManager.instance.language)
+            {
+                case 0:
+                    {
+                        login_popup_text.text = "ì•„ì´ë””ì™€ ë¹„ë°€ë²ˆí˜¸ë¥¼\nì…ë ¥í•´ì£¼ì„¸ìš”";
+                    }
+                    break;
+
+                case 1:
+                    {
+                        login_popup_text.text = "ãƒ¦ãƒ¼ã‚¶åã¨ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„";
+                    }
+                    break;
+
+                case 2:
+                    {
+                        login_popup_text.text = "Please enter your ID and password";
+                    }
+                    break;
+
+                case 3:
+                    {
+                        login_popup_text.text = "è¯·è¾“å…¥æ‚¨çš„IDå’Œå¯†ç ";
+                    }
+                    break;
+            }
+
             login = false;
             return;
         }
+
+        FirebaseManager.AnalyticsLog("account_login", null, null);
 
         account = InputID.text;
         FirebaseManager.instance.check_account_login(InputID.text, InputPw.text, login_result);
@@ -132,7 +182,7 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
     {
         switch (result)
         {
-            //·Î±×ÀÎ ¼º°ø ½Ã
+            //ë¡œê·¸ì¸ ì„±ê³µ ì‹œ
             case 1:
                 {
                     login_select_panel.SetActive(false);
@@ -141,13 +191,39 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
                 }
                 break;
 
-            //·Î±×ÀÎ ½ÇÆĞ ½Ã
+            //ë¡œê·¸ì¸ ì‹¤íŒ¨ ì‹œ
             case 2:
                 {
                     login = false;
                     account = "";
                     login_popup.SetActive(true);
-                    login_popup_text.text = "Á¸ÀçÇÏÁö ¾Ê´Â\n¾ÆÀÌµğ ÀÔ´Ï´Ù";
+
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                login_popup_text.text = "ì¡´ì¬í•˜ì§€ ì•ŠëŠ”\nì•„ì´ë””ì…ë‹ˆë‹¤";
+                            }
+                            break;
+
+                        case 1:
+                            {
+                                login_popup_text.text = "å­˜åœ¨ã—ãªã„IDã§ã™";
+                            }
+                            break;
+
+                        case 2:
+                            {
+                                login_popup_text.text = "ID does not exist";
+                            }
+                            break;
+
+                        case 3:
+                            {
+                                login_popup_text.text = "èº«ä»½è¯ä¸å­˜åœ¨";
+                            }
+                            break;
+                    }
                 }
                 break;
 
@@ -156,7 +232,33 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
                     login = false;
                     account = "";
                     login_popup.SetActive(true);
-                    login_popup_text.text = "Àß¸øµÈ ºñ¹Ğ¹øÈ£¸¦\nÀÔ·ÂÇÏ¿´½À´Ï´Ù";
+
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                login_popup_text.text = "ì˜ëª»ëœ ë¹„ë°€ë²ˆí˜¸ë¥¼\nì…ë ¥í•˜ì˜€ìŠµë‹ˆë‹¤";
+                            }
+                            break;
+
+                        case 1:
+                            {
+                                login_popup_text.text = "é–“é•ã£ãŸãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’å…¥åŠ›ã—ã¾ã—ãŸ";
+                            }
+                            break;
+
+                        case 2:
+                            {
+                                login_popup_text.text = "Entered an incorrect password";
+                            }
+                            break;
+
+                        case 3:
+                            {
+                                login_popup_text.text = "æ‚¨è¾“å…¥äº†é”™è¯¯çš„å¯†ç ";
+                            }
+                            break;
+                    }
                 }
                 break;
 
@@ -176,6 +278,7 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
 
     public void success_login()
     {
+        FirebaseManager.AnalyticsLog("account_login_success", null, null);
         StartCoroutine(get_accounID(account));
     }
 
@@ -274,7 +377,32 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
                 break;
             case 2:
                 {
-                    account_create_popup_text.text = "»ç¿ëÇÒ ¼ö ¾ø´Â\n¾ÆÀÌµğ ÀÔ´Ï´Ù.";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                account_create_popup_text.text = "ì‚¬ìš©í•  ìˆ˜ ì—†ëŠ”\nì•„ì´ë”” ì…ë‹ˆë‹¤.";
+                            }
+                            break;
+
+                        case 1:
+                            {
+                                account_create_popup_text.text = "ä½¿ç”¨ã§ããªã„IDã§ã™ã€‚";
+                            }
+                            break;
+
+                        case 2:
+                            {
+                                account_create_popup_text.text = "Can not use this ID.";
+                            }
+                            break;
+
+                        case 3:
+                            {
+                                account_create_popup_text.text = "æ‚¨ä¸èƒ½ä½¿ç”¨æ­¤ ID";
+                            }
+                            break;
+                    }
                     account_create_popup.SetActive(true);
                 }
                 break;
@@ -316,7 +444,33 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
         }
         else
         {
-            account_create_popup_text.text = "¾ÆÀÌµğ¿Í ºñ¹Ğ¹øÈ£ È®ÀÎÀÌ\nÇÊ¿äÇÕ´Ï´Ù.";
+            switch (DataManager.instance.language)
+            {
+                case 0:
+                    {
+                        account_create_popup_text.text = "ì•„ì´ë””ì™€ ë¹„ë°€ë²ˆí˜¸ í™•ì¸ì´ í•„ìš”í•©ë‹ˆë‹¤.";
+                    }
+                    break;
+
+                case 1:
+                    {
+                        account_create_popup_text.text = "ãƒ¦ãƒ¼ã‚¶åã¨ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã®ç¢ºèªãŒå¿…è¦ã§ã™ã€‚";
+                    }
+                    break;
+
+                case 2:
+                    {
+                        account_create_popup_text.text = "ID and password confirmation is required.";
+                    }
+                    break;
+
+                case 3:
+                    {
+                        account_create_popup_text.text = "éœ€è¦IDå’Œå¯†ç ç¡®è®¤ã€‚";
+                    }
+                    break;
+            }
+
             account_create_popup.SetActive(true);
         }
     }
@@ -329,7 +483,33 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
                 {
                     close_create_account_panel();
 
-                    account_create_popup_text.text = "°èÁ¤ÀÌ ¼º°øÀûÀ¸·Î\n»ı¼ºµÇ¾ú½À´Ï´Ù";
+                    switch (DataManager.instance.language)
+                    {
+                        case 0:
+                            {
+                                account_create_popup_text.text = "ê³„ì •ì´ ì„±ê³µì ìœ¼ë¡œ\nìƒì„±ë˜ì—ˆìŠµë‹ˆë‹¤";
+                            }
+                            break;
+
+                        case 1:
+                            {
+                                account_create_popup_text.text = "ã‚¢ã‚«ã‚¦ãƒ³ãƒˆãŒæ­£å¸¸ã«ä½œæˆã•ã‚Œã¾ã—ãŸ";
+                            }
+                            break;
+
+                        case 2:
+                            {
+                                account_create_popup_text.text = "Your account has been successfully created";
+                            }
+                            break;
+
+                        case 3:
+                            {
+                                account_create_popup_text.text = "æ‚¨çš„å¸æˆ·å·²ç»åˆ›å»ºæˆåŠŸ";
+                            }
+                            break;
+                    }
+
                     account_create_popup.SetActive(true);
                 }
                 break;
@@ -355,6 +535,8 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
             return;
         }
 
+        FirebaseManager.AnalyticsLog("kakao_login", null, null);
+
         Debug.Log("KakaoLogin");
         login = true;
         androidJavaObject.Call("Login", new KakaoCallback());
@@ -374,10 +556,118 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
 
     public void success_kakao_login(string kakao_account)
     {
+        FirebaseManager.AnalyticsLog("kakao_login_success", null, null);
         Debug.Log("success_kakao_login");
         login_select_panel.SetActive(false);
         account = kakao_account;
         StartCoroutine(get_accounID(kakao_account));
+    }
+    #endregion
+
+    #region GOOGLE
+    public void google_login()
+    {
+        FirebaseManager.AnalyticsLog("google_login", null, null);
+
+        GoogleSignIn.Configuration = configuration;
+        GoogleSignIn.Configuration.UseGameSignIn = false;
+        GoogleSignIn.Configuration.RequestIdToken = true;
+
+        google_login_panel.SetActive(true);
+        AddStatusText("Calling SignIn");
+
+        GoogleSignIn.DefaultInstance.SignIn().ContinueWith(OnAuthenticationFinished);
+    }
+
+    public void google_logout()
+    {
+        AddStatusText("Calling SignOut");
+        GoogleSignIn.DefaultInstance.SignOut();
+    }
+
+    public void OnDisconnect()
+    {
+        AddStatusText("Calling Disconnect");
+        GoogleSignIn.DefaultInstance.Disconnect();
+    }
+
+    internal void OnAuthenticationFinished(Task<GoogleSignInUser> task)
+    {
+        if (task.IsFaulted)
+        {
+            using (IEnumerator<Exception> enumerator = task.Exception.InnerExceptions.GetEnumerator())
+            {
+                if (enumerator.MoveNext())
+                {
+                    GoogleSignIn.SignInException error = (GoogleSignIn.SignInException)enumerator.Current;
+                    AddStatusText(web_clientId + "\n Got Error: " + error.Status + " " + error.Message + "\n" + error.Data);
+
+                    FirebaseManager.AnalyticsLog("google_login_error", null, null);
+                }
+                else
+                {
+                    AddStatusText("Got Unexpected Exception?!?" + task.Exception);
+                    FirebaseManager.AnalyticsLog("google_login_error", null, null);
+                }
+            }
+        }
+        else if (task.IsCanceled)
+        {
+            AddStatusText("Canceled");
+            FirebaseManager.AnalyticsLog("google_login_error", null, null);
+        }
+        else
+        {
+            AddStatusText("Wellcome!\n" + task.Result.DisplayName);
+
+            get_google_account(task.Result.UserId);
+        }
+    }
+
+    public void OnSignInSilently()
+    {
+        GoogleSignIn.Configuration = configuration;
+        GoogleSignIn.Configuration.UseGameSignIn = false;
+        GoogleSignIn.Configuration.RequestIdToken = true;
+        AddStatusText("Calling SignIn Silently");
+
+        GoogleSignIn.DefaultInstance.SignInSilently().ContinueWith(OnAuthenticationFinished);
+    }
+
+
+    public void OnGamesSignIn()
+    {
+        GoogleSignIn.Configuration = configuration;
+        GoogleSignIn.Configuration.UseGameSignIn = true;
+        GoogleSignIn.Configuration.RequestIdToken = false;
+
+        AddStatusText("Calling Games SignIn");
+
+        GoogleSignIn.DefaultInstance.SignIn().ContinueWith(OnAuthenticationFinished);
+    }
+
+    private List<string> messages = new List<string>();
+    void AddStatusText(string text)
+    {
+        if (messages.Count == 5)
+        {
+            messages.RemoveAt(0);
+        }
+        messages.Add(text);
+        string txt = "";
+        foreach (string s in messages)
+        {
+            txt += "\n" + s;
+        }
+        google_login_text.text = txt;
+    }
+
+    void get_google_account(string google_id)
+    {
+        FirebaseManager.AnalyticsLog("google_login_success", null, null);
+
+        google_login_panel.SetActive(false);
+        StartCoroutine(get_accounID(google_id));
     }
     #endregion
 
@@ -473,7 +763,9 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
 
     public void complete_login()
     {
-        Debug.Log("complete_login");
+        Debug.Log("complete login");
+
+        FirebaseManager.AnalyticsLog("complete_login", null, null);
 
         FirebaseManager.instance.get_notice_token();
 

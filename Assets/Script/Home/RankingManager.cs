@@ -16,7 +16,31 @@ public class RankingManager : MonoBehaviour
         else
         {
             FirebaseManager.instance.offline();
-            StartCoroutine(check_rankingBoard("https://okgostop.kr/55/ranking/KOREAranking.html?AccountID=" + DataManager.instance.accountID));
+
+            switch (DataManager.instance.language)
+            {
+                case 0:
+                    {
+                        StartCoroutine(check_rankingBoard("https://okgostop.kr/55/ranking/KOREAranking.html?AccountID=" + DataManager.instance.accountID));
+                    }
+                    break;
+                case 1:
+                    {
+                        StartCoroutine(check_rankingBoard("https://okgostop.kr/55/ranking/JAPANranking.html?AccountID=" + DataManager.instance.accountID));
+                    }
+                    break;
+                case 2:
+                    {
+                        StartCoroutine(check_rankingBoard("https://okgostop.kr/55/ranking/KOREAranking.html?AccountID=" + DataManager.instance.accountID));
+                    }
+                    break;
+                case 3:
+                    {
+                        StartCoroutine(check_rankingBoard("https://okgostop.kr/55/ranking/CHINAranking.html?AccountID=" + DataManager.instance.accountID));
+                    }
+                    break;
+            }
+
         }
     }
 
