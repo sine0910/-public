@@ -67,6 +67,9 @@ public class MultiPlayManager : SingletonMonobehaviour<MultiPlayManager>
         }
 
         StartCoroutine(FirestoreHandleValueChangedForChatting());
+
+        MultiSendManager.instance.on_awake(host);
+        UIManager.instance.ui_start();
     }
 
     public void ProtocolToGameRoom(string msg)//호스트에게 보내는 메세지
@@ -596,34 +599,37 @@ public class MultiPlayManager : SingletonMonobehaviour<MultiPlayManager>
     {
         try
         {
-            Chat chat_data = chat_list.Dequeue();
-
-            if (chat_data.player_index == 0)
+            if (chat_list.Count != 0)
             {
-                ChatArea chat = Instantiate(my_chat_prefab).GetComponent<ChatArea>();
-                chat.transform.parent = chat_panel.transform.Find("Scroll View/Viewport/Content");
-                chat.transform.localScale = new Vector3(1, 1, 1);
-                chatManager.chat_List.Add(chat);
-                chat.set_msg(chat_data.msg);
-            }
-            else
-            {
-                ChatArea chat = Instantiate(other_chat_prefab).GetComponent<ChatArea>();
-                chat.transform.parent = chat_panel.transform.Find("Scroll View/Viewport/Content");
-                chat.transform.localScale = new Vector3(1, 1, 1);
-                chatManager.chat_List.Add(chat);
-                chat.set_msg(chat_data.msg);
+                Chat chat_data = chat_list.Dequeue();
 
-                if (!on_chat && DataManager.instance.preview == 1)
+                if (chat_data.player_index == 0)
                 {
-                    PreviewChat preview = Instantiate(preview_chat_prefab).GetComponent<PreviewChat>();
-                    preview.transform.parent = preview_panel.transform;
-                    preview.transform.localScale = new Vector3(1, 1, 1);
-                    preview.transform.localPosition = new Vector3(0, 0, 0);
-                    preview.set(chat_data.msg);
+                    ChatArea chat = Instantiate(my_chat_prefab).GetComponent<ChatArea>();
+                    chat.transform.parent = chat_panel.transform.Find("Scroll View/Viewport/Content");
+                    chat.transform.localScale = new Vector3(1, 1, 1);
+                    chatManager.chat_List.Add(chat);
+                    chat.set_msg(chat_data.msg);
                 }
+                else
+                {
+                    ChatArea chat = Instantiate(other_chat_prefab).GetComponent<ChatArea>();
+                    chat.transform.parent = chat_panel.transform.Find("Scroll View/Viewport/Content");
+                    chat.transform.localScale = new Vector3(1, 1, 1);
+                    chatManager.chat_List.Add(chat);
+                    chat.set_msg(chat_data.msg);
+
+                    if (!on_chat && DataManager.instance.preview == 1)
+                    {
+                        PreviewChat preview = Instantiate(preview_chat_prefab).GetComponent<PreviewChat>();
+                        preview.transform.parent = preview_panel.transform;
+                        preview.transform.localScale = new Vector3(1, 1, 1);
+                        preview.transform.localPosition = new Vector3(0, 0, 0);
+                        preview.set(chat_data.msg);
+                    }
+                }
+                chatManager.ChatSort();
             }
-            chatManager.ChatSort();
 
             scroll_to_bottom();
         }

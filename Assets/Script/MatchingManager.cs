@@ -50,9 +50,12 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 
     public string friend_accountID;
 
+    public int matching_score;
+
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
+        matching_score = 1;
     }
 
     public void matching_start()
@@ -67,6 +70,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
             FirebaseManager.AnalyticsLog("matching_start", null, null);
 
             matching = true;
+            matching_score = 2;
 
             FirebaseManager.instance.ready_to_matching(DataManager.instance.accountID);
 
@@ -164,12 +168,16 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
             select = true;
             if (DataManager.instance.my_heart > 0)
             {
+                matching_score = 3;
+
                 StopCoroutine(auto_select);
                 matching_info_page.SetActive(false);
                 FirebaseManager.instance.accept_multi_game(matching_key, matching_id);
             }
             else
             {
+                matching_score = 0;
+
                 GameManager.instance.on_empty_heart();
 
                 StopCoroutine(auto_select);
@@ -185,6 +193,8 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
         if (!select)
         {
             select = true;
+
+            matching_score = 0;
             StopCoroutine(auto_select);
             matching_info_page.SetActive(false);
             FirebaseManager.instance.reject_multi_game(matching_key, matching_id);
@@ -213,6 +223,8 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
         if (!select)
         {
             select = true;
+
+            matching_score = 0;
             matching_info_page.SetActive(false);
 
             FirebaseManager.instance.reject_multi_game(matching_key, matching_id);

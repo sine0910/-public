@@ -88,7 +88,7 @@ public class UIManager : SingletonMonobehaviour<UIManager>
         set_camera();
     }
 
-    void Start()
+    public void ui_start()
     {
         waiting_packets = new Queue<List<string>>();
 

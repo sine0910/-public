@@ -10,14 +10,16 @@ public class MultiSendManager : SingletonMonobehaviour<MultiSendManager>
     MultiGameRoom gameRoom;
     UIManager gameUI;
 
-    static bool host = false;
+    bool host = false;
 
-    void Awake()
+    public void on_awake(bool host_value)
     {
-        if (GameManager.instance.host)
+        if (host_value)
         {
+            host = true;
             gameRoom = new MultiGameRoom();
         }
+
         playManager = MultiPlayManager.instance;
     }
 

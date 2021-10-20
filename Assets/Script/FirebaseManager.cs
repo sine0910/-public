@@ -1310,6 +1310,20 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
             return;
         }
 
+        int score_val = 0;
+
+        try
+        {
+            string score = MatchingManager.instance.matching_score.ToString() + ((int)data_manager.my_tier).ToString() +
+                get_win_percent(data_manager.b_win_count + data_manager.w_win_count, data_manager.b_lose_count + data_manager.w_lose_count, data_manager.b_tie_count + data_manager.w_tie_count).ToString();
+
+            score_val = Converter.to_int(score);
+        }
+        catch (Exception e)
+        {
+            Debug.Log("Get OnlineUser score error! " + e);
+        }
+
         DocumentReference docRef = firestore.Collection("OnlineUser").Document(data_manager.accountID);
         Dictionary<string, object> user = new Dictionary<string, object>
         {
@@ -1318,9 +1332,24 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
             { "tier",  (int)data_manager.my_tier },
             { "time",  TimeStamp.GetUnixTimeStamp() },
             { "status", "0" },
-            { "score", 100 }
+            { "score", score_val }
         };
-        docRef.SetAsync(user);
+        docRef.SetAsync(user); 
+    }
+
+    public int get_win_percent(int win, int lose, int tie)
+    {
+        int value = 0;
+        if (win + lose + tie != 0)
+        {
+            float win_count = win;
+            float play_count = win + lose + tie;
+            float val = Convert.ToSingle(win_count / play_count * 100);
+            Debug.Log("get_win_percent value: " + val);
+            value = Convert.ToInt32(val);
+        }
+
+        return value;
     }
 
     public void offline()

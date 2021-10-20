@@ -39,8 +39,6 @@ public class HomeManager : SingletonMonobehaviour<HomeManager>
 
         player_set_game.SetActive(false);
 
-        FirebaseManager.instance.send_dailey_event();
-
         if (DataManager.instance.other_day)
         {
             DataManager.instance.other_day = false;

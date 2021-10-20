@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -85,28 +85,112 @@ public class OmoktubeRecordSlot : MonoBehaviour
         DateTime now_date = DateTime.Now;
         TimeSpan time_val = now_date - start_date;
 
-        if (time_val.Days > 0)
+        switch (DataManager.instance.language)
         {
-            if (time_val.Days > 365)
-            {
-                return (time_val.Days / 365) + "³â Àü";
-            }
-            else if (time_val.Days > 30)
-            {
-                return (time_val.Days / 30) + "´Ş Àü";
-            }
-            else
-            {
-                return time_val.Days + "ÀÏ Àü";
-            }
-        }
-        else if (time_val.Hours > 0)
-        {
-            return time_val.Hours + "½Ã°£ Àü";
-        }
-        else
-        {
-            return time_val.Minutes + "ºĞ Àü";
+            case 0:
+                {
+                    if (time_val.Days > 0)
+                    {
+                        if (time_val.Days > 365)
+                        {
+                            return (time_val.Days / 365) + "ë…„ ì „";
+                        }
+                        else if (time_val.Days > 30)
+                        {
+                            return (time_val.Days / 30) + "ë‹¬ ì „";
+                        }
+                        else
+                        {
+                            return time_val.Days + "ì¼ ì „";
+                        }
+                    }
+                    else if (time_val.Hours > 0)
+                    {
+                        return time_val.Hours + "ì‹œê°„ ì „";
+                    }
+                    else
+                    {
+                        return time_val.Minutes + "ë¶„ ì „";
+                    }
+                }
+            case 1:
+                {
+                    if (time_val.Days > 0)
+                    {
+                        if (time_val.Days > 365)
+                        {
+                            return (time_val.Days / 365) + "å¹´å‰";
+                        }
+                        else if (time_val.Days > 30)
+                        {
+                            return (time_val.Days / 30) + "ãƒ¶æœˆå‰";
+                        }
+                        else
+                        {
+                            return time_val.Days + "æ—¥å‰";
+                        }
+                    }
+                    else if (time_val.Hours > 0)
+                    {
+                        return time_val.Hours + "æ™‚é–“å‰";
+                    }
+                    else
+                    {
+                        return time_val.Minutes + "åˆ†å‰";
+                    }
+                }
+            case 2:
+                {
+                    if (time_val.Days > 0)
+                    {
+                        if (time_val.Days > 365)
+                        {
+                            return (time_val.Days / 365) + " year ago";
+                        }
+                        else if (time_val.Days > 30)
+                        {
+                            return (time_val.Days / 30) + " month ago";
+                        }
+                        else
+                        {
+                            return time_val.Days + " day ago";
+                        }
+                    }
+                    else if (time_val.Hours > 0)
+                    {
+                        return time_val.Hours + " hour ago";
+                    }
+                    else
+                    {
+                        return time_val.Minutes + " minute ago";
+                    }
+                }
+            default:
+                {
+                    if (time_val.Days > 0)
+                    {
+                        if (time_val.Days > 365)
+                        {
+                            return (time_val.Days / 365) + "å¹´å‰";
+                        }
+                        else if (time_val.Days > 30)
+                        {
+                            return (time_val.Days / 30) + "ä¸ªæœˆå‰";
+                        }
+                        else
+                        {
+                            return time_val.Days + "å¤©å‰";
+                        }
+                    }
+                    else if (time_val.Hours > 0)
+                    {
+                        return time_val.Hours + "å°æ—¶å‰";
+                    }
+                    else
+                    {
+                        return time_val.Minutes + "åˆ†é’Ÿå‰";
+                    }
+                }
         }
     }
 }

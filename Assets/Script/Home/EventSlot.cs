@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,13 +32,13 @@ public class EventSlot : MonoBehaviour
         this.item = _reward;
         this.item_count = _reward_count;
 
-        //ÃßÈÄ ¾ÆÀÌÅÛ¿¡ µû¶ó ÀÌ¹ÌÁö¸¦ °¡Á®¿À´Â ÇÔ¼ö¸¦ È£ÃâÇÏ¿© Ç¥½ÃÇÒ °Í
+        //ì¶”í›„ ì•„ì´í…œì— ë”°ë¼ ì´ë¯¸ì§€ë¥¼ ê°€ì ¸ì˜¤ëŠ” í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•˜ì—¬ í‘œì‹œí•  ê²ƒ
         switch (_reward)
         {
             case EVENT_ITEM.HEART:
                 {
                     this.result_image.sprite = Resources.Load<Sprite>("Image/heart");
-                    this.result_text.text = _reward_count + "°³";
+                    this.result_text.text = _reward_count + "";
                 }
                 break;
         }
@@ -49,17 +49,72 @@ public class EventSlot : MonoBehaviour
         TimeSpan time_val = _deadline - now_date;
         if (compare_val > 0)
         {
-            if (time_val.Days > 0)
+            switch (DataManager.instance.language)
             {
-                this.time_count_text.text = time_val.Days + "ÀÏ ÈÄ ¸¸·á";
-            }
-            else if (time_val.Hours > 0)
-            {
-                this.time_count_text.text = time_val.Hours + "½Ã°£ ÈÄ ¸¸·á";
-            }
-            else if (time_val.Minutes > 0)
-            {
-                this.time_count_text.text = time_val.Minutes + "ºĞ ÈÄ ¸¸·á";
+                case 0:
+                    {
+                        if (time_val.Days > 0)
+                        {
+                            this.time_count_text.text = time_val.Days + "ì¼ í›„ ë§Œë£Œ";
+                        }
+                        else if (time_val.Hours > 0)
+                        {
+                            this.time_count_text.text = time_val.Hours + "ì‹œê°„ í›„ ë§Œë£Œ";
+                        }
+                        else if (time_val.Minutes > 0)
+                        {
+                            this.time_count_text.text = time_val.Minutes + "ë¶„ í›„ ë§Œë£Œ";
+                        }
+                    }
+                    break;
+                case 1:
+                    {
+                        if (time_val.Days > 0)
+                        {
+                            this.time_count_text.text = time_val.Days + "æ—¥å¾Œã®æœ‰åŠ¹æœŸé™";
+                        }
+                        else if (time_val.Hours > 0)
+                        {
+                            this.time_count_text.text = time_val.Hours + "æ™‚é–“å¾Œã€æœ‰åŠ¹æœŸé™ãŒåˆ‡ã‚Œ";
+                        }
+                        else if (time_val.Minutes > 0)
+                        {
+                            this.time_count_text.text = time_val.Minutes + "åˆ†å¾Œã«æœ‰åŠ¹æœŸé™ãŒåˆ‡ã‚Œ";
+                        }
+                    }
+                    break;
+                case 2:
+                    {
+                        if (time_val.Days > 0)
+                        {
+                            this.time_count_text.text = "Expires in " + time_val.Days + " day";
+                        }
+                        else if (time_val.Hours > 0)
+                        {
+                            this.time_count_text.text = "Expires after " + time_val.Hours + " hour";
+                        }
+                        else if (time_val.Minutes > 0)
+                        {
+                            this.time_count_text.text = "Expires in " + time_val.Minutes + "minute";
+                        }
+                    }
+                    break;
+                case 3:
+                    {
+                        if (time_val.Days > 0)
+                        {
+                            this.time_count_text.text = time_val.Days + " å¤©ååˆ°æœŸ";
+                        }
+                        else if (time_val.Hours > 0)
+                        {
+                            this.time_count_text.text = time_val.Hours + " å°æ—¶ååˆ°æœŸ";
+                        }
+                        else if (time_val.Minutes > 0)
+                        {
+                            this.time_count_text.text = time_val.Minutes + " åˆ†é’Ÿååˆ°æœŸ";
+                        }
+                    }
+                    break;
             }
         }
     }
