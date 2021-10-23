@@ -5,16 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class AIPlayManager : SingletonMonobehaviour<AIPlayManager>
 {
-    // Start is called before the first frame update
     void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        AISendManager.instance.on_awake();
+        UIManager.instance.ui_start();
     }
 
     public void GameQuit()

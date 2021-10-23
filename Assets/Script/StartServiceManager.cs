@@ -239,7 +239,7 @@ public class StartServiceManager : SingletonMonobehaviour<StartServiceManager>
         if (!unityWebRequest.isDone || unityWebRequest.error != null || unityWebRequest.responseCode != 200)
         {
             Debug.Log("check_noticeBoard unityWebRequest error " + unityWebRequest.responseCode);
-            NetworkManager.Https_Error();
+            NetworkManager.Network_Error();
         }
         else
         {

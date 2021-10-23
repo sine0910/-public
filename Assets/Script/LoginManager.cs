@@ -278,6 +278,7 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
 
     public void success_login()
     {
+        Debug.Log("success_login " + account);
         FirebaseManager.AnalyticsLog("account_login_success", null, null);
         StartCoroutine(get_accounID(account));
     }
@@ -557,7 +558,7 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
     public void success_kakao_login(string kakao_account)
     {
         FirebaseManager.AnalyticsLog("kakao_login_success", null, null);
-        Debug.Log("success_kakao_login");
+        Debug.Log("success_kakao_login " + kakao_account);
         login_select_panel.SetActive(false);
         account = kakao_account;
         StartCoroutine(get_accounID(kakao_account));
@@ -583,12 +584,14 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
     {
         AddStatusText("Calling SignOut");
         GoogleSignIn.DefaultInstance.SignOut();
+         google_login_panel.SetActive(false);
     }
 
     public void OnDisconnect()
     {
         AddStatusText("Calling Disconnect");
         GoogleSignIn.DefaultInstance.Disconnect();
+        google_login_panel.SetActive(false);
     }
 
     internal void OnAuthenticationFinished(Task<GoogleSignInUser> task)
@@ -603,11 +606,13 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
                     AddStatusText(web_clientId + "\n Got Error: " + error.Status + " " + error.Message + "\n" + error.Data);
 
                     FirebaseManager.AnalyticsLog("google_login_error", null, null);
+                    google_login_panel.SetActive(false);
                 }
                 else
                 {
                     AddStatusText("Got Unexpected Exception?!?" + task.Exception);
                     FirebaseManager.AnalyticsLog("google_login_error", null, null);
+                    google_login_panel.SetActive(false);
                 }
             }
         }
@@ -615,6 +620,7 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
         {
             AddStatusText("Canceled");
             FirebaseManager.AnalyticsLog("google_login_error", null, null);
+            google_login_panel.SetActive(false);
         }
         else
         {
@@ -664,6 +670,8 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
 
     void get_google_account(string google_id)
     {
+        Debug.Log("get_google_account: " + google_id);
+
         FirebaseManager.AnalyticsLog("google_login_success", null, null);
 
         google_login_panel.SetActive(false);
@@ -673,10 +681,17 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
 
     IEnumerator get_accounID(string accounID)
     {
-        Debug.Log("get_accounID");
+        Debug.Log("get_accounID: " + accounID);
         DataManager.instance.save_my_account_data(accounID);
 
-        if (NetworkManager.Internet_Check())
+        if (NetworkManager.Internet_Error_Check())
+        {
+            Debug.Log("Internet_Error! : " + accounID);
+            //DataManager.instance.load_my_data();
+            //자신의 데이터에서 누락된 부분이 있는지 확인하고 설정하도록 한다.
+            //check_user_set_data();
+        }
+        else//인터넷이 정상일 경우 
         {
             FirebaseManager.instance.check_login_day();
             yield return new WaitUntil(() => FirebaseManager.check_login_end);
@@ -685,17 +700,14 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
 
             if (DataManager.instance.check_my_data() != 0)
             {
+                //서버에서 자신의 데이터를 가져오면서 로컬에 데이터를 저장한다.
                 FirebaseManager.instance.get_account_data(get_account_data_result);
             }
             else
             {
+                //자신의 데이터에서 누락된 부분이 있는지 확인하고 설정하도록 한다.
                 check_user_set_data();
-            }
-        }
-        else
-        {
-            DataManager.instance.load_my_data();
-            check_user_set_data();
+            } 
         }
     }
 

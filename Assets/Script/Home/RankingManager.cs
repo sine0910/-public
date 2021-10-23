@@ -55,7 +55,7 @@ public class RankingManager : MonoBehaviour
         if (!unityWebRequest.isDone || unityWebRequest.error != null || unityWebRequest.responseCode != 200)
         {
             Debug.Log("check_rankingBoard unityWebRequest error " + unityWebRequest.responseCode);
-            NetworkManager.Https_Error();
+            NetworkManager.Network_Error();
         }
         else
         {

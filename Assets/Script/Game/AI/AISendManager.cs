@@ -7,7 +7,7 @@ public class AISendManager : SingletonMonobehaviour<AISendManager>
     static AIGameRoom gameRoom;
     static UIManager gameUI;
 
-    public void Awake()
+    public void on_awake()
     {
         Debug.Log("AISendManager Start");
         gameRoom = new AIGameRoom();

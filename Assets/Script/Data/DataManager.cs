@@ -875,6 +875,7 @@ public class DataManager : SingletonMonobehaviour<DataManager>
         }
     }
 
+    //계정 로그아웃 클릭 시 호출
     public void account_logout()
     {
         BinaryFormatter bf = new BinaryFormatter();
@@ -882,7 +883,10 @@ public class DataManager : SingletonMonobehaviour<DataManager>
 
         account_data.acountID = "";
 
-        bf.Serialize(file, play_data);
+        //bf.Serialize(file, play_data);
+        //Account 정보를 초기화 후에 로컬에 저장한다. 
+        //Account정보가 있을 경우 재로그인 되기 때문에 정보 초기화
+        bf.Serialize(file, account_data);
         file.Close();
     }
 

@@ -185,7 +185,7 @@ public class FriendManager : SingletonMonobehaviour<FriendManager>
         if (!unityWebRequest.isDone || unityWebRequest.error != null || unityWebRequest.responseCode != 200)
         {
             Debug.Log("check_rankingBoard unityWebRequest error " + unityWebRequest.responseCode);
-            NetworkManager.Https_Error();
+            NetworkManager.Network_Error();
         }
         else
         {

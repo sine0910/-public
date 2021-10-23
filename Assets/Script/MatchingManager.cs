@@ -60,7 +60,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 
     public void matching_start()
     {
-        if (!NetworkManager.Internet_Check())
+        if (NetworkManager.Internet_Error_Check())
         {
             return;
         }
@@ -417,7 +417,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 
     public void friend_matching_start()
     {
-        if (!NetworkManager.Internet_Check())
+        if (NetworkManager.Internet_Error_Check())
         {
             return;
         }
