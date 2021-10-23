@@ -390,9 +390,9 @@ public class DataManager : SingletonMonobehaviour<DataManager>
         play_data.b_day_lose_count = b_day_lose_count;
         play_data.b_day_tie_count = b_day_tie_count;
 
-        play_data.w_win_count = w_win_count;
-        play_data.w_lose_count = w_lose_count;
-        play_data.w_tie_count = w_tie_count;
+        play_data.w_day_win_count = w_day_win_count;
+        play_data.w_day_lose_count = w_day_lose_count;
+        play_data.w_day_tie_count = w_day_tie_count;
 
         play_data.rating_score = rating_score;
 
@@ -634,7 +634,7 @@ public class DataManager : SingletonMonobehaviour<DataManager>
                     noticeToken = play_data.noticeToken;
 
                     my_name = play_data.my_name;
-                    my_rating = play_data.my_rating;
+                    my_rating = play_data.my_rating; 
                     my_country = play_data.my_country;
                     my_tier = play_data.my_tier;
                     my_gender = play_data.my_gender;
@@ -695,7 +695,10 @@ public class DataManager : SingletonMonobehaviour<DataManager>
         {
             set_default_data();
         }
+    }
 
+    public void get_rating_score()
+    {
         rating_score = ((b_win_count + w_win_count) * 2) + (b_tie_count + w_tie_count) - (b_lose_count + w_lose_count);
     }
 

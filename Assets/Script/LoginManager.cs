@@ -280,7 +280,7 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
     {
         Debug.Log("success_login " + account);
         FirebaseManager.AnalyticsLog("account_login_success", null, null);
-        StartCoroutine(get_accounID(account));
+        StartCoroutine(set_accounID(account));
     }
 
     public void CreateAccount()
@@ -561,11 +561,13 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
         Debug.Log("success_kakao_login " + kakao_account);
         login_select_panel.SetActive(false);
         account = kakao_account;
-        StartCoroutine(get_accounID(kakao_account));
+        StartCoroutine(set_accounID(kakao_account));
     }
     #endregion
 
     #region GOOGLE
+
+    IEnumerator google_callback;
     public void google_login()
     {
         FirebaseManager.AnalyticsLog("google_login", null, null);
@@ -574,9 +576,14 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
         GoogleSignIn.Configuration.UseGameSignIn = false;
         GoogleSignIn.Configuration.RequestIdToken = true;
 
+        //콜백을 받을 코루틴 함수를 호출시켜 콜백 대기 상태로 준비한다.
+        google_callback = check_get_google_account();
+        StartCoroutine(google_callback);
+
         google_login_panel.SetActive(true);
         AddStatusText("Calling SignIn");
 
+        //비동기로 구글 로그인 결과를 받는다.
         GoogleSignIn.DefaultInstance.SignIn().ContinueWith(OnAuthenticationFinished);
     }
 
@@ -596,33 +603,47 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
 
     internal void OnAuthenticationFinished(Task<GoogleSignInUser> task)
     {
-        if (task.IsFaulted)
+        if (task.IsFaulted || task.IsCanceled)//실패
         {
-            using (IEnumerator<Exception> enumerator = task.Exception.InnerExceptions.GetEnumerator())
+            if (task.IsFaulted)
             {
-                if (enumerator.MoveNext())
+                using (IEnumerator<Exception> enumerator = task.Exception.InnerExceptions.GetEnumerator())
                 {
-                    GoogleSignIn.SignInException error = (GoogleSignIn.SignInException)enumerator.Current;
-                    AddStatusText(web_clientId + "\n Got Error: " + error.Status + " " + error.Message + "\n" + error.Data);
+                    if (enumerator.MoveNext())
+                    {
+                        GoogleSignIn.SignInException error = (GoogleSignIn.SignInException)enumerator.Current;
+                        AddStatusText(web_clientId + "\n Got Error: " + error.Status + " " + error.Message + "\n" + error.Data);
 
-                    FirebaseManager.AnalyticsLog("google_login_error", null, null);
-                    google_login_panel.SetActive(false);
-                }
-                else
-                {
-                    AddStatusText("Got Unexpected Exception?!?" + task.Exception);
-                    FirebaseManager.AnalyticsLog("google_login_error", null, null);
-                    google_login_panel.SetActive(false);
+                        FirebaseManager.AnalyticsLog("google_login_error", null, null);
+                    }
+                    else
+                    {
+                        AddStatusText("Got Unexpected Exception?!?" + task.Exception);
+                        FirebaseManager.AnalyticsLog("google_login_error", null, null);
+                    }
                 }
             }
-        }
-        else if (task.IsCanceled)
-        {
-            AddStatusText("Canceled");
-            FirebaseManager.AnalyticsLog("google_login_error", null, null);
+            else
+            {
+                AddStatusText("Canceled");
+                FirebaseManager.AnalyticsLog("google_login_error", null, null);  
+            }
             google_login_panel.SetActive(false);
+
+            //초기화제거
+            if (google_callback != null)
+            {
+                StopCoroutine(google_callback);
+                google_callback = null;
+            }
         }
-        else
+        //else if (task.IsCanceled)//취소
+        //{
+        //    AddStatusText("Canceled");
+        //    FirebaseManager.AnalyticsLog("google_login_error", null, null);
+        //    google_login_panel.SetActive(false);
+        //}
+        else//정상일 경우
         {
             AddStatusText("Wellcome!\n" + task.Result.DisplayName);
 
@@ -675,11 +696,35 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
         FirebaseManager.AnalyticsLog("google_login_success", null, null);
 
         google_login_panel.SetActive(false);
-        StartCoroutine(get_accounID(google_id));
+
+        //비동기로 호출된 함수에서 구글 아이디 결과를 받아 임시 변수에 저장하고 콜백 대기용 변수를 변경한다.
+        google_user_id = google_id;
+        get_google_id = true;
+        //StartCoroutine(get_accounID(google_id));
+    }
+
+    bool get_google_id = false;
+    string google_user_id = "";
+
+    IEnumerator check_get_google_account()
+    {
+        //콜백 대기용 변수가 변경될 때까지 대기
+        yield return new WaitUntil(() => get_google_id);
+        //정상적으로 값을 받아왔는지 확인한 후에 다음으로 진행하거나 다시시도하게 관변 변수를 초기화하고 다시시도하게 한다.
+        if (google_user_id != "")
+        {
+            StartCoroutine(set_accounID(google_user_id));
+        }
+        else
+        {
+            get_google_id = false;
+            google_user_id = "";
+            NetworkManager.Network_Error();
+        }
     }
     #endregion
 
-    IEnumerator get_accounID(string accounID)
+    IEnumerator set_accounID(string accounID)
     {
         Debug.Log("get_accounID: " + accounID);
         DataManager.instance.save_my_account_data(accounID);
@@ -781,6 +826,7 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
 
         FirebaseManager.instance.get_notice_token();
 
+        DataManager.instance.get_rating_score();
         DataManager.instance.load_friend_data();
         DataManager.instance.load_notice_data();
         DataManager.instance.load_question_data();

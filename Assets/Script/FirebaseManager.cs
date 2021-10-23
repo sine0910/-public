@@ -216,7 +216,7 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
         {
             { "FirstLogin", DateTime.Now.ToString("yyyy-MM-dd") }
         };
-        batch.Set(my_ref, data);
+        batch.Set(my_ref, data, SetOptions.MergeAll);
 
         DocumentReference my_nuwbie_ref = firestore.Collection("Newbies").Document(data_manager.accountID);
         Dictionary<string, object> newbie_data = new Dictionary<string, object>
@@ -270,29 +270,32 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
                         data_manager.my_old = Converter.to_old((pairs["Old"].ToString()));
                         data_manager.my_gender = Converter.to_gender((pairs["Gender"].ToString()));
 
-                        data_manager.b_win_count = Converter.to_int((pairs["BlackWin"].ToString()));
-                        data_manager.b_lose_count = Converter.to_int((pairs["BlackLose"].ToString()));
-                        data_manager.b_tie_count = Converter.to_int((pairs["BlackTie"].ToString()));
+                        if ((pairs.ContainsKey("BlackWin") || pairs.ContainsKey("WhiteWin") || pairs.ContainsKey("WhiteWin")) && (pairs.ContainsKey("WhiteWin") || pairs.ContainsKey("WhiteWin") || pairs.ContainsKey("WhiteWin")))
+                        {
+                            data_manager.b_win_count = Converter.to_int((pairs["BlackWin"].ToString()));
+                            data_manager.b_lose_count = Converter.to_int((pairs["BlackLose"].ToString()));
+                            data_manager.b_tie_count = Converter.to_int((pairs["BlackTie"].ToString()));
 
-                        data_manager.w_win_count = Converter.to_int((pairs["WhiteWin"].ToString()));
-                        data_manager.w_lose_count = Converter.to_int((pairs["WhiteLose"].ToString()));
-                        data_manager.w_tie_count = Converter.to_int((pairs["WhiteTie"].ToString()));
+                            data_manager.w_win_count = Converter.to_int((pairs["WhiteWin"].ToString()));
+                            data_manager.w_lose_count = Converter.to_int((pairs["WhiteLose"].ToString()));
+                            data_manager.w_tie_count = Converter.to_int((pairs["WhiteTie"].ToString()));
 
-                        data_manager.b_month_win_count = Converter.to_int((pairs["BlackMonthWin"].ToString()));
-                        data_manager.b_month_lose_count = Converter.to_int((pairs["BlackMonthLose"].ToString()));
-                        data_manager.b_month_tie_count = Converter.to_int((pairs["BlackMonthTie"].ToString()));
+                            data_manager.b_month_win_count = Converter.to_int((pairs["BlackMonthWin"].ToString()));
+                            data_manager.b_month_lose_count = Converter.to_int((pairs["BlackMonthLose"].ToString()));
+                            data_manager.b_month_tie_count = Converter.to_int((pairs["BlackMonthTie"].ToString()));
 
-                        data_manager.w_month_win_count = Converter.to_int((pairs["WhiteMonthWin"].ToString()));
-                        data_manager.w_month_lose_count = Converter.to_int((pairs["WhiteMonthLose"].ToString()));
-                        data_manager.w_month_tie_count = Converter.to_int((pairs["WhiteMonthTie"].ToString()));
+                            data_manager.w_month_win_count = Converter.to_int((pairs["WhiteMonthWin"].ToString()));
+                            data_manager.w_month_lose_count = Converter.to_int((pairs["WhiteMonthLose"].ToString()));
+                            data_manager.w_month_tie_count = Converter.to_int((pairs["WhiteMonthTie"].ToString()));
 
-                        data_manager.b_day_win_count = Converter.to_int((pairs["BlackDayWin"].ToString()));
-                        data_manager.b_day_lose_count = Converter.to_int((pairs["BlackDayLose"].ToString()));
-                        data_manager.b_day_tie_count = Converter.to_int((pairs["BlackDayTie"].ToString()));
+                            data_manager.b_day_win_count = Converter.to_int((pairs["BlackDayWin"].ToString()));
+                            data_manager.b_day_lose_count = Converter.to_int((pairs["BlackDayLose"].ToString()));
+                            data_manager.b_day_tie_count = Converter.to_int((pairs["BlackDayTie"].ToString()));
 
-                        data_manager.w_day_win_count = Converter.to_int((pairs["WhiteDayWin"].ToString()));
-                        data_manager.w_day_lose_count = Converter.to_int((pairs["WhiteDayLose"].ToString()));
-                        data_manager.w_day_tie_count = Converter.to_int((pairs["WhiteDayTie"].ToString()));
+                            data_manager.w_day_win_count = Converter.to_int((pairs["WhiteDayWin"].ToString()));
+                            data_manager.w_day_lose_count = Converter.to_int((pairs["WhiteDayLose"].ToString()));
+                            data_manager.w_day_tie_count = Converter.to_int((pairs["WhiteDayTie"].ToString()));
+                        }
 
                         if (pairs.ContainsKey("RatingScore"))
                         {
@@ -336,11 +339,11 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
             {
                 DocumentSnapshot snapshot = task.Result;
 
-                data_manager.login_time = DateTime.Now;
+                data_manager.login_time = DateTime.UtcNow.Add(TimeStamp.time_span);
 
                 Dictionary<string, object> updates = new Dictionary<string, object>
                 {
-                    { "Login", data_manager.login_time }
+                    { "Login", DateTime.UtcNow }
                 };
 
                 if (snapshot.Exists && snapshot.ContainsField("Login"))

@@ -44,6 +44,7 @@ public class NetworkManager : MonoBehaviour
 
     public static bool Internet_Error_Check()
     {
+        Debug.Log("Internet_Error_Check Application internetReachability: " + Application.internetReachability);
         if (Application.internetReachability == NetworkReachability.NotReachable)
         {
             Debug.Log("Internet_Error_Check Internet error");

@@ -566,6 +566,9 @@ public class UIManager : SingletonMonobehaviour<UIManager>
     {
         byte win = 0;
 
+        win_count++;
+        DataManager.instance.win(my_player_type);
+
         game_result.SetActive(true);
         game_result.GetComponent<GameResult>().on_result(win, send_message);
         game_result.GetComponent<GameResult>().on_play_limit_panel();
