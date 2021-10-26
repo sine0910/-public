@@ -378,7 +378,8 @@ public class EventManager : SingletonMonobehaviour<EventManager>
 
         event_slot_index = 0;
 
-        confirm_result_page.SetActive(false);
+        select = true;
+        confirm_result_page.SetActive(true);
     }
 
     public void close_confirm_result()
@@ -386,6 +387,7 @@ public class EventManager : SingletonMonobehaviour<EventManager>
         select = false;
         panel_contect();
         TierManager.instance.update_tier_check();
+        confirm_result_page.SetActive(false);
     }
 
     public void panel_contect()

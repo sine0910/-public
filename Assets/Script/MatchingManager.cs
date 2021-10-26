@@ -52,6 +52,9 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 
     public int matching_score;
 
+    public DateTime research_time;
+    public GameObject limit_research;
+
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
@@ -65,12 +68,27 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
             return;
         }
 
+        if (research_time != null)
+        {
+            //제한시간이 있을 경우 현재 시간과 제한 시간을 비교하여 제한시간을 넘었을 경우에만 신청한다.
+            int compair_val = DateTime.Compare(DateTime.UtcNow, research_time);
+            if (compair_val <= 0)
+            {
+                Debug.Log("research_limit_time not over");
+                on_limit_research();
+                return;
+            }
+        }
+
         if (!matching)
         {
             FirebaseManager.AnalyticsLog("matching_start", null, null);
 
             matching = true;
             matching_score = 2;
+
+            DataManager.instance.my_heart -= 1;
+            DataManager.instance.save_heart();
 
             FirebaseManager.instance.ready_to_matching(DataManager.instance.accountID);
 
@@ -116,6 +134,25 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
     }
 
     public void cancle_matching()
+    {
+        //사용자가 취소한 시간+3 분을 제한시간으로 설정한다.
+        research_time = DateTime.UtcNow.AddMinutes(3);
+        Debug.Log("현재 utc시간: " + DateTime.UtcNow + " 제한 시간: " + research_time);
+
+        if (check_ghost != null)
+        {
+            StopCoroutine(check_ghost);
+            check_ghost = null;
+        }
+        if (matching_id != "")
+        {
+            FirebaseManager.instance.cancle_multi_game(matching_key, matching_id);
+        }
+        matching_status_info_page.SetActive(false);
+        reset_status();
+    }
+
+    public void close_matching_popup()
     {
         if (check_ghost != null)
         {
@@ -329,6 +366,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
                 }
                 break;
         }
+        matching_status_info_page_button.onClick.AddListener(close_matching_popup);
         matching_status_info_page.SetActive(true);
     }
 
@@ -654,6 +692,16 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
             }
         });
     }
+
+    public void on_limit_research()
+    {
+        limit_research.SetActive(true);
+    }
+
+    public void close_limit_research()
+    {
+        limit_research.SetActive(false);
+    } 
 
     bool is_received(string data)
     {

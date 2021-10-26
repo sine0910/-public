@@ -174,6 +174,7 @@ public class DataManager : SingletonMonobehaviour<DataManager>
     {
         DontDestroyOnLoad(this.gameObject);
 
+        login_time = DateTime.MinValue;
         load_my_account();
     }
 
@@ -609,15 +610,6 @@ public class DataManager : SingletonMonobehaviour<DataManager>
     {
         Debug.Log("load_my_data");
 
-        if (other_day)
-        {
-            reset_day_data();
-        }
-        if (other_month)
-        {
-            reset_month_data();
-        }
-
         if (File.Exists(Application.persistentDataPath + "/" + accountID + "PlayFile.data"))
         {
             BinaryFormatter bf = new BinaryFormatter();
@@ -704,6 +696,14 @@ public class DataManager : SingletonMonobehaviour<DataManager>
 
     public void reset_day_data()
     {
+        b_day_win_count = 0;
+        b_day_lose_count = 0;
+        b_day_tie_count = 0;
+
+        w_day_win_count = 0;
+        w_day_lose_count = 0;
+        w_day_tie_count = 0;
+
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Create(Application.persistentDataPath + "/" + accountID + "PlayFile.data");
 
@@ -721,6 +721,14 @@ public class DataManager : SingletonMonobehaviour<DataManager>
 
     public void reset_month_data()
     {
+        b_month_win_count = 0;
+        b_month_lose_count = 0;
+        b_month_tie_count = 0;
+
+        w_month_win_count = 0;
+        w_month_lose_count = 0;
+        w_month_tie_count = 0;
+
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Create(Application.persistentDataPath + "/" + accountID + "PlayFile.data");
 

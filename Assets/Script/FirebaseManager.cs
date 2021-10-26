@@ -41,7 +41,7 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
                 {
                     return Firebase.FirebaseApp.CheckDependenciesAsync();
                 }).Unwrap();
-            }
+            } 
             else
             {
                 return checkTask;
@@ -52,9 +52,16 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
             if (dependencyStatus == Firebase.DependencyStatus.Available)
             {
                 // TODO: Continue with Firebase initialization.
-                Auth();
 
                 firestore = FirebaseFirestore.DefaultInstance;
+
+                //LogLevel을 디버그 모드로 설정
+                FirebaseFirestore.LogLevel = Firebase.LogLevel.Debug;
+                firestore.Settings.PersistenceEnabled = true;
+
+                Auth();
+
+
                 //database = FirebaseDatabase.DefaultInstance;
 
                 LoginManager.instance.check_login();
@@ -331,79 +338,177 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
     public static bool check_login_end;
     public void check_login_day()
     {
-        Debug.Log("check_login_day");
+        Debug.Log("check_login_day account: " + data_manager.accountID); 
         DocumentReference user_ref = firestore.Collection("Users").Document(data_manager.accountID);
-        firestore.RunTransactionAsync(transaction =>
+        user_ref.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
-            return transaction.GetSnapshotAsync(user_ref).ContinueWith((task) =>
+            if (task.IsCanceled || task.IsFaulted)
             {
-                DocumentSnapshot snapshot = task.Result;
-
-                data_manager.login_time = DateTime.UtcNow.Add(TimeStamp.time_span);
-
-                Dictionary<string, object> updates = new Dictionary<string, object>
+                Debug.Log("task.IsCanceled || task.IsFaulted " + task.Exception);
+            }
+            else
+            {
+                try
                 {
-                    { "Login", DateTime.UtcNow }
-                };
+                    DocumentSnapshot snapshot = task.Result;
+                    Debug.Log("get snapshot: " + snapshot.Id);
 
-                if (snapshot.Exists && snapshot.ContainsField("Login"))
-                {
-                    try
+                    data_manager.login_time = DateTime.UtcNow.Add(TimeStamp.time_span);
+
+                    if (snapshot.Exists && snapshot.ContainsField("Login"))
                     {
                         DateTime time = snapshot.GetValue<DateTime>("Login").Add(TimeStamp.time_span);
-
-                        Debug.Log("Login time: " + time.ToString("yyyy-MM-dd H:mm"));
-                        if (time.ToString("yyyy-MM-dd") != data_manager.login_time.ToString("yyyy-MM-dd"))
-                        {
-                            data_manager.other_day = true;
-
-                            if (time.ToString("yyyy-MM") != data_manager.login_time.ToString("yyyy-MM"))
-                            {
-                                data_manager.other_month = true;
-                            }
-                        }
+                        TimeStamp.compair_login_date(time);
                     }
-                    catch (Exception e)
+                    else
                     {
-                        Debug.LogError("snapshot.GetValue<DateTime>(Login).Add(TimeStamp.time_span) error: " + e);
                         data_manager.other_day = true;
                         data_manager.other_month = true;
                     }
+                    initialize_date_data();
                 }
-                else
+                catch (Exception e)
                 {
-                    data_manager.other_day = true;
-                    data_manager.other_month = true;
+                    Debug.Log("check_login_day Error: " + e);
                 }
-
-                if (data_manager.other_day)
-                {
-                    updates.Add("BlackDayWin", 0);
-                    updates.Add("BlackDayLose", 0);
-                    updates.Add("BlackDayTie", 0);
-                    updates.Add("WhiteDayWin", 0);
-                    updates.Add("WhiteDayLose", 0);
-                    updates.Add("WhiteDayTie", 0);
-
-                    updates.Add("DayWin", 0);
-                }
-                if (data_manager.other_month)
-                {
-                    updates.Add("BlackMonthWin", 0);
-                    updates.Add("BlackMonthLose", 0);
-                    updates.Add("BlackMonthTie", 0);
-                    updates.Add("WhiteMonthWin", 0);
-                    updates.Add("WhiteMonthLose", 0);
-                    updates.Add("WhiteMonthTie", 0);
-
-                    updates.Add("MonthWin", 0);
-                }
-
-                transaction.Set(user_ref, updates, SetOptions.MergeAll);
-                Debug.Log("check_login_end");
-                check_login_end = true;
-            });
+            }
         });
+
+        //firestore.RunTransactionAsync(transaction =>
+        //{
+        //    Debug.Log("on_transaction");
+        //    return transaction.GetSnapshotAsync(user_ref).ContinueWithOnMainThread((task) =>
+        //    {
+        //        Debug.Log("on_task");
+
+        //        try
+        //        {
+        //            DocumentSnapshot snapshot = task.Result;
+        //            Debug.Log("get snapshot: " + snapshot.Id);
+
+        //            if (TimeStamp.time_span == null)
+        //            {
+        //                Debug.Log("TimeStamp.time_span is null");
+        //                TimeStamp.time_span = TimeStamp.GetTimeSpan();
+        //            }
+
+        //            //data_manager.login_time = DateTime.Now;
+        //            data_manager.login_time = DateTime.UtcNow.Add(TimeStamp.time_span);
+
+        //            //
+        //            Dictionary<string, object> updates = new Dictionary<string, object>
+        //            {
+        //                //데이터를 받아올 때 등록한 시간이 안닌 Utc시간으로 가져오기 때문에 등록한 시간을 utc로 변경
+        //                //{ "Login", DateTime.Now }
+        //                { "Login", DateTime.UtcNow }
+        //            };
+
+        //            Debug.Log("DateTime.UtcNow");
+
+        //            if (snapshot.Exists && snapshot.ContainsField("Login"))
+        //            {
+        //                try
+        //                {
+        //                    DateTime time = snapshot.GetValue<DateTime>("Login").Add(TimeStamp.time_span);
+
+        //                    Debug.Log("Login time: " + time.ToString("yyyy-MM-dd H:mm"));
+        //                    if (time.ToString("yyyy-MM-dd") != data_manager.login_time.ToString("yyyy-MM-dd"))
+        //                    {
+        //                        data_manager.other_day = true;
+
+        //                        if (time.ToString("yyyy-MM") != data_manager.login_time.ToString("yyyy-MM"))
+        //                        {
+        //                            data_manager.other_month = true;
+        //                        }
+        //                    }
+        //                }
+        //                catch (Exception e)
+        //                {
+        //                    Debug.LogError("snapshot.GetValue<DateTime>(Login).Add(TimeStamp.time_span) error: " + e);
+        //                    data_manager.other_day = true;
+        //                    data_manager.other_month = true;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                Debug.Log("task");
+
+        //                data_manager.other_day = true;
+        //                data_manager.other_month = true;
+        //            }
+
+        //            if (data_manager.other_day)
+        //            {
+        //                updates.Add("BlackDayWin", 0);
+        //                updates.Add("BlackDayLose", 0);
+        //                updates.Add("BlackDayTie", 0);
+        //                updates.Add("WhiteDayWin", 0);
+        //                updates.Add("WhiteDayLose", 0);
+        //                updates.Add("WhiteDayTie", 0);
+
+        //                updates.Add("DayWin", 0);
+        //            }
+        //            if (data_manager.other_month)
+        //            {
+        //                updates.Add("BlackMonthWin", 0);
+        //                updates.Add("BlackMonthLose", 0);
+        //                updates.Add("BlackMonthTie", 0);
+        //                updates.Add("WhiteMonthWin", 0);
+        //                updates.Add("WhiteMonthLose", 0);
+        //                updates.Add("WhiteMonthTie", 0);
+
+        //                updates.Add("MonthWin", 0);
+        //            }
+
+        //            transaction.Set(user_ref, updates, SetOptions.MergeAll);
+        //            Debug.Log("check_login_end");
+        //            check_login_end = true;
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            Debug.Log("check_login_day Error: " + e);
+        //        }
+        //    });
+        //});
+    }
+
+    public void initialize_date_data()
+    {
+        Dictionary<string, object> updates = new Dictionary<string, object>
+        {
+            //데이터를 받아올 때 등록한 시간이 안닌 Utc시간으로 가져오기 때문에 등록한 시간을 utc로 변경
+            { "Login", DateTime.UtcNow }
+        };
+
+        if (data_manager.other_month)
+        {
+            data_manager.reset_month_data();
+
+            updates.Add("BlackMonthWin", 0);
+            updates.Add("BlackMonthLose", 0);
+            updates.Add("BlackMonthTie", 0);
+            updates.Add("WhiteMonthWin", 0);
+            updates.Add("WhiteMonthLose", 0);
+            updates.Add("WhiteMonthTie", 0);
+
+            updates.Add("MonthWin", 0);
+        }
+        if (data_manager.other_day)
+        {
+            data_manager.reset_day_data();
+            send_dailey_event();
+
+            updates.Add("BlackDayWin", 0);
+            updates.Add("BlackDayLose", 0);
+            updates.Add("BlackDayTie", 0);
+            updates.Add("WhiteDayWin", 0);
+            updates.Add("WhiteDayLose", 0);
+            updates.Add("WhiteDayTie", 0);
+
+            updates.Add("DayWin", 0);
+        }
+
+        firestore.Collection("Users").Document(data_manager.accountID).SetAsync(updates, SetOptions.MergeAll);
     }
 
     public void update_my_data()
@@ -446,7 +551,9 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
 
             { "RatingScore", data_manager.rating_score },
 
-            { "Heart", data_manager.my_heart }
+            { "Heart", data_manager.my_heart },
+
+            { "PlayTime", DateTime.Now }
         };
         firestore.Collection("Users").Document(data_manager.accountID).SetAsync(search_data, SetOptions.MergeAll);
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,18 +16,22 @@ public class HomeManager : SingletonMonobehaviour<HomeManager>
     public GameObject black_panel;
     public GameObject white_panel;
 
+    public GameObject multi_black_panel;
+    public GameObject multi_white_panel;
+
     public HomeProfile home_profile;
 
     GameObject game_quit_popup;
 
-    GameObject set_game_popup;
+    GameObject multi_set_game_popup;
 
     void Start()
     {
         Time.timeScale = 1;
 
         game_quit_popup = transform.Find("Quit_Game").gameObject;
-        set_game_popup = transform.Find("GameSetting").gameObject;
+
+        multi_set_game_popup = transform.Find("MultiSettingGame").gameObject;
 
         transform.Find("QuitButton").GetComponent<Button>().onClick.AddListener(on_quit_game_popup);
         //transform.Find("SetButton").GetComponent<Button>().onClick.AddListener(on_set_game_page);
@@ -34,25 +39,13 @@ public class HomeManager : SingletonMonobehaviour<HomeManager>
         transform.Find("Quit_Game/QuitGamePage/QuitButton").GetComponent<Button>().onClick.AddListener(quit_game);
         transform.Find("Quit_Game/QuitGamePage/NotQuitButton").GetComponent<Button>().onClick.AddListener(not_quit_game);
 
-        transform.Find("GameSetting/GameSetPage/LanguageButton").GetComponent<Button>().onClick.AddListener(set_language);
-        transform.Find("GameSetting/GameSetPage/CloseButton").GetComponent<Button>().onClick.AddListener(close_set_game_page);
-
         player_set_game.SetActive(false);
 
-        if (DataManager.instance.other_day)
-        {
-            DataManager.instance.other_day = false;
+        Home();
 
-            FirebaseManager.instance.send_dailey_event();
-        }
-
-        if (DataManager.instance.other_month)
-        {
-            DataManager.instance.other_month = false;
-        }
+        StartCoroutine(CheckLoginDate());
 
         FirebaseManager.instance.online();
-        Home();
 
         if (Recorder.instance.replay_record != null)
         {
@@ -66,6 +59,26 @@ public class HomeManager : SingletonMonobehaviour<HomeManager>
     public void Home()
     {
         home_profile.Set();
+    }
+
+    public IEnumerator CheckLoginDate()
+    {
+        if (DataManager.instance.login_time == null)
+        {
+            FirebaseManager.instance.check_login_day();
+        }
+        else
+        {
+            TimeStamp.compair_login_date(DataManager.instance.login_time);
+
+            if (DataManager.instance.other_day || DataManager.instance.other_month)
+            {
+                DataManager.instance.login_time = DateTime.UtcNow.Add(TimeStamp.time_span);
+            }
+
+            FirebaseManager.instance.initialize_date_data();
+        }
+        yield return 0;
     }
 
     public void AI()
@@ -101,12 +114,20 @@ public class HomeManager : SingletonMonobehaviour<HomeManager>
     public void on_player_set_game()
     {
         reset_player_setting();
-        player_set_game.SetActive(true);
+        if (game_type != 1)
+        {
+            player_set_game.SetActive(true);
+        }
+        else
+        {
+            multi_set_game_popup.SetActive(true);
+        }
     }
 
     public void close_player_set_game()
     {
         player_set_game.SetActive(false);
+        multi_set_game_popup.SetActive(false);
     }
 
     public void reset_player_setting()
@@ -114,6 +135,10 @@ public class HomeManager : SingletonMonobehaviour<HomeManager>
         player_select_type = byte.MaxValue;
         white_panel.SetActive(false);
         black_panel.SetActive(false);
+        multi_white_panel.SetActive(false);
+        multi_black_panel.SetActive(false);
+
+        player_select_black();
     }
 
     public void player_select_black()
@@ -134,15 +159,31 @@ public class HomeManager : SingletonMonobehaviour<HomeManager>
         {
             case 0:
                 {
-                    white_panel.SetActive(false);
-                    black_panel.SetActive(true);
+                    if (game_type != 1)
+                    {
+                        white_panel.SetActive(false);
+                        black_panel.SetActive(true);
+                    }
+                    else
+                    {
+                        multi_white_panel.SetActive(false);
+                        multi_black_panel.SetActive(true);
+                    }
                 }
                 break;
 
             case 1:
                 {
-                    black_panel.SetActive(false);
-                    white_panel.SetActive(true);
+                    if (game_type != 1)
+                    { 
+                        black_panel.SetActive(false);
+                        white_panel.SetActive(true);
+                    }
+                    else
+                    {
+                        multi_white_panel.SetActive(true);
+                        multi_black_panel.SetActive(false);
+                    }
                 }
                 break;
         }
@@ -209,21 +250,6 @@ public class HomeManager : SingletonMonobehaviour<HomeManager>
     void PlayFriendGame()
     {
         MatchingManager.instance.friend_matching_start();
-    }
-
-    void on_set_game_page()
-    {
-        set_game_popup.SetActive(true);
-    }
-
-    void close_set_game_page()
-    {
-        set_game_popup.SetActive(false);
-    }
-
-    public void set_language()
-    {
-
     }
 
     void on_quit_game_popup()

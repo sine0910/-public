@@ -52,4 +52,26 @@ public class TimeStamp : MonoBehaviour
         string time = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
         return time;
     }
+
+
+    public static void compair_login_date(DateTime before_login_time)
+    {
+        try
+        {
+            Debug.Log("before_login_time: " + before_login_time.ToString("yyyy-MM-dd H:mm"));
+            if (before_login_time.ToString("yyyy-MM") != DataManager.instance.login_time.ToString("yyyy-MM"))
+            {
+                DataManager.instance.other_day = true;
+                DataManager.instance.other_month = true;
+            }
+            else if (before_login_time.ToString("yyyy-MM-dd") != DataManager.instance.login_time.ToString("yyyy-MM-dd"))
+            {
+                DataManager.instance.other_day = true;
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("compair_login_date error: " + e);
+        }
+    }
 }

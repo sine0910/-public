@@ -87,11 +87,12 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
         }
         else
         {
-            if (Application.internetReachability != NetworkReachability.NotReachable)
+            if (Application.internetReachability == NetworkReachability.ReachableViaCarrierDataNetwork || Application.internetReachability == NetworkReachability.ReachableViaLocalAreaNetwork)
             {
-                FirebaseManager.instance.check_login_day();
+                //Debug.Log("Application.internetReachability != NetworkReachability.NotReachable");
+                //FirebaseManager.instance.check_login_day();
 
-                yield return new WaitUntil(() => FirebaseManager.check_login_end);
+                //yield return new WaitUntil(() => FirebaseManager.check_login_end);
 
                 DataManager.instance.load_my_data();
                 if (DataManager.instance.check_my_data() != 0)
@@ -738,9 +739,10 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
         }
         else//인터넷이 정상일 경우 
         {
-            FirebaseManager.instance.check_login_day();
-            yield return new WaitUntil(() => FirebaseManager.check_login_end);
-            FirebaseManager.check_login_end = false;
+            //FirebaseManager.instance.check_login_day();
+            //yield return new WaitUntil(() => FirebaseManager.check_login_end);
+            //FirebaseManager.check_login_end = false;
+
             DataManager.instance.load_my_data();
 
             if (DataManager.instance.check_my_data() != 0)
@@ -752,8 +754,9 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
             {
                 //자신의 데이터에서 누락된 부분이 있는지 확인하고 설정하도록 한다.
                 check_user_set_data();
-            } 
+            }
         }
+        yield return 0;
     }
 
     public void check_user_set_firebase_data()
