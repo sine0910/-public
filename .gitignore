@@ -1,5 +1,8 @@
 오목놀이.aab
 
+Assets/Localisation/
+Assets/AddressableAssetsData/
+Assets/StreamingAssets/
 Library/
 Temp/
 obj/
@@ -15,8 +18,8 @@ Assets/Firebase/
 Assets/Icons UI/
 Assets/Resources/
 Assets/XR/
-Assets/Localisation/
-Assets/AddressableAssetsData/
+Assets/Localisation
+Assets/AddressableAssetsData
 Packages/
 ProjectSettings/
 UserSettings/

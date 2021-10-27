@@ -59,13 +59,15 @@ public class TimeStamp : MonoBehaviour
         try
         {
             Debug.Log("before_login_time: " + before_login_time.ToString("yyyy-MM-dd H:mm"));
-            if (before_login_time.ToString("yyyy-MM") != DataManager.instance.login_time.ToString("yyyy-MM"))
+            if (before_login_time.ToString("yyyy-MM") != DateTime.UtcNow.Add(time_span).ToString("yyyy-MM"))
             {
+                Debug.Log("compair_login_date other_month");
                 DataManager.instance.other_day = true;
                 DataManager.instance.other_month = true;
             }
-            else if (before_login_time.ToString("yyyy-MM-dd") != DataManager.instance.login_time.ToString("yyyy-MM-dd"))
+            else if (before_login_time.ToString("yyyy-MM-dd") != DateTime.UtcNow.Add(time_span).ToString("yyyy-MM-dd"))
             {
+                Debug.Log("compair_login_date other_day");
                 DataManager.instance.other_day = true;
             }
         }

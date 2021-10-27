@@ -623,7 +623,9 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1485492160991232
-    m_Localized: Confirm
+    m_Localized: 'Con
+
+      firm'
     m_Metadata:
       m_Items: []
   - m_Id: 1486455777169408
@@ -736,6 +738,29 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 1861302097186816
     m_Localized: Reject
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4006019681390592
+    m_Localized: case of cancel, you cannot re-apply for 3 minutes.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4007215808811008
+    m_Localized: 'After canceling matching
+
+      It''s been less than 3 minutes.
+
+      Please
+      try again later'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4282454199406592
+    m_Localized: 'Confirm
+
+'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4291176082608128
+    m_Localized: When game
     m_Metadata:
       m_Items: []
   references:

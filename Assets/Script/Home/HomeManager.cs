@@ -63,20 +63,30 @@ public class HomeManager : SingletonMonobehaviour<HomeManager>
 
     public IEnumerator CheckLoginDate()
     {
-        if (DataManager.instance.login_time == null)
+        try
         {
-            FirebaseManager.instance.check_login_day();
-        }
-        else
-        {
-            TimeStamp.compair_login_date(DataManager.instance.login_time);
-
-            if (DataManager.instance.other_day || DataManager.instance.other_month)
+            //최초 로그인일 경우
+            if (DataManager.instance.login_time == null || DataManager.instance.login_time == DateTime.MinValue)
             {
-                DataManager.instance.login_time = DateTime.UtcNow.Add(TimeStamp.time_span);
+                Debug.Log("First Home Scene CheckLoginDate");
+                FirebaseManager.instance.check_login_day();
             }
+            else
+            {
+                Debug.Log("Home Scene CheckLoginDate");
+                TimeStamp.compair_login_date(DataManager.instance.login_time);
 
-            FirebaseManager.instance.initialize_date_data();
+                if (DataManager.instance.other_day || DataManager.instance.other_month)
+                {
+                    DataManager.instance.login_time = DateTime.UtcNow.Add(TimeStamp.time_span);
+                }
+
+                FirebaseManager.instance.initialize_date_data();
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.Log("CheckLoginDateError: " + e);
         }
         yield return 0;
     }

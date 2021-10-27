@@ -366,6 +366,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
                 }
                 break;
         }
+        matching_status_info_page_button.onClick.RemoveAllListeners();
         matching_status_info_page_button.onClick.AddListener(close_matching_popup);
         matching_status_info_page.SetActive(true);
     }

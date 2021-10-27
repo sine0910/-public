@@ -299,7 +299,7 @@ public class TierManager : SingletonMonobehaviour<TierManager>
     {
         if (tier != TIER.RIW)
         {
-            return DataManager.instance.my_tier += 1;
+            return tier += 1;
         }
         else
         {

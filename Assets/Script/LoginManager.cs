@@ -829,7 +829,7 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
 
         FirebaseManager.instance.get_notice_token();
 
-        DataManager.instance.get_rating_score();
+        //DataManager.instance.get_rating_score();
         DataManager.instance.load_friend_data();
         DataManager.instance.load_notice_data();
         DataManager.instance.load_question_data();
