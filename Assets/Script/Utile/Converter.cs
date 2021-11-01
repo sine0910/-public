@@ -43,7 +43,15 @@ public class Converter
 
     public static EVENT_ITEM to_item(string item)
     {
-        return (EVENT_ITEM)Enum.Parse(typeof(EVENT_ITEM), item);
+        try
+        { 
+            return (EVENT_ITEM)Enum.Parse(typeof(EVENT_ITEM), item);
+        }
+        catch (Exception e)
+        {
+            Debug.Log("to_item error: " + e);
+            return EVENT_ITEM.HEART;
+        }
     }
 
 
@@ -88,7 +96,15 @@ public class Converter
 
     public static RATING to_rating(string rating)
     {
-        return (RATING)Enum.Parse(typeof(RATING), rating);
+        try
+        {
+            return (RATING)Enum.Parse(typeof(RATING), rating);
+        }
+        catch (Exception e)
+        {
+            Debug.Log("to_rating error: " + e);
+            return RATING.NOMAL;
+        }
     }
 
     public static string tier_to_string(TIER tier)
@@ -587,7 +603,15 @@ public class Converter
 
     public static TIER to_tier(string tier)
     {
-        return (TIER)Enum.Parse(typeof(TIER), tier);
+        try
+        {
+            return (TIER)Enum.Parse(typeof(TIER), tier);
+        }
+        catch (Exception e)
+        {
+            Debug.Log("to_old error: " + e);
+            return TIER.NONE;
+        }
     }
 
     public static string old_to_string(OLD old)
@@ -764,7 +788,15 @@ public class Converter
 
     public static OLD to_old(string old)
     {
-        return (OLD)Enum.Parse(typeof(OLD), old);
+        try
+        { 
+            return (OLD)Enum.Parse(typeof(OLD), old);
+        }
+        catch (Exception e)
+        {
+            Debug.Log("to_old error: " + e);
+            return OLD.NONE;
+        }
     }
 
     public static string gender_to_string(GENDER old)
@@ -826,7 +858,15 @@ public class Converter
 
     public static GENDER to_gender(string gender)
     {
-        return (GENDER)Enum.Parse(typeof(GENDER), gender);
+        try
+        {
+            return (GENDER)Enum.Parse(typeof(GENDER), gender);
+        }
+        catch (Exception e)
+        {
+            Debug.Log("to_gender error: " + e);
+            return GENDER.NONE;
+        }
     }
 
     public static string country_to_string(COUNTRY country)
@@ -912,7 +952,15 @@ public class Converter
 
     public static COUNTRY to_country(string gender)
     {
-        return (COUNTRY)Enum.Parse(typeof(COUNTRY), gender);
+        try
+        {
+            return (COUNTRY)Enum.Parse(typeof(COUNTRY), gender);
+        }
+        catch (Exception e)
+        {
+            Debug.Log("to_country error: " + e);
+            return COUNTRY.NONE;
+        }
     }
 
     public static string player_type_to_string(PLAYER_TYPE type)

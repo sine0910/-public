@@ -55,6 +55,8 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
     public DateTime research_time;
     public GameObject limit_research;
 
+    public string version_info;
+
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
@@ -86,6 +88,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 
             matching = true;
             matching_score = 2;
+            version_info = "";
 
             DataManager.instance.my_heart -= 1;
             DataManager.instance.save_heart();
@@ -245,6 +248,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 
         matching_id = "";
         matching_key = "";
+        version_info = "";
 
         GameManager.instance.host = false;
         GameManager.instance.game_room_id = "";
@@ -412,6 +416,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
         matching = false;
         matching_id = "";
         matching_key = "";
+        version_info = "";
 
         matching_status_info_page.gameObject.SetActive(false);
 
@@ -566,6 +571,11 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
                                             gender = Converter.to_gender(PopAt(matching_data));
                                             type = Converter.to_player_type(PopAt(matching_data));
 
+                                            if (matching_data.Count != 0)
+                                            {
+                                                version_info = PopAt(matching_data);
+                                            }
+
                                             if (account != DataManager.instance.accountID)
                                             {
                                                 matching_id = account;
@@ -609,6 +619,11 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
                                             tier = Converter.to_tier(PopAt(matching_data));
                                             old = Converter.to_old(PopAt(matching_data));
                                             gender = Converter.to_gender(PopAt(matching_data));
+
+                                            if (matching_data.Count != 0)
+                                            {
+                                                version_info = PopAt(matching_data);
+                                            }
 
                                             matching_id = account;
 

@@ -641,20 +641,22 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
             { "tier", data_manager.my_tier.ToString() },
             { "old", data_manager.my_old.ToString() },
             { "gender", data_manager.my_gender.ToString() },
-            { "type", GameManager.instance.get_my_player_type() }
+            { "type", GameManager.instance.get_my_player_type() },
+            { "version", "ver2" }
         };
         firestore.Collection("MatchingRoom").Document(data_manager.accountID).SetAsync(search_data);
     }
 
     public void accept_multi_game(string key, string id)
     {
+        //MatchingManager가 가지고 있는 상대의 버전 정보에 맞춰 데이터를 보냄
         Dictionary<string, object> search_data = new Dictionary<string, object>
         {
             { "status", 2 +
             "/" + key +
             "/" + data_manager.accountID +
             "/" + data_manager.my_name +
-            "/" + data_manager.my_country.ToString()  +
+            "/" + (MatchingManager.instance.version_info == "ver2" ? data_manager.my_country.ToString() : COUNTRY.KOREA.ToString()) +
             "/" + data_manager.my_tier.ToString() +
             "/" + data_manager.my_old.ToString() +
             "/" + data_manager.my_gender.ToString() }
@@ -1173,7 +1175,7 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
                 break;
             case "Country":
                 {
-                    Firebase.Firestore.Query query = firestore.Collection("Omoktube").WhereEqualTo("user_country", data_manager.my_country).OrderByDescending("time").Limit(50);
+                    Firebase.Firestore.Query query = firestore.Collection("Omoktube").WhereEqualTo("user_country", data_manager.my_country.ToString()).OrderByDescending("time").Limit(50);
                     query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
                     {
                         if (task.IsFaulted || task.IsCanceled)
@@ -1445,7 +1447,8 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
             { "tier",  (int)data_manager.my_tier },
             { "time",  TimeStamp.GetUnixTimeStamp() },
             { "status", "0" },
-            { "score", score_val }
+            { "score", score_val },
+            { "version", "ver2" }//구버전, 신버전 매칭 구별 필드 생성
         };
         docRef.SetAsync(user); 
     }

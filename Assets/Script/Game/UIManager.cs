@@ -513,7 +513,7 @@ public class UIManager : SingletonMonobehaviour<UIManager>
 
         float time = 30;
         other_timer_image.fillAmount = 1;
-        timer_image.color = new Color32(255, 0, 0, 255);
+        other_timer_image.color = new Color32(255, 0, 0, 255);
 
         while (true)
         {
