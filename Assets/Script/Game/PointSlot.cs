@@ -7,11 +7,15 @@ public class PointSlot : MonoBehaviour
     new BoxCollider collider;
     Point point;
     SpriteRenderer sprite_renderer;
+    TextMesh text;
 
     void Awake()
     {
-        this.collider = this.gameObject.GetComponent<BoxCollider>();
         this.sprite_renderer = this.gameObject.transform.Find("point_slot").GetComponent<SpriteRenderer>();
+        this.collider = this.gameObject.transform.Find("point_slot").GetComponent<BoxCollider>();
+        this.text = this.gameObject.transform.Find("text").GetComponent<TextMesh>();
+        this.text.text = "";
+        this.text.gameObject.SetActive(false);
     }
 
     public void set_point(Point point)
@@ -36,7 +40,31 @@ public class PointSlot : MonoBehaviour
 
     public void set_state(STATE state)
     {
+        switch (state)
+        {
+            case STATE.BLACK:
+                {
+                    this.text.color = new Color32(255, 255, 255, 255);
+                }
+                break;
+
+            case STATE.WHITE:
+                {
+                    this.text.color = new Color32(0, 0, 0, 255);
+                }
+                break;
+        }
         this.point.set_state(state);
+    }
+
+    public void set_index(int index)
+    {
+        this.text.text = index.ToString();
+    }
+
+    public void set_view_text(bool t)
+    {
+        this.text.gameObject.SetActive(t);
     }
 
     public void enable_collider(bool flag)

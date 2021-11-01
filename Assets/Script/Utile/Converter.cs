@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+
 public class Converter
 {
     public static byte to_byte(string before)
@@ -830,82 +831,83 @@ public class Converter
 
     public static string country_to_string(COUNTRY country)
     {
-        switch (country)
-        {
-            case COUNTRY.KOREA:
-                {
-                    switch (DataManager.instance.language)
-                    {
-                        case 0:
-                            {
-                                return "대한민국";
-                            }
-                        case 1:
-                            {
-                                return "韓国";
-                            }
-                        case 2:
-                            {
-                                return "Korea";
-                            }
-                        default:
-                            {
-                                return "朝鲜";
-                            }
-                    }
-                }
+        return CountryManager.country_to_string(country);
+        //switch (country)
+        //{
+        //    case COUNTRY.KOREA:
+        //        {
+        //            switch (DataManager.instance.language)
+        //            {
+        //                case 0:
+        //                    {
+        //                        return "대한민국";
+        //                    }
+        //                case 1:
+        //                    {
+        //                        return "韓国";
+        //                    }
+        //                case 2:
+        //                    {
+        //                        return "Korea";
+        //                    }
+        //                default:
+        //                    {
+        //                        return "朝鲜";
+        //                    }
+        //            }
+        //        }
 
-            case COUNTRY.JAPAN:
-                {
-                    switch (DataManager.instance.language)
-                    {
-                        case 0:
-                            {
-                                return "일본";
-                            }
-                        case 1:
-                            {
-                                return "日本";
-                            }
-                        case 2:
-                            {
-                                return "Japan";
-                            }
-                        default:
-                            {
-                                return "日本";
-                            }
-                    }
-                }
+        //    case COUNTRY.JAPAN:
+        //        {
+        //            switch (DataManager.instance.language)
+        //            {
+        //                case 0:
+        //                    {
+        //                        return "일본";
+        //                    }
+        //                case 1:
+        //                    {
+        //                        return "日本";
+        //                    }
+        //                case 2:
+        //                    {
+        //                        return "Japan";
+        //                    }
+        //                default:
+        //                    {
+        //                        return "日本";
+        //                    }
+        //            }
+        //        }
 
-            case COUNTRY.CHINA:
-                {
-                    switch (DataManager.instance.language)
-                    {
-                        case 0:
-                            {
-                                return "중국";
-                            }
-                        case 1:
-                            {
-                                return "中国";
-                            }
-                        case 2:
-                            {
-                                return "China";
-                            }
-                        default:
-                            {
-                                return "中国";
-                            }
-                    }
-                }
+        //    case COUNTRY.CHINA:
+        //        {
+        //            switch (DataManager.instance.language)
+        //            {
+        //                case 0:
+        //                    {
+        //                        return "중국";
+        //                    }
+        //                case 1:
+        //                    {
+        //                        return "中国";
+        //                    }
+        //                case 2:
+        //                    {
+        //                        return "China";
+        //                    }
+        //                default:
+        //                    {
+        //                        return "中国";
+        //                    }
+        //            }
+        //        }
 
-            default:
-                {
-                    return "";
-                }
-        }
+        //    default:
+        //        {
+        //            return "";
+        //        }
+        //}
     }
 
     public static COUNTRY to_country(string gender)

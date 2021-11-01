@@ -153,6 +153,12 @@ public class UIManager : SingletonMonobehaviour<UIManager>
 
                         reset();
 
+                        if (my_player_type == PLAYER_TYPE.WHITE)
+                        {
+                            other_timer = other_select_timer();
+                            StartCoroutine(other_timer);
+                        }
+
                         List<string> send_msg = new List<string>();
                         send_msg.Add((byte)PROTOCOL.GAME_START + "");
                         send_message(send_msg);
@@ -293,6 +299,10 @@ public class UIManager : SingletonMonobehaviour<UIManager>
         destroy_slot_point();
         make_slot_point();
 
+        illegal_point_list = new List<PointSlot>();
+
+        set_ston_index = 0;
+
         select = true;
 
         disable_collition();
@@ -312,7 +322,7 @@ public class UIManager : SingletonMonobehaviour<UIManager>
                 PointSlot slot_obj = Instantiate(point_slot).GetComponent<PointSlot>();
                 slot_obj.set_point(new Point(i, j));
                 slot_obj.transform.parent = slot;
-                slot_obj.transform.localScale = new Vector3(40, 40);
+                slot_obj.transform.localScale = new Vector3(1, 1);
                 slot_obj.transform.localPosition = get_slot_positions(i, j);
                 board[i, j] = slot_obj;
                 omok_slot_list.Add(slot_obj);
@@ -336,6 +346,7 @@ public class UIManager : SingletonMonobehaviour<UIManager>
 
         float time = 30;
         timer_image.fillAmount = 1;
+        timer_image.color = new Color32(255, 0, 0, 255);
 
         while (true)
         {
@@ -386,9 +397,11 @@ public class UIManager : SingletonMonobehaviour<UIManager>
         StopCoroutine(timer);
         timer = null;
 
+        timer_image.color = new Color32(0, 255, 100, 255);
+        timer_image.fillAmount = 1;
+
         disable_collition();
         mark.SetActive(false);
-        timer_image.fillAmount = 1;
 
         List<string> msg = new List<string>();
         msg.Add((byte)PROTOCOL.SELECT_SLOT + "");
@@ -416,6 +429,7 @@ public class UIManager : SingletonMonobehaviour<UIManager>
     #endregion
 
     #region ARRANGMENT STON
+    int set_ston_index = 0;
     void set_ston(byte player_index, STATE state, byte x, byte y)
     {
         if (GameSoundManager.instance != null)
@@ -440,26 +454,31 @@ public class UIManager : SingletonMonobehaviour<UIManager>
                 }
                 break;
         }
+        set_ston_index++;
+        point_slot.set_index(set_ston_index);
 
-        if (camera_zoom_step < 5)
+        if (!player_controll_camera)
         {
-            if (x < 5 || x > 10 || y < 5 || y > 10)
+            if (camera_zoom_step < 5)
             {
-                zoom_out();
+                if (x < 5 || y < 5 || x > 10 || y > 10)
+                {
+                    zoom_out();
+                }
             }
-        }
-        else if (camera_zoom_step < 4)
-        {
-            if (x < 3 || x > 12 || y < 3 || y > 12)
+            else if (camera_zoom_step < 4)
             {
-                zoom_out();
+                if (x < 3 || y < 3 || x > 12 || y > 12)
+                {
+                    zoom_out();
+                }
             }
-        }
-        else if (camera_zoom_step < 3)
-        {
-            if (x < 1 || x > 14 || y < 1 || y > 14)
+            else if (camera_zoom_step < 3)
             {
-                zoom_out();
+                if (x < 1 || y < 1 || x > 14 || y > 14)
+                {
+                    zoom_out();
+                }
             }
         }
 
@@ -482,6 +501,9 @@ public class UIManager : SingletonMonobehaviour<UIManager>
                 StopCoroutine(other_timer);
                 other_timer = null;
             }
+
+            other_timer_image.color = new Color32(0, 255, 100, 255);
+            other_timer_image.fillAmount = 1;
         }
     }
 
@@ -491,6 +513,7 @@ public class UIManager : SingletonMonobehaviour<UIManager>
 
         float time = 30;
         other_timer_image.fillAmount = 1;
+        timer_image.color = new Color32(255, 0, 0, 255);
 
         while (true)
         {
@@ -508,7 +531,7 @@ public class UIManager : SingletonMonobehaviour<UIManager>
     #endregion
 
     #region ILLEGAL MOVE MARK
-    List<PointSlot> illegal_point_list = new List<PointSlot>();
+    List<PointSlot> illegal_point_list;
 
     void set_illegal_move_mark(List<string> msg)
     {
@@ -595,10 +618,27 @@ public class UIManager : SingletonMonobehaviour<UIManager>
         camera.transform.position = new Vector3(0, 50, -5);
     }
 
+    bool player_controll_camera = false;
+
+    public void auto_zoom_in()
+    {
+        if (player_controll_camera)
+        {
+            return;
+        }
+
+        if (camera_zoom_step > 0)
+        {
+            camera_zoom_step--;
+            camera_zoom_set();
+        }
+    }
+
     public void zoom_in()
     {
         if (camera_zoom_step < 5)
         {
+            player_controll_camera = true;
             camera_zoom_step++;
             camera_zoom_set();
         }
@@ -608,6 +648,7 @@ public class UIManager : SingletonMonobehaviour<UIManager>
     {
         if (camera_zoom_step > 0)
         {
+            player_controll_camera = true;
             camera_zoom_step--;
             camera_zoom_set();
         }
@@ -675,5 +716,21 @@ public class UIManager : SingletonMonobehaviour<UIManager>
         }
 
         Recorder.instance.save_game_record(mode, win_count, lose_count, tie_count);
+    }
+
+    public void on_history_view()
+    {
+        for (int i = 0; i < omok_slot_list.Count; i++)
+        {
+            omok_slot_list[i].set_view_text(true);
+        }
+    }
+
+    public void close_history_view()
+    {
+        for (int i = 0; i < omok_slot_list.Count; i++)
+        {
+            omok_slot_list[i].set_view_text(false);
+        }
     }
 }

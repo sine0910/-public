@@ -19,6 +19,8 @@ public class GameResult : MonoBehaviour
 
     public GameObject panel;
 
+    public Text history_view_button_text;
+
     public delegate void SendFn(List<string> msg);
 
     SendFn send;
@@ -122,6 +124,8 @@ public class GameResult : MonoBehaviour
         tie_text.text = (DataManager.instance.b_tie_count + DataManager.instance.w_tie_count) + "";
         winper_text.text = get_win_percent() + "%";
 
+        setting_game_result();
+
         panel.SetActive(false);
     }
 
@@ -173,6 +177,104 @@ public class GameResult : MonoBehaviour
             List<string> send_msg = new List<string>();
             send_msg.Add((byte)PROTOCOL.READY_TO_START + "");
             send(send_msg);
+        }
+    }
+
+    void setting_game_result()
+    {
+        history_view = false;
+        this.gameObject.GetComponent<Image>().color = new Color32(0, 0, 0, 150);
+        this.gameObject.GetComponent<Image>().raycastTarget = true;
+        switch (DataManager.instance.language)
+        {
+            case 0:
+                {
+                    history_view_button_text.text = "기록보기";
+                }
+                break;
+            case 1:
+                {
+                    history_view_button_text.text = "履歴見る";
+                }
+                break;
+            case 2:
+                {
+                    history_view_button_text.text = "View history";
+                }
+                break;
+            case 3:
+                {
+                    history_view_button_text.text = "查看历史";
+                }
+                break;
+        }
+    }
+
+    public bool history_view = false;
+
+    public void set_history_view()
+    {
+        if (!history_view)
+        {
+            switch (DataManager.instance.language)
+            {
+                case 0:
+                    {
+                        history_view_button_text.text = "취소";
+                    }
+                    break;
+                case 1:
+                    {
+                        history_view_button_text.text = "キャンセル";
+                    }
+                    break;
+                case 2:
+                    {
+                        history_view_button_text.text = "Cancel";
+                    }
+                    break;
+                case 3:
+                    {
+                        history_view_button_text.text = "取消";
+                    }
+                    break;
+            }
+            this.history_view = true;
+            this.game_result_popup.gameObject.SetActive(false);
+            this.gameObject.GetComponent<Image>().color = new Color32(0, 0, 0, 0);
+            this.gameObject.GetComponent<Image>().raycastTarget = false;
+            UIManager.instance.on_history_view();
+        }
+        else
+        {
+            switch (DataManager.instance.language)
+            {
+                case 0:
+                    {
+                        history_view_button_text.text = "기록보기";
+                    }
+                    break;
+                case 1:
+                    {
+                        history_view_button_text.text = "履歴見る";
+                    }
+                    break;
+                case 2:
+                    {
+                        history_view_button_text.text = "View history";
+                    }
+                    break;
+                case 3:
+                    {
+                        history_view_button_text.text = "查看历史";
+                    }
+                    break;
+            }
+            this.history_view = false;
+            this.game_result_popup.gameObject.SetActive(true);
+            this.gameObject.GetComponent<Image>().color = new Color32(0, 0, 0, 150);
+            this.gameObject.GetComponent<Image>().raycastTarget = true;
+            UIManager.instance.close_history_view();
         }
     }
 

@@ -17,30 +17,31 @@ public class RankingManager : MonoBehaviour
         {
             FirebaseManager.instance.offline();
 
+            string url = "";
             switch (DataManager.instance.language)
             {
                 case 0:
                     {
-                        StartCoroutine(check_rankingBoard("https://okgostop.kr/55/ranking/KOREAranking.html?AccountID=" + DataManager.instance.accountID));
+                        url = string.Format("https://okgostop.kr/55/ranking/KOREAranking.html?AccountID={0}", DataManager.instance.accountID);
                     }
                     break;
                 case 1:
                     {
-                        StartCoroutine(check_rankingBoard("https://okgostop.kr/55/ranking/JAPANranking.html?AccountID=" + DataManager.instance.accountID));
+                        url = string.Format("https://okgostop.kr/55/ranking/JAPANranking.html?AccountID={0}", DataManager.instance.accountID);
                     }
                     break;
                 case 2:
                     {
-                        StartCoroutine(check_rankingBoard("https://okgostop.kr/55/ranking/KOREAranking.html?AccountID=" + DataManager.instance.accountID));
+                        url = string.Format("https://okgostop.kr/55/ranking/KOREAranking.html?AccountID={0}", DataManager.instance.accountID);
                     }
                     break;
                 case 3:
                     {
-                        StartCoroutine(check_rankingBoard("https://okgostop.kr/55/ranking/CHINAranking.html?AccountID=" + DataManager.instance.accountID));
+                        url = string.Format("https://okgostop.kr/55/ranking/CHINAranking.html?AccountID={0}", DataManager.instance.accountID);
                     }
                     break;
             }
-
+            StartCoroutine(check_rankingBoard(url));
         }
     }
 
@@ -83,6 +84,12 @@ public class RankingManager : MonoBehaviour
             {
                 close_rangking_page();
             }
+            else if (msg.ToString().Contains("ad@"))
+            {
+                close_rangking_page();
+                string url = msg.Replace("ad@", "");
+                Application.OpenURL(url);
+            } 
         }, err: msg =>
         {
             Debug.Log(string.Format("CallOnError[{0}]", msg));

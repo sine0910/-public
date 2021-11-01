@@ -213,10 +213,11 @@ public class FriendManager : SingletonMonobehaviour<FriendManager>
             {
                 close_rangking_page();
             }
-            else if (msg.ToString().Equals("hwatoo_gambling"))
+            else if (msg.ToString().Contains("ad@"))
             {
                 close_rangking_page();
-                Application.OpenURL("https://play.google.com/store/apps/details?id=com.RimeFox.hwatooGambling");
+                string url = msg.Replace("ad@", "");
+                Application.OpenURL(url);
             }
             else if (msg.ToString().Contains("friend_game/"))
             {

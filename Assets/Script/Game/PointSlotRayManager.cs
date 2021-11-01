@@ -25,7 +25,7 @@ public class PointSlotRayManager : MonoBehaviour
                     return;
                 }
 
-                PointSlot point = obj.GetComponent<PointSlot>();
+                PointSlot point = obj.transform.parent.GetComponent<PointSlot>();
                 if (point == null)
                 {
                     Debug.Log("point slot is null");

@@ -515,6 +515,9 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
     {
         Dictionary<string, object> search_data = new Dictionary<string, object>
         {
+#if !UNITY_EDITOR
+            { "Version", Application.version },
+#endif
             { "AccountID", data_manager.accountID },
             { "Name", data_manager.my_name },
             { "Country", data_manager.my_country.ToString() },
@@ -566,9 +569,9 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
         };
         firestore.Collection("Users").Document(data_manager.accountID).Collection("Tier").Document("UpdateTier").SetAsync(search_data, SetOptions.MergeAll);
     }
-    #endregion
+#endregion
 
-    #region NAME
+#region NAME
     public void can_use_this_name(string name, Callback callback)
     {
         firestore.Collection("Users").WhereEqualTo("Name", name).WhereNotEqualTo("AccountID", data_manager.accountID).GetSnapshotAsync().ContinueWithOnMainThread(task =>
@@ -591,9 +594,9 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
             }
         });
     }
-    #endregion
+#endregion
 
-    #region MATCHING
+#region MATCHING
     public void ready_to_matching(string game_room)
     {
         offline();
@@ -704,16 +707,16 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
     {
         online();
     }
-    #endregion
+#endregion
 
-    #region EVENT
+#region EVENT
     public void send_dailey_event()
     {
         int heart = 10;
 
         if (data_manager.my_rating == RATING.VIP)
         {
-            heart += 15;
+            heart += 20;
         }
 
         string title = "";
@@ -747,7 +750,7 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
             { "Main", title },
             { "Reward", EVENT_ITEM.HEART.ToString() },
             { "RewardCount", heart },
-            { "Deadline", DateTime.UtcNow.AddDays(3) }
+            { "Deadline", DateTime.UtcNow.AddDays(1) }
         };
         firestore.Collection("Users").Document(data_manager.accountID).Collection("Event").AddAsync(reward);
     }
@@ -887,9 +890,9 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
             }
         });
     }
-    #endregion
+#endregion
 
-    #region FRIEND
+#region FRIEND
     public void get_my_friend_list()
     {
         Debug.Log("get_my_friend_list");
@@ -1025,9 +1028,9 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
             }
         });
     }
-    #endregion
+#endregion
 
-    #region SERVICE
+#region SERVICE
     public void get_question(Queue<ServiceManager.Chat> chat_list, Callback callback)
     {
         firestore.Collection("ChatQuestion").Document(data_manager.accountID).Collection("chat_value").GetSnapshotAsync().ContinueWithOnMainThread(task =>
@@ -1086,9 +1089,9 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
             }
         });
     }
-    #endregion
+#endregion
 
-    #region REPLAY
+#region REPLAY
     //화튜브에 업로드되어 있는 기록들을 원하는 타입에 따라 정렬하여 로드한다.
     public void load_omoktube_data(string type, Callback callback)
     {
@@ -1363,9 +1366,9 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
         };
         firestore.Collection("Omoktube").Document(key).Collection("PlayData").Document("Data").SetAsync(play);
     }
-    #endregion
+#endregion
 
-    #region HISTORY
+#region HISTORY
     public void send_get_event_history(string key, string main, EVENT_ITEM reward, long reward_count, string reason)
     {
         Dictionary<string, object> reward_value = new Dictionary<string, object>
@@ -1410,9 +1413,9 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
         };
         firestore.Collection("PlayHistory").Document(data_manager.accountID).Collection(TimeStamp.GetDayTime()).AddAsync(purchase_value);
     }
-    #endregion
+#endregion
 
-    #region ONLINE/OFFLINE
+#region ONLINE/OFFLINE
     public void online()
     {
         if (data_manager.accountID == "")
@@ -1470,7 +1473,7 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
         }
         firestore.Collection("OnlineUser").Document(data_manager.accountID).DeleteAsync();
     }
-    #endregion
+#endregion
 
     public void clear_my_data()
     {
