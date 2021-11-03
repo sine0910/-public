@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerProfile : MonoBehaviour
 {
+    PLAYER_TYPE player_type;
     Image player_profile;
     Sprite black;
     Sprite white;
@@ -12,6 +13,9 @@ public class PlayerProfile : MonoBehaviour
     Text name_text;
     Image country_image;
     Text tier_text;
+
+    GameObject heart;
+    Text my_heart;
 
     // Start is called before the first frame update
     void Awake()
@@ -28,7 +32,8 @@ public class PlayerProfile : MonoBehaviour
 
     public void set_player_data(PLAYER_TYPE type, string name, TIER tier, COUNTRY country)
     {
-        switch (type)
+        this.player_type = type;
+        switch (this.player_type)
         {
             case PLAYER_TYPE.BLACK:
                 {
@@ -49,5 +54,40 @@ public class PlayerProfile : MonoBehaviour
         this.name_text.text = name;
         this.tier_text.text = Converter.tier_to_string(tier);
         this.country_image.sprite = CountryManager.instance.get_country_sprite(country);
+    }
+
+    public bool ask_get_heart_profile()
+    {
+        if (this.transform.Find("Heart").gameObject != null)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public void set_player_heart_text()
+    {
+        this.heart = this.transform.Find("Heart").gameObject;
+        this.my_heart = this.transform.Find("Heart/HeartText").GetComponent<Text>();
+
+        switch (this.player_type)
+        {
+            case PLAYER_TYPE.BLACK:
+                {
+                    this.my_heart.color = new Color32(255, 255, 255, 255);
+                    break;
+                }
+            case PLAYER_TYPE.WHITE:
+                {
+                    this.my_heart.color = new Color32(0, 0, 0, 255);
+                    break;
+                }
+        }
+        on_player_heart_count();
+    }
+
+    void on_player_heart_count()
+    {
+        this.my_heart.text = DataManager.instance.my_heart.ToString();
     }
 }

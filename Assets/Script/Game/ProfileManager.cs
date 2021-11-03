@@ -24,6 +24,11 @@ public class ProfileManager : SingletonMonobehaviour<ProfileManager>
             profile_data_list.Add(profile_data);
             profile_list[i].set_player_data(profile_data.type, profile_data.name, profile_data.tier, profile_data.country);
         }
+
+        if(GameManager.instance.play_mode == PLAY.PVP && my_profile.ask_get_heart_profile())
+        {
+            my_profile.set_player_heart_text();
+        }
     }
 
     public PlayerData get_player_data(int i)

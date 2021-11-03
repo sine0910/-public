@@ -181,11 +181,11 @@ MonoBehaviour:
   - m_Id: 113162100838400
     m_Localized: 'To other users.
 
-      I''ve received an application for a match.'
+      I''ve received a match.'
     m_Metadata:
       m_Items: []
   - m_Id: 113764813934592
-    m_Localized: Choose the opponent.
+    m_Localized: Choice of opponent.
     m_Metadata:
       m_Items: []
   - m_Id: 114475656187904
@@ -203,7 +203,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 658261473923072
-    m_Localized: User competition
+    m_Localized: User Match
     m_Metadata:
       m_Items: []
   - m_Id: 668671291854848
@@ -629,7 +629,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1486455777169408
-    m_Localized: replay
+    m_Localized: re match
     m_Metadata:
       m_Items: []
   - m_Id: 1487106997391360
@@ -760,11 +760,19 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 4291176082608128
-    m_Localized: When game
+    m_Localized: heart for every play
     m_Metadata:
       m_Items: []
   - m_Id: 6843033019650048
     m_Localized: View result
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7608313345904640
+    m_Localized: If there is no response for 10 seconds, it will be withdrawn.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7611863157346304
+    m_Localized: Match request
     m_Metadata:
       m_Items: []
   references:

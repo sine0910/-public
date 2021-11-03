@@ -19,7 +19,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
     public GameObject matching_info_page;
     public Text name_text;
     public Text tier_text;
-    public Text country_text;
+    public Image country_image;
     public Text old_text;
     public Text gender_text;
     public Image gender_image;
@@ -70,17 +70,17 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
             return;
         }
 
-        if (research_time != null)
-        {
-            //제한시간이 있을 경우 현재 시간과 제한 시간을 비교하여 제한시간을 넘었을 경우에만 신청한다.
-            int compair_val = DateTime.Compare(DateTime.UtcNow, research_time);
-            if (compair_val <= 0)
-            {
-                Debug.Log("research_limit_time not over");
-                on_limit_research();
-                return;
-            }
-        }
+        //if (research_time != null)
+        //{
+        //    //제한시간이 있을 경우 현재 시간과 제한 시간을 비교하여 제한시간을 넘었을 경우에만 신청한다.
+        //    int compair_val = DateTime.Compare(DateTime.UtcNow, research_time);
+        //    if (compair_val <= 0)
+        //    {
+        //        Debug.Log("research_limit_time not over");
+        //        on_limit_research();
+        //        return;
+        //    }
+        //}
 
         if (!matching)
         {
@@ -90,8 +90,9 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
             matching_score = 2;
             version_info = "";
 
-            DataManager.instance.my_heart -= 1;
-            DataManager.instance.save_heart();
+            //사용자 대전 신청 시 하트-1 제거
+            //DataManager.instance.my_heart -= 1;
+            //DataManager.instance.save_heart();
 
             FirebaseManager.instance.ready_to_matching(DataManager.instance.accountID);
 
@@ -129,34 +130,31 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
                     }
                     break;
             }
+
+            matching_status_info_page_button.gameObject.SetActive(false);
+            matching_status_info_page.SetActive(true);
+
+            StartCoroutine(cancle_button_delay());
+        }
+    }
+
+    public IEnumerator cancle_button_delay()
+    {
+        yield return new WaitForSecondsRealtime(10f);
+        if (matching)
+        {
             matching_status_info_page_button.onClick.AddListener(cancle_matching);
             matching_status_info_page_button.gameObject.SetActive(true);
-
-            matching_status_info_page.SetActive(true);
         }
     }
 
     public void cancle_matching()
     {
+        //사용자 대전 취소 시 재신청 3분간 정지 기능 삭제
         //사용자가 취소한 시간+3 분을 제한시간으로 설정한다.
-        research_time = DateTime.UtcNow.AddMinutes(3);
-        Debug.Log("현재 utc시간: " + DateTime.UtcNow + " 제한 시간: " + research_time);
+        //research_time = DateTime.UtcNow.AddMinutes(3);
+        //Debug.Log("현재 utc시간: " + DateTime.UtcNow + " 제한 시간: " + research_time);
 
-        if (check_ghost != null)
-        {
-            StopCoroutine(check_ghost);
-            check_ghost = null;
-        }
-        if (matching_id != "")
-        {
-            FirebaseManager.instance.cancle_multi_game(matching_key, matching_id);
-        }
-        matching_status_info_page.SetActive(false);
-        reset_status();
-    }
-
-    public void close_matching_popup()
-    {
         if (check_ghost != null)
         {
             StopCoroutine(check_ghost);
@@ -174,7 +172,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
     {
         matching_info_page.SetActive(true);
         name_text.text = name;
-        country_text.text = Converter.country_to_string(country);
+        country_image.sprite = CountryManager.instance.get_country_sprite(country);
         tier_text.text = Converter.tier_to_string(tier);
         old_text.text = Converter.old_to_string(old);
         gender_text.text = Converter.gender_to_string(gender);
@@ -334,8 +332,10 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
     IEnumerator re_find_user()
     {
         yield return new WaitForSecondsRealtime(1.5f);
-        matching = false;
-        matching_start();
+
+        matching_key = DataManager.instance.accountID + TimeStamp.GetUnixTimeStamp();
+
+        FirebaseManager.instance.create_matching_room(matching_key);
     }
 
     public void not_find_user()
@@ -370,8 +370,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
                 }
                 break;
         }
-        matching_status_info_page_button.onClick.RemoveAllListeners();
-        matching_status_info_page_button.onClick.AddListener(close_matching_popup);
+
         matching_status_info_page.SetActive(true);
     }
 

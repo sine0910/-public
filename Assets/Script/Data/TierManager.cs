@@ -193,7 +193,7 @@ public class TierManager : SingletonMonobehaviour<TierManager>
             case 0:
                 {
                     tier_update_title_text.text = "등급 상승";
-                    tier_update_ex_text.text = Converter.tier_to_string(DataManager.instance.my_tier) + "로 등급이 상습하였습니다";
+                    tier_update_text.text = Converter.tier_to_string(DataManager.instance.my_tier) + "로 등급이 상습하였습니다";
                     rating_score_text.text = DataManager.instance.rating_score + "점";
 
                     TIER next_tier = get_next_tier(DataManager.instance.my_tier);
@@ -204,7 +204,7 @@ public class TierManager : SingletonMonobehaviour<TierManager>
             case 1:
                 {
                     tier_update_title_text.text = "評価上昇";
-                    tier_update_ex_text.text = Converter.tier_to_string(DataManager.instance.my_tier) + "で評価が上昇しました";
+                    tier_update_text.text = Converter.tier_to_string(DataManager.instance.my_tier) + "で評価が上昇しました";
                     rating_score_text.text = DataManager.instance.rating_score + "点";
 
                     TIER next_tier = get_next_tier(DataManager.instance.my_tier);
@@ -215,7 +215,7 @@ public class TierManager : SingletonMonobehaviour<TierManager>
             case 2:
                 {
                     tier_update_title_text.text = "Rank up";
-                    tier_update_ex_text.text = "Ranked up to " + Converter.tier_to_string(DataManager.instance.my_tier);
+                    tier_update_text.text = "Ranked up to " + Converter.tier_to_string(DataManager.instance.my_tier);
                     rating_score_text.text = DataManager.instance.rating_score + "p";
 
                     TIER next_tier = get_next_tier(DataManager.instance.my_tier);
@@ -226,7 +226,7 @@ public class TierManager : SingletonMonobehaviour<TierManager>
             case 3:
                 {
                     tier_update_title_text.text = "升级";
-                    tier_update_ex_text.text = "排名高达 " + Converter.tier_to_string(DataManager.instance.my_tier);
+                    tier_update_text.text = "排名高达 " + Converter.tier_to_string(DataManager.instance.my_tier);
                     rating_score_text.text = DataManager.instance.rating_score + "分";
 
                     TIER next_tier = get_next_tier(DataManager.instance.my_tier);
@@ -247,7 +247,7 @@ public class TierManager : SingletonMonobehaviour<TierManager>
             case 0:
                 {
                     tier_update_title_text.text = "등급 강등";
-                    tier_update_ex_text.text = Converter.tier_to_string(DataManager.instance.my_tier) + "로 등급이 강등되었습니다";
+                    tier_update_text.text = Converter.tier_to_string(DataManager.instance.my_tier) + "로 등급이 강등되었습니다";
                     rating_score_text.text = DataManager.instance.rating_score + "점";
 
                     TIER next_tier = get_next_tier(DataManager.instance.my_tier);
@@ -258,7 +258,7 @@ public class TierManager : SingletonMonobehaviour<TierManager>
             case 1:
                 {
                     tier_update_title_text.text = "格下げ";
-                    tier_update_ex_text.text = Converter.tier_to_string(DataManager.instance.my_tier) + "で評価が降格されました";
+                    tier_update_text.text = Converter.tier_to_string(DataManager.instance.my_tier) + "で評価が降格されました";
                     rating_score_text.text = DataManager.instance.rating_score + "点";
 
                     TIER next_tier = get_next_tier(DataManager.instance.my_tier);
@@ -269,7 +269,7 @@ public class TierManager : SingletonMonobehaviour<TierManager>
             case 2:
                 {
                     tier_update_title_text.text = "Rank Relegation";
-                    tier_update_ex_text.text = "Rank relegation to  " + Converter.tier_to_string(DataManager.instance.my_tier);
+                    tier_update_text.text = "Rank relegation to  " + Converter.tier_to_string(DataManager.instance.my_tier);
                     rating_score_text.text = DataManager.instance.rating_score + "p";
 
                     TIER next_tier = get_next_tier(DataManager.instance.my_tier);
@@ -280,7 +280,7 @@ public class TierManager : SingletonMonobehaviour<TierManager>
             case 3:
                 {
                     tier_update_title_text.text = "降级";
-                    tier_update_ex_text.text = "降级 " + Converter.tier_to_string(DataManager.instance.my_tier);
+                    tier_update_text.text = "降级 " + Converter.tier_to_string(DataManager.instance.my_tier);
                     rating_score_text.text = DataManager.instance.rating_score + "分";
 
                     TIER next_tier = get_next_tier(DataManager.instance.my_tier);

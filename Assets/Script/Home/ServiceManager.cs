@@ -231,7 +231,7 @@ public class ServiceManager : SingletonMonobehaviour<ServiceManager>
                     break;
                 case 2:
                     {
-                        StartCoroutine(check_noticeBoard("https://okgostop.kr/55/noticeBoard/noticeBoard.html"));
+                        StartCoroutine(check_noticeBoard("https://okgostop.kr/55/noticeBoard/noticeUSABoard.html"));
                     }
                     break;
                 case 3:

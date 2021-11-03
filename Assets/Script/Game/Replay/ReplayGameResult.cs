@@ -118,4 +118,74 @@ public class ReplayGameResult : MonoBehaviour
         ReplayRoom.instance.OnNext();
         gameObject.SetActive(false);
     }
+
+    public Text history_view_button_text;
+
+    public bool history_view = false;
+
+    public void set_history_view()
+    {
+        if (!history_view)
+        {
+            switch (DataManager.instance.language)
+            {
+                case 0:
+                    {
+                        history_view_button_text.text = "취소";
+                    }
+                    break;
+                case 1:
+                    {
+                        history_view_button_text.text = "キャンセル";
+                    }
+                    break;
+                case 2:
+                    {
+                        history_view_button_text.text = "Cancel";
+                    }
+                    break;
+                case 3:
+                    {
+                        history_view_button_text.text = "取消";
+                    }
+                    break;
+            }
+            this.history_view = true;
+            this.game_result_popup.gameObject.SetActive(false);
+            this.gameObject.GetComponent<Image>().color = new Color32(0, 0, 0, 0);
+            this.gameObject.GetComponent<Image>().raycastTarget = false;
+            ReplayUIManager.instance.on_history_view();
+        }
+        else
+        {
+            switch (DataManager.instance.language)
+            {
+                case 0:
+                    {
+                        history_view_button_text.text = "기록보기";
+                    }
+                    break;
+                case 1:
+                    {
+                        history_view_button_text.text = "履歴見る";
+                    }
+                    break;
+                case 2:
+                    {
+                        history_view_button_text.text = "View history";
+                    }
+                    break;
+                case 3:
+                    {
+                        history_view_button_text.text = "查看历史";
+                    }
+                    break;
+            }
+            this.history_view = false;
+            this.game_result_popup.gameObject.SetActive(true);
+            this.gameObject.GetComponent<Image>().color = new Color32(0, 0, 0, 150);
+            this.gameObject.GetComponent<Image>().raycastTarget = true;
+            ReplayUIManager.instance.close_history_view();
+        }
+    }
 }

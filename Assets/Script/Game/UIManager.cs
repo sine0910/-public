@@ -207,6 +207,19 @@ public class UIManager : SingletonMonobehaviour<UIManager>
                     {
                         Debug.Log("GamePlayUI GAME_RESULT");
 
+                        //내 턴에서 게임이 끝났을 경우 상대의 타이머가 진행되지 않도록 멈춘다.
+                        if (other_timer != null)
+                        {
+                            StopCoroutine(other_timer);
+                            other_timer = null;
+                        }
+
+                        timer_image.color = new Color32(0, 255, 100, 255);
+                        timer_image.fillAmount = 1;
+
+                        other_timer_image.color = new Color32(0, 255, 100, 255);
+                        other_timer_image.fillAmount = 1;
+
                         game_playing = false;
 
                         byte winner = Converter.to_byte(PopAt(msg));
@@ -459,25 +472,25 @@ public class UIManager : SingletonMonobehaviour<UIManager>
 
         if (!player_controll_camera)
         {
-            if (camera_zoom_step < 5)
+            if (camera_zoom_step > 4)
             {
                 if (x < 5 || y < 5 || x > 10 || y > 10)
                 {
-                    zoom_out();
+                    auto_zoom_out();
                 }
             }
-            else if (camera_zoom_step < 4)
+            else if (camera_zoom_step > 3)
             {
                 if (x < 3 || y < 3 || x > 12 || y > 12)
                 {
-                    zoom_out();
+                    auto_zoom_out();
                 }
             }
-            else if (camera_zoom_step < 3)
+            else if (camera_zoom_step > 2)
             {
                 if (x < 1 || y < 1 || x > 14 || y > 14)
                 {
-                    zoom_out();
+                    auto_zoom_out();
                 }
             }
         }
@@ -620,7 +633,7 @@ public class UIManager : SingletonMonobehaviour<UIManager>
 
     bool player_controll_camera = false;
 
-    public void auto_zoom_in()
+    public void auto_zoom_out()
     {
         if (player_controll_camera)
         {

@@ -482,7 +482,10 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
 
         if (data_manager.other_month)
         {
-            data_manager.reset_month_data();
+            //상태값 초기화
+            data_manager.other_month = false;
+
+            data_manager.reset_month_data(); 
 
             updates.Add("BlackMonthWin", 0);
             updates.Add("BlackMonthLose", 0);
@@ -494,7 +497,10 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
             updates.Add("MonthWin", 0);
         }
         if (data_manager.other_day)
-        {
+        {            
+            //상태값 초기화
+            data_manager.other_day = false;
+
             data_manager.reset_day_data();
             send_dailey_event();
 

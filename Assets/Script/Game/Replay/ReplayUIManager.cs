@@ -221,6 +221,8 @@ public class ReplayUIManager : SingletonMonobehaviour<ReplayUIManager>
 
         select = true;
 
+        set_ston_index = 0;
+
         mark.SetActive(false);
     }
 
@@ -236,7 +238,7 @@ public class ReplayUIManager : SingletonMonobehaviour<ReplayUIManager>
                 PointSlot slot_obj = Instantiate(point_slot).GetComponent<PointSlot>();
                 slot_obj.set_point(new Point(i, j));
                 slot_obj.transform.parent = slot;
-                slot_obj.transform.localScale = new Vector3(40, 40);
+                slot_obj.transform.localScale = new Vector3(1, 1);//오튜브 슬롯 크기 축소 
                 slot_obj.transform.localPosition = get_slot_positions(i, j);
                 board[i, j] = slot_obj;
                 omok_slot_list.Add(slot_obj);
@@ -254,6 +256,7 @@ public class ReplayUIManager : SingletonMonobehaviour<ReplayUIManager>
     }
 
     #region ARRANGMENT STON
+    int set_ston_index = 0;
     void set_ston(byte player_index, STATE state, byte x, byte y)
     {
         if (GameSoundManager.instance != null)
@@ -278,6 +281,9 @@ public class ReplayUIManager : SingletonMonobehaviour<ReplayUIManager>
                 }
                 break;
         }
+
+        set_ston_index++;
+        point_slot.set_index(set_ston_index);
 
         if (player_index == player_me_index)
         {
@@ -441,6 +447,22 @@ public class ReplayUIManager : SingletonMonobehaviour<ReplayUIManager>
             {
                 camera.transform.position = camera.transform.position - (mouse_move - prev_pos);
             }
+        }
+    }
+
+    public void on_history_view()
+    {
+        for (int i = 0; i < omok_slot_list.Count; i++)
+        {
+            omok_slot_list[i].set_view_text(true);
+        }
+    }
+
+    public void close_history_view()
+    {
+        for (int i = 0; i < omok_slot_list.Count; i++)
+        {
+            omok_slot_list[i].set_view_text(false);
         }
     }
 }

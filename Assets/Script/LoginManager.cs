@@ -839,7 +839,7 @@ public class LoginManager : SingletonMonobehaviour<LoginManager>
 
         MatchingManager.instance.matching_listening();
 
-        SceneManager.LoadScene("HomeScene");
+        SceneManager.LoadSceneAsync("HomeScene");
     }
 }
 
