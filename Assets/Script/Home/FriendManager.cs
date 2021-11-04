@@ -160,7 +160,7 @@ public class FriendManager : SingletonMonobehaviour<FriendManager>
                     break;
                 case 2:
                     {
-                        StartCoroutine(check_friend_page(string.Format("https://okgostop.kr/55/friend/KOREAFriends.html?AccountID={0}&Gender={1}&Name={2}&Old={3}&Tier={4}&Country={5}",
+                        StartCoroutine(check_friend_page(string.Format("https://okgostop.kr/55/friend/USAFriends.html?AccountID={0}&Gender={1}&Name={2}&Old={3}&Tier={4}&Country={5}",
                             DataManager.instance.accountID, DataManager.instance.my_gender.ToString(), DataManager.instance.my_name, DataManager.instance.my_old.ToString(), DataManager.instance.my_tier.ToString(), DataManager.instance.my_country.ToString())));
                     }
                     break;

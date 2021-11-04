@@ -32,7 +32,7 @@ public class RankingManager : MonoBehaviour
                     break;
                 case 2:
                     {
-                        url = string.Format("https://okgostop.kr/55/ranking/KOREAranking.html?AccountID={0}", DataManager.instance.accountID);
+                        url = string.Format("https://okgostop.kr/55/ranking/USAranking.html?AccountID={0}", DataManager.instance.accountID);
                     }
                     break;
                 case 3:

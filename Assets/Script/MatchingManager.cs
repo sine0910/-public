@@ -322,7 +322,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
         if (matching)
         {
             yield return StartCoroutine(re_find_user());
-        }
+        } 
         else
         {
             Debug.Log("check_ghost_user after 15sc matching false!");

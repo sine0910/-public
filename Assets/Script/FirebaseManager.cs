@@ -230,6 +230,8 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
         {
             { "Notice", data_manager.noticeToken },
 
+            { "LanguageCode", data_manager.language },
+
             { "Name", data_manager.my_name },
 
             { "Country", data_manager.my_country },
@@ -524,6 +526,7 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
 #if !UNITY_EDITOR
             { "Version", Application.version },
 #endif
+            { "LanguageCode", data_manager.language },
             { "AccountID", data_manager.accountID },
             { "Name", data_manager.my_name },
             { "Country", data_manager.my_country.ToString() },
@@ -1097,163 +1100,181 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
             }
         });
     }
-#endregion
+    #endregion
 
-#region REPLAY
+    #region REPLAY
+    public delegate void Otube(Callback callback);
+    public Dictionary<string, Otube> otube_func_dic = new Dictionary<string, Otube>();
+
     //화튜브에 업로드되어 있는 기록들을 원하는 타입에 따라 정렬하여 로드한다.
     public void load_omoktube_data(string type, Callback callback)
     {
-        switch (type)
+        if (otube_func_dic.Count == 0)
         {
-            case "Time":
-                {
-                    Firebase.Firestore.Query query = firestore.Collection("Omoktube").OrderByDescending("time").WhereGreaterThan("time", DateTime.Now.AddDays(-30)).Limit(50);
-                    query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
-                    {
-                        if (task.IsFaulted || task.IsCanceled)
-                        {
-                            Debug.Log("task Error: " + task.Exception);
-                            callback(3);
-                        }
-                        else
-                        {
-                            foreach (DocumentSnapshot snapshot in task.Result.Documents)
-                            {
-                                if (snapshot.Exists)
-                                {
-                                    Dictionary<string, object> city = snapshot.ToDictionary();
-
-                                    string key = snapshot.Id;
-                                    string title = city["title"].ToString();
-                                    string score = city["score"].ToString();
-                                    string mode = city["mode"].ToString();
-                                    string time = ((Timestamp)city["time"]).ToDateTime().ToString();
-                                    string user_account_id = city["user_id"].ToString();
-                                    string user_name = city["user_name"].ToString();
-                                    COUNTRY user_country = Converter.to_country(city["user_country"].ToString());
-                                    TIER user_tier = Converter.to_tier(city["user_tier"].ToString());
-                                    int view = Convert.ToInt32(city["view"]);
-
-                                    ReplayManager.instance.omoktube_play_data_list.Add(new ReplayManager.OmoktubeRecordData(key, title, time, score, mode, user_account_id, user_name, user_country, user_tier, view));
-                                }
-                            }
-                            callback(1);
-                        }
-                    });
-                }
-                break;
-            case "View":
-                {
-                    Firebase.Firestore.Query query = firestore.Collection("Omoktube").OrderByDescending("view").OrderByDescending("time").Limit(50);
-                    query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
-                    {
-                        if (task.IsFaulted || task.IsCanceled)
-                        {
-                            Debug.Log("task Error: " + task.Exception);
-                            callback(3);
-                        }
-                        else
-                        {
-                            foreach (DocumentSnapshot snapshot in task.Result.Documents)
-                            {
-                                if (snapshot.Exists)
-                                {
-                                    Dictionary<string, object> city = snapshot.ToDictionary();
-
-                                    string key = snapshot.Id;
-                                    string title = city["title"].ToString();
-                                    string score = city["score"].ToString();
-                                    string mode = city["mode"].ToString();
-                                    string time = ((Timestamp)city["time"]).ToDateTime().ToString();
-                                    string user_account_id = city["user_id"].ToString();
-                                    string user_name = city["user_name"].ToString();
-                                    COUNTRY user_country = Converter.to_country(city["user_country"].ToString());
-                                    TIER user_tier = Converter.to_tier(city["user_tier"].ToString());
-                                    int view = Convert.ToInt32(city["view"]);
-
-                                    ReplayManager.instance.omoktube_play_data_list.Add(new ReplayManager.OmoktubeRecordData(key, title, time, score, mode, user_account_id, user_name, user_country, user_tier, view));
-                                }
-                            }
-                            callback(1);
-                        }
-                    });
-                }
-                break;
-            case "Country":
-                {
-                    Firebase.Firestore.Query query = firestore.Collection("Omoktube").WhereEqualTo("user_country", data_manager.my_country.ToString()).OrderByDescending("time").Limit(50);
-                    query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
-                    {
-                        if (task.IsFaulted || task.IsCanceled)
-                        {
-                            Debug.Log("task Error: " + task.Exception);
-                            callback(3);
-                        }
-                        else
-                        {
-                            foreach (DocumentSnapshot snapshot in task.Result.Documents)
-                            {
-                                if (snapshot.Exists)
-                                {
-                                    Dictionary<string, object> city = snapshot.ToDictionary();
-
-                                    string key = snapshot.Id;
-                                    string title = city["title"].ToString();
-                                    string score = city["score"].ToString();
-                                    string mode = city["mode"].ToString();
-                                    string time = ((Timestamp)city["time"]).ToDateTime().ToString();
-                                    string user_account_id = city["user_id"].ToString();
-                                    string user_name = city["user_name"].ToString();
-                                    COUNTRY user_country = Converter.to_country(city["user_country"].ToString());
-                                    TIER user_tier = Converter.to_tier(city["user_tier"].ToString());
-                                    int view = Convert.ToInt32(city["view"]);
-
-                                    ReplayManager.instance.omoktube_play_data_list.Add(new ReplayManager.OmoktubeRecordData(key, title, time, score, mode, user_account_id, user_name, user_country, user_tier, view));
-                                }
-                            }
-                            callback(1);
-                        }
-                    });
-                }
-                break;
-            case "My":
-                {
-                    Firebase.Firestore.Query query = firestore.Collection("Omoktube").WhereEqualTo("user", data_manager.accountID).OrderByDescending("time").Limit(50);
-                    query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
-                    {
-                        if (task.IsFaulted || task.IsCanceled)
-                        {
-                            Debug.Log("task Error: " + task.Exception);
-                            callback(3);
-                        }
-                        else
-                        {
-                            foreach (DocumentSnapshot snapshot in task.Result.Documents)
-                            {
-                                if (snapshot.Exists)
-                                {
-                                    Dictionary<string, object> city = snapshot.ToDictionary();
-
-                                    string key = snapshot.Id;
-                                    string title = city["title"].ToString();
-                                    string score = city["score"].ToString();
-                                    string mode = city["mode"].ToString();
-                                    string time = ((Timestamp)city["time"]).ToDateTime().ToString();
-                                    string user_account_id = city["user_id"].ToString();
-                                    string user_name = city["user_name"].ToString();
-                                    COUNTRY user_country = Converter.to_country(city["user_country"].ToString());
-                                    TIER user_tier = Converter.to_tier(city["user_tier"].ToString());
-                                    int view = Convert.ToInt32(city["view"]);
-
-                                    ReplayManager.instance.omoktube_play_data_list.Add(new ReplayManager.OmoktubeRecordData(key, title, time, score, mode, user_account_id, user_name, user_country, user_tier, view));
-                                }
-                            }
-                            callback(1);
-                        }
-                    });
-                }
-                break;
+            otube_func_dic.Add("Time", load_time_otube_data);
+            otube_func_dic.Add("View", load_view_otube_data);
+            otube_func_dic.Add("Country", load_country_otube_data);
+            otube_func_dic.Add("My", load_my_otube_data);
         }
+
+        try
+        {
+            otube_func_dic[type](callback);
+        }
+        catch (Exception e)
+        {
+            //오튜브 로드 중 에러가 생긴 경우 3을 반환한다.
+            Debug.Log("load_omoktube_data error => " + e);
+            callback(3);
+        }
+    }
+
+    public void load_time_otube_data(Callback callback)
+    {
+        Firebase.Firestore.Query query = firestore.Collection("Omoktube").OrderByDescending("time").WhereGreaterThan("time", DateTime.Now.AddDays(-30)).Limit(50);
+        query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted || task.IsCanceled)
+            {
+                Debug.Log("task Error: " + task.Exception);
+                callback(3);
+            }
+            else
+            {
+                foreach (DocumentSnapshot snapshot in task.Result.Documents)
+                {
+                    if (snapshot.Exists)
+                    {
+                        Dictionary<string, object> city = snapshot.ToDictionary();
+
+                        string key = snapshot.Id;
+                        string title = city["title"].ToString();
+                        string score = city["score"].ToString();
+                        string mode = city["mode"].ToString();
+                        string time = ((Timestamp)city["time"]).ToDateTime().ToString();
+                        string user_account_id = city["user_id"].ToString();
+                        string user_name = city["user_name"].ToString();
+                        COUNTRY user_country = Converter.to_country(city["user_country"].ToString());
+                        TIER user_tier = Converter.to_tier(city["user_tier"].ToString());
+                        int view = Convert.ToInt32(city["view"]);
+
+                        ReplayManager.instance.omoktube_play_data_list.Add(new ReplayManager.OmoktubeRecordData(key, title, time, score, mode, user_account_id, user_name, user_country, user_tier, view));
+                    }
+                }
+                callback(1);
+            }
+        });
+    }
+
+    public void load_view_otube_data(Callback callback)
+    {
+        Firebase.Firestore.Query query = firestore.Collection("Omoktube").OrderByDescending("view").OrderByDescending("time").Limit(50);
+        query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted || task.IsCanceled)
+            {
+                Debug.Log("task Error: " + task.Exception);
+                callback(3);
+            }
+            else
+            {
+                foreach (DocumentSnapshot snapshot in task.Result.Documents)
+                {
+                    if (snapshot.Exists)
+                    {
+                        Dictionary<string, object> city = snapshot.ToDictionary();
+
+                        string key = snapshot.Id;
+                        string title = city["title"].ToString();
+                        string score = city["score"].ToString();
+                        string mode = city["mode"].ToString();
+                        string time = ((Timestamp)city["time"]).ToDateTime().ToString();
+                        string user_account_id = city["user_id"].ToString();
+                        string user_name = city["user_name"].ToString();
+                        COUNTRY user_country = Converter.to_country(city["user_country"].ToString());
+                        TIER user_tier = Converter.to_tier(city["user_tier"].ToString());
+                        int view = Convert.ToInt32(city["view"]);
+
+                        ReplayManager.instance.omoktube_play_data_list.Add(new ReplayManager.OmoktubeRecordData(key, title, time, score, mode, user_account_id, user_name, user_country, user_tier, view));
+                    }
+                }
+                callback(1);
+            }
+        });
+    }
+
+    public void load_country_otube_data(Callback callback)
+    {
+        Firebase.Firestore.Query query = firestore.Collection("Omoktube").WhereEqualTo("user_country", data_manager.my_country.ToString()).OrderByDescending("time").Limit(50);
+        query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted || task.IsCanceled)
+            {
+                Debug.Log("task Error: " + task.Exception);
+                callback(3);
+            }
+            else
+            {
+                foreach (DocumentSnapshot snapshot in task.Result.Documents)
+                {
+                    if (snapshot.Exists)
+                    {
+                        Dictionary<string, object> city = snapshot.ToDictionary();
+
+                        string key = snapshot.Id;
+                        string title = city["title"].ToString();
+                        string score = city["score"].ToString();
+                        string mode = city["mode"].ToString();
+                        string time = ((Timestamp)city["time"]).ToDateTime().ToString();
+                        string user_account_id = city["user_id"].ToString();
+                        string user_name = city["user_name"].ToString();
+                        COUNTRY user_country = Converter.to_country(city["user_country"].ToString());
+                        TIER user_tier = Converter.to_tier(city["user_tier"].ToString());
+                        int view = Convert.ToInt32(city["view"]);
+
+                        ReplayManager.instance.omoktube_play_data_list.Add(new ReplayManager.OmoktubeRecordData(key, title, time, score, mode, user_account_id, user_name, user_country, user_tier, view));
+                    }
+                }
+                callback(1);
+            }
+        });
+    }
+
+    public void load_my_otube_data(Callback callback)
+    {
+        Firebase.Firestore.Query query = firestore.Collection("Omoktube").WhereEqualTo("user", data_manager.accountID).OrderByDescending("time").Limit(50);
+        query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted || task.IsCanceled)
+            {
+                Debug.Log("task Error: " + task.Exception);
+                callback(3);
+            }
+            else
+            {
+                foreach (DocumentSnapshot snapshot in task.Result.Documents)
+                {
+                    if (snapshot.Exists)
+                    {
+                        Dictionary<string, object> city = snapshot.ToDictionary();
+
+                        string key = snapshot.Id;
+                        string title = city["title"].ToString();
+                        string score = city["score"].ToString();
+                        string mode = city["mode"].ToString();
+                        string time = ((Timestamp)city["time"]).ToDateTime().ToString();
+                        string user_account_id = city["user_id"].ToString();
+                        string user_name = city["user_name"].ToString();
+                        COUNTRY user_country = Converter.to_country(city["user_country"].ToString());
+                        TIER user_tier = Converter.to_tier(city["user_tier"].ToString());
+                        int view = Convert.ToInt32(city["view"]);
+
+                        ReplayManager.instance.omoktube_play_data_list.Add(new ReplayManager.OmoktubeRecordData(key, title, time, score, mode, user_account_id, user_name, user_country, user_tier, view));
+                    }
+                }
+                callback(1);
+            }
+        });
     }
 
     //친구가 업로드한 기록들을 가져온다.
