@@ -57,9 +57,12 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 
     public string version_info;
 
+    GameObject matchng_effect;
+
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
+        matchng_effect = Resources.Load<GameObject>("Prefab/MatchingEffect");
         matching_score = 1;
     }
 
@@ -331,6 +334,30 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 
     IEnumerator re_find_user()
     {
+        switch (DataManager.instance.language)
+        {
+            case 0:
+                {
+                    matching_status_info_page_text.text = "대국신청이 거절되었습니다\n재신청 준비중입니다";
+                }
+                break;
+            case 1:
+                {
+                    matching_status_info_page_text.text = "対局申請が拒否されました\n再申請準備中です";
+                }
+                break;
+            case 2:
+                {
+                    matching_status_info_page_text.text = "User match was rejected\nReady to reapply";
+                }
+                break;
+            case 3:
+                {
+                    matching_status_info_page_text.text = "国家申请被驳回\n准备重新申请";
+                }
+                break;
+        }
+
         yield return new WaitForSecondsRealtime(1.5f);
 
         matching_key = DataManager.instance.accountID + TimeStamp.GetUnixTimeStamp();
@@ -410,7 +437,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
         matching_status_info_page.SetActive(true);
     }
 
-    void move_scene()
+    IEnumerator move_scene()
     {
         matching = false;
         matching_id = "";
@@ -442,6 +469,9 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
             DataManager.instance.my_name, DataManager.instance.my_tier, DataManager.instance.my_old, DataManager.instance.my_gender, DataManager.instance.my_country);
         GameManager.instance.set_player_data(1, GameManager.instance.get_other_player_type(),
             name, tier, old, gender, country);
+
+        MatchngEffect effect = Instantiate(matchng_effect).GetComponent<MatchngEffect>();
+        yield return StartCoroutine(effect.on_effect(DataManager.instance.my_name, DataManager.instance.my_tier, DataManager.instance.my_country, name, tier, country));
 
         FirebaseManager.instance.offline();
         SceneManager.LoadScene("MultiScene");
@@ -683,7 +713,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
                                 case 6:
                                     {
                                         Debug.Log("RandomMatching case 6 / 멀티게임 씬으로 이동");
-                                        move_scene();
+                                        StartCoroutine(move_scene());
                                     }
                                     break;
 

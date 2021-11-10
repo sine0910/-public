@@ -34,7 +34,7 @@ public class MultiPlayManager : SingletonMonobehaviour<MultiPlayManager>
     bool d = true;
 
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
         game_manager = GameManager.instance;
         sendManager = MultiSendManager.instance;
@@ -70,6 +70,8 @@ public class MultiPlayManager : SingletonMonobehaviour<MultiPlayManager>
 
         MultiSendManager.instance.on_awake(host);
         UIManager.instance.ui_start();
+
+        MultiFriendManager.instance.SetPlayerData(other_id);
     }
 
     public void ProtocolToGameRoom(string msg)//호스트에게 보내는 메세지
@@ -91,7 +93,7 @@ public class MultiPlayManager : SingletonMonobehaviour<MultiPlayManager>
         DocumentReference docRef = FirebaseManager.instance.firestore.Collection("MultiRoom").Document(game_room_id).Collection("host").Document("protocol");
         Dictionary<string, object> user = new Dictionary<string, object>
         {
-                { "value",  msg }
+            { "value",  msg }
         };
         docRef.SetAsync(user);
     }
@@ -103,7 +105,7 @@ public class MultiPlayManager : SingletonMonobehaviour<MultiPlayManager>
         DocumentReference docRef = FirebaseManager.instance.firestore.Collection("MultiRoom").Document(game_room_id).Collection("guest").Document("protocol");
         Dictionary<string, object> user = new Dictionary<string, object>
         {
-                { "value",  msg }
+            { "value",  msg }
         };
         docRef.SetAsync(user);
     }
@@ -285,6 +287,24 @@ public class MultiPlayManager : SingletonMonobehaviour<MultiPlayManager>
                     on_other_out_popup();
                 }
                 break;
+
+            case 777:
+                {
+                    MultiFriendManager.instance.on_received_friend_request();
+                }
+                break;
+
+            case 778:
+                {
+                    MultiFriendManager.instance.accept_friend_invite();
+                }
+                break;
+
+            case 779:
+                {
+                    MultiFriendManager.instance.reject_friend_invite();
+                }
+                break;
         }
     }
 
@@ -411,6 +431,10 @@ public class MultiPlayManager : SingletonMonobehaviour<MultiPlayManager>
         game_play_protocol_list.Add(990);
         game_play_protocol_list.Add(991);
         game_play_protocol_list.Add(999);
+
+        game_play_protocol_list.Add(777);
+        game_play_protocol_list.Add(778);
+        game_play_protocol_list.Add(779);
     }
 
     List<string> before_packet = new List<string>();

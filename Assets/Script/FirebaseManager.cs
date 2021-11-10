@@ -1039,9 +1039,30 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
             }
         });
     }
-#endregion
 
-#region SERVICE
+    public void multi_accept_invite_friend(string accountID)
+    {
+        WriteBatch batch = firestore.StartBatch();
+
+        DocumentReference otherRef = firestore.Collection("Friends").Document(accountID).Collection("friend").Document(data_manager.accountID);
+        Dictionary<string, object> my_data = new Dictionary<string, object>
+        {
+            { "accountID", data_manager.accountID }
+        };
+        batch.Set(otherRef, my_data);
+
+        DocumentReference myRef = firestore.Collection("Friends").Document(data_manager.accountID).Collection("friend").Document(accountID);
+        Dictionary<string, object> other_data = new Dictionary<string, object>
+        {
+            { "accountID", accountID }
+        };
+        batch.Set(myRef, other_data);
+
+        batch.CommitAsync();
+    }
+    #endregion
+
+    #region SERVICE
     public void get_question(Queue<ServiceManager.Chat> chat_list, Callback callback)
     {
         firestore.Collection("ChatQuestion").Document(data_manager.accountID).Collection("chat_value").GetSnapshotAsync().ContinueWithOnMainThread(task =>

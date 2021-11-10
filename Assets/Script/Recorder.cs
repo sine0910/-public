@@ -130,7 +130,7 @@ public class Recorder : SingletonMonobehaviour<Recorder>
 
         DataManager.instance.save_my_game_record(save_record);
 
-        if (GameManager.instance.play_mode == PLAY.PVP)
+        if (GameManager.instance.play_mode == PLAY.PVP && GameManager.instance.host)
         {
             //오튜브 게스트 등급이 호스트 등급으로 보여지는 오류 수정
             upload_to_omoktube(my_data.name + " " + Converter.tier_to_string(my_data.tier) + " vs " + other_data.name + " " +Converter.tier_to_string(other_data.tier), save_record);

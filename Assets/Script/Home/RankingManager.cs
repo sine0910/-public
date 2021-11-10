@@ -22,22 +22,22 @@ public class RankingManager : MonoBehaviour
             {
                 case 0:
                     {
-                        url = string.Format("https://okgostop.kr/55/ranking/KOREAranking.html?AccountID={0}", DataManager.instance.accountID);
+                        url = string.Format("https://okgostop.kr/55/ranking/KOREAranking.html?AccountID={0}&Country={1}", DataManager.instance.accountID, DataManager.instance.my_country);
                     }
                     break;
                 case 1:
                     {
-                        url = string.Format("https://okgostop.kr/55/ranking/JAPANranking.html?AccountID={0}", DataManager.instance.accountID);
+                        url = string.Format("https://okgostop.kr/55/ranking/JAPANranking.html?AccountID={0}&Country={1}", DataManager.instance.accountID, DataManager.instance.my_country);
                     }
                     break;
                 case 2:
                     {
-                        url = string.Format("https://okgostop.kr/55/ranking/USAranking.html?AccountID={0}", DataManager.instance.accountID);
+                        url = string.Format("https://okgostop.kr/55/ranking/USAranking.html?AccountID={0}&Country={1}", DataManager.instance.accountID, DataManager.instance.my_country);
                     }
                     break;
                 case 3:
                     {
-                        url = string.Format("https://okgostop.kr/55/ranking/CHINAranking.html?AccountID={0}", DataManager.instance.accountID);
+                        url = string.Format("https://okgostop.kr/55/ranking/CHINAranking.html?AccountID={0}&Country={1}", DataManager.instance.accountID, DataManager.instance.my_country);
                     }
                     break;
             }
