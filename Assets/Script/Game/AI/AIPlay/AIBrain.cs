@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Text;
 using System.IO;
 using System;
+using System.Threading;
 
 public class AIBrain : MonoBehaviour
 {
@@ -15,11 +16,13 @@ public class AIBrain : MonoBehaviour
 
     int[,] board;
     Point[,] ai_board;
+    private Point current_point_being_checked;
 
     Point best_move;
 
     public byte player_me_index;
     public PLAYER_TYPE my_player_type;
+    public List<Point> point_history;
 
     public AIBrain(AIGameRoom room)
     {
@@ -30,10 +33,11 @@ public class AIBrain : MonoBehaviour
         this.packet_handler.Add(PROTOCOL.START_TURN, START_TURN);
         this.packet_handler.Add(PROTOCOL.SELECT_SLOT_RESULT, SELECT_SLOT_RESULT);
         this.packet_handler.Add(PROTOCOL.GAME_RESULT, GAME_RESULT);
+        point_history = new List<Point>();
     }
 
     #region AI 데이터 처리 로직
-    public void on_receive(List<string> msg)
+    public void on_receive(List<string> msg)//데이터 받고
     {
         PROTOCOL protocol = Converter.to_protocol(PopAt(msg));
 
@@ -68,8 +72,22 @@ public class AIBrain : MonoBehaviour
         send_message(send_msg);
     }
 
-    void START_TURN(List<string> msg)
+    public ArrayList WHITE_illegal_move_list = new ArrayList();
+
+    void START_TURN(List<string> msg)//ai 턴 시작
     {
+        //Thread.Sleep(1000);
+
+        Debug.Log("AiBrain_START_TURN");
+        List<IllegalMove> illegal_move_list = calculate_Illegal_move();
+
+        WHITE_illegal_move_list = new ArrayList();
+        foreach (IllegalMove illegalMove in illegal_move_list)
+        {
+            WHITE_illegal_move_list.Add(new Coordinate(illegalMove.point.x, illegalMove.point.y));
+            Debug.Log("WHITE_illegal_move_list.Add");
+        }
+
         best_move = get_allow_moves();
 
         List<string> send_msg = new List<string>();
@@ -81,6 +99,7 @@ public class AIBrain : MonoBehaviour
 
     void SELECT_SLOT_RESULT(List<string> msg)
     {
+        Debug.Log("AiBrain_SELECT_SLOT_RESULT");
         byte player_index = Converter.to_byte(PopAt(msg));
 
         STATE state = Converter.to_state(PopAt(msg));
@@ -88,6 +107,7 @@ public class AIBrain : MonoBehaviour
         byte select_y = Converter.to_byte(PopAt(msg));
 
         ai_board[select_x, select_y].set_state(state);
+        point_history.Add(new Point(select_x, select_y));//백돌의 금수 확인 리스트에 수 기록
 
         if (my_player_type == PLAYER_TYPE.BLACK)
         {
@@ -145,7 +165,7 @@ public class AIBrain : MonoBehaviour
         board[move.X, move.Y] = 1;
         fieldagent.UpdateInterestingFieldArray(board, move);
         fieldagent.UpdateThreatLists(board, move, 1);
-        boardvalue += eval.statVal(board, move, 1);
+        boardvalue += eval.statVal(board, move, 1, WHITE_illegal_move_list);
     }
 
     public void RegOppMove(Coordinate move)
@@ -153,7 +173,7 @@ public class AIBrain : MonoBehaviour
         board[move.X, move.Y] = -1;
         fieldagent.UpdateInterestingFieldArray(board, move);
         fieldagent.UpdateThreatLists(board, move, -1);
-        move.Val = eval.statVal(board, move, -1);
+        move.Val = eval.statVal(board, move, -1, WHITE_illegal_move_list);
         boardvalue += move.Val;
         lastoppmove = move;
     }
@@ -169,7 +189,7 @@ public class AIBrain : MonoBehaviour
 
     int boardvalue;
 
-    const int maximumsearchdepth = 16;//16
+    public int maximumsearchdepth = 16;//16
 
     Coordinate lastoppmove = new Coordinate(-1, -1);
     Coordinate best_field;
@@ -185,19 +205,20 @@ public class AIBrain : MonoBehaviour
 
     Point best_point;
 
+    public static ArrayList non_allow_moves = new ArrayList();
+
     private Point get_allow_moves()
     {
-        //AI가 선택할 수 있는 슬롯을 지정한다
-        ArrayList allow_moves = new ArrayList();
-
+        //흑돌의 금수를 받아옴
+        non_allow_moves = new ArrayList();
         foreach (Point point in ai_board)
         {
-            if (point.state != STATE.None)
+            if (point.state == STATE.IllegalMove)
             {
-                continue;
+                non_allow_moves.Add(new Coordinate(point.x, point.y));
             }
-            allow_moves.Add(new Point(point.x, point.y));
         }
+
         best_field = get_move();
 
         best_point = new Point((byte)best_field.X, (byte)best_field.Y);
@@ -229,6 +250,549 @@ public class AIBrain : MonoBehaviour
         }
     }
 
+    //백돌 금수 calculate
+
+    public List<IllegalMove> calculate_Illegal_move()
+    {
+        List<IllegalMove> illegal_points = new List<IllegalMove>();
+        bool[,] potential_moves_already_checked = new bool[15, 15];
+
+        foreach (Point point in point_history)
+        {
+            byte startingX = (byte)Math.Max(0, point.x - 2);
+            byte endingX = (byte)Math.Min(15 - 1, point.x + 2);
+            byte startingY = (byte)Math.Max(0, point.y - 2);
+            byte endingY = (byte)Math.Min(15 - 1, point.y + 2);
+
+            for (byte x = startingX; x <= endingX; x++)
+            {
+                for (byte y = startingY; y <= endingY; y++)
+                {
+                    current_point_being_checked = ai_board[x, y];
+
+                    //이미 확인된 point는 스킵한다
+                    if (potential_moves_already_checked[x, y])
+                    {
+                        continue;
+                    }
+                    //이미 오목알이 놓여져 있는 point는 스킵한다
+                    if (get_point_state(current_point_being_checked) == STATE.BLACK ||
+                        get_point_state(current_point_being_checked) == STATE.WHITE)
+                    {
+                        continue;
+                    }
+
+                    if (product_five_win(current_point_being_checked, STATE.WHITE))
+                    {
+                        //만약 오목을 완성할 수 있는 구간은 금지구역으로 지정하지 않는다
+                    }
+                    else if (produce_over_line(current_point_being_checked))
+                    {
+                        illegal_points.Add(new IllegalMove(current_point_being_checked, ILLEGAL_MOVE.Overline));
+                        potential_moves_already_checked[x, y] = true;
+                    }
+                    else if (count_open_threes(current_point_being_checked) >= 2)
+                    {
+                        illegal_points.Add(new IllegalMove(current_point_being_checked, ILLEGAL_MOVE.Double3));
+                        potential_moves_already_checked[x, y] = true;
+                    }
+                    else if (count_open_fours(current_point_being_checked) >= 2)
+                    {
+                        illegal_points.Add(new IllegalMove(current_point_being_checked, ILLEGAL_MOVE.Double4));
+                        potential_moves_already_checked[x, y] = true;
+                    }
+                    else
+                    {
+                        potential_moves_already_checked[x, y] = true;
+                    }
+                }
+            }
+        }
+        return illegal_points;
+    }
+
+    #region Overline
+    private bool produce_over_line(Point point)
+    {
+        foreach (DIRECTION dir in Enum.GetValues(typeof(DIRECTION)))
+        {
+            Point fourBefore = get_point_steps_after(point, -4, dir);
+            Point threeBefore = get_point_steps_after(point, -3, dir);
+            Point twoBefore = get_point_steps_after(point, -2, dir);
+            Point oneBefore = get_point_steps_after(point, -1, dir);
+            Point oneAfter = get_point_steps_after(point, 1, dir);
+            Point twoAfter = get_point_steps_after(point, 2, dir);
+            Point threeAfter = get_point_steps_after(point, 3, dir);
+            Point fourAfter = get_point_steps_after(point, 4, dir);
+
+            if (get_point_state(oneBefore) == STATE.WHITE &&
+                get_point_state(oneAfter) == STATE.WHITE)
+            {
+                if (get_point_state(fourBefore) == STATE.WHITE &&
+                    get_point_state(threeBefore) == STATE.WHITE &&
+                    get_point_state(twoBefore) == STATE.WHITE)
+                {
+                    return true;
+                }
+
+                if (get_point_state(threeBefore) == STATE.WHITE &&
+                    get_point_state(twoBefore) == STATE.WHITE &&
+                    get_point_state(twoAfter) == STATE.WHITE)
+                {
+                    return true;
+                }
+
+                if (get_point_state(twoBefore) == STATE.WHITE &&
+                    get_point_state(twoAfter) == STATE.WHITE &&
+                    get_point_state(threeAfter) == STATE.WHITE)
+                {
+                    return true;
+                }
+
+                if (get_point_state(twoAfter) == STATE.WHITE &&
+                    get_point_state(threeAfter) == STATE.WHITE &&
+                    get_point_state(fourAfter) == STATE.WHITE)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    #endregion
+
+    #region 3*3 Logic
+    private int count_open_threes(Point point)
+    {
+        int numOpenThrees = 0;
+
+        foreach (DIRECTION dir in Enum.GetValues(typeof(DIRECTION)))
+        {
+            Point threeBefore = get_point_steps_after(point, -3, dir);
+            Point twoBefore = get_point_steps_after(point, -2, dir);
+            Point oneBefore = get_point_steps_after(point, -1, dir);
+
+            if (isOpenBBNBstartingAt(threeBefore, dir) ||
+                isOpenBNBBstartingAt(threeBefore, dir) ||
+                isOpenBBBstartingAt(twoBefore, dir) ||
+                isOpenBNBBstartingAt(twoBefore, dir) ||
+
+                isOpenBBBstartingAt(oneBefore, dir) ||
+
+                isOpenBBNBstartingAt(oneBefore, dir) ||
+                isOpenBBBstartingAt(point, dir) ||
+                isOpenBBNBstartingAt(point, dir) ||
+                isOpenBNBBstartingAt(point, dir))
+            {
+                numOpenThrees++;
+            }
+        }
+
+        return numOpenThrees;
+    }
+
+    private bool isOpenBBNBstartingAt(Point point, DIRECTION dir)
+    {
+        Point oneBefore = get_point_steps_after(point, -1, dir);
+        Point oneAfter = get_point_steps_after(point, 1, dir);
+        Point twoAfter = get_point_steps_after(point, 2, dir);
+        Point threeAfter = get_point_steps_after(point, 3, dir);
+        Point fourAfter = get_point_steps_after(point, 4, dir);
+
+        if (get_point_state(oneBefore) == STATE.None &&
+           (get_point_state(point) == STATE.WHITE || current_point_being_checked.Equals(point)) &&
+           (get_point_state(oneAfter) == STATE.WHITE || current_point_being_checked.Equals(oneAfter)) &&
+            get_point_state(twoAfter) == STATE.None &&
+           (get_point_state(threeAfter) == STATE.WHITE || current_point_being_checked.Equals(threeAfter)) &&
+            get_point_state(fourAfter) == STATE.None)
+        {
+            return isNoOverlineHazardSurroundingNBBBBNwithFirstBstartingAt(point, dir);
+        }
+
+        return false;
+    }
+
+    private bool isOpenBNBBstartingAt(Point point, DIRECTION dir)
+    {
+        Point oneBefore = get_point_steps_after(point, -1, dir);
+        Point oneAfter = get_point_steps_after(point, 1, dir);
+        Point twoAfter = get_point_steps_after(point, 2, dir);
+        Point threeAfter = get_point_steps_after(point, 3, dir);
+        Point fourAfter = get_point_steps_after(point, 4, dir);
+
+        if (get_point_state(oneBefore) == STATE.None &&
+           (get_point_state(point) == STATE.WHITE || current_point_being_checked.Equals(point)) &&
+            get_point_state(oneAfter) == STATE.None &&
+           (get_point_state(twoAfter) == STATE.WHITE || current_point_being_checked.Equals(twoAfter)) &&
+           (get_point_state(threeAfter) == STATE.WHITE || current_point_being_checked.Equals(threeAfter)) &&
+            get_point_state(fourAfter) == STATE.None)
+        {
+            return isNoOverlineHazardSurroundingNBBBBNwithFirstBstartingAt(point, dir);
+        }
+
+        return false;
+    }
+
+    private bool isOpenBBBstartingAt(Point point, DIRECTION dir)
+    {
+        Point oneBefore = get_point_steps_after(point, -1, dir);
+        Point twoBefore = get_point_steps_after(point, -2, dir);
+        Point oneAfter = get_point_steps_after(point, 1, dir);
+        Point twoAfter = get_point_steps_after(point, 2, dir);
+        Point threeAfter = get_point_steps_after(point, 3, dir);
+        Point fourAfter = get_point_steps_after(point, 4, dir);
+
+        if (get_point_state(oneBefore) == STATE.None &&
+           (get_point_state(point) == STATE.WHITE || current_point_being_checked.Equals(point)) &&
+           (get_point_state(oneAfter) == STATE.WHITE || current_point_being_checked.Equals(oneAfter)) &&
+           (get_point_state(twoAfter) == STATE.WHITE || current_point_being_checked.Equals(twoAfter)) &&
+            get_point_state(threeAfter) == STATE.None)
+        {
+            if (get_point_state(twoBefore) == STATE.None)
+            {
+                return isNoOverlineHazardSurroundingNBBBBNwithFirstBstartingAt(oneBefore, dir);
+            }
+
+            if (get_point_state(fourAfter) == STATE.None)
+            {
+                return isNoOverlineHazardSurroundingNBBBBNwithFirstBstartingAt(point, dir);
+            }
+
+        }
+
+        return false;
+    }
+
+    private bool isNoOverlineHazardSurroundingNBBBBNwithFirstBstartingAt(Point point, DIRECTION dir)
+    {
+        Point twoBefore = get_point_steps_after(point, -2, dir);
+        Point fiveAfter = get_point_steps_after(point, 5, dir);
+
+        if (get_point_state(twoBefore) == STATE.WHITE ||
+            get_point_state(fiveAfter) == STATE.WHITE)
+        {
+            return false;
+        }
+
+        return true;
+    }
+    #endregion
+
+    #region 4x4 LOGIC
+    private int count_open_fours(Point point)
+    {
+        int numOpenFours = 0;
+
+        foreach (DIRECTION dir in Enum.GetValues(typeof(DIRECTION)))
+        {
+            //may have two in the same direction!!
+            for (int i = -4; i <= 0; i++)
+            {
+                Point iBefore = get_point_steps_after(point, i, dir);
+                if (isNotClosedBBBNBorBBNBBorBNBBBstartingAt(iBefore, dir))
+                {
+                    numOpenFours++;
+                }
+            }
+
+            //may only have one BBBB in a given direction
+            Point threeBefore = get_point_steps_after(point, -3, dir);
+            Point twoBefore = get_point_steps_after(point, -2, dir);
+            Point oneBefore = get_point_steps_after(point, -1, dir);
+            if (isNotClosedBBBBstartingAt(threeBefore, dir) ||
+                isNotClosedBBBBstartingAt(twoBefore, dir) ||
+                isNotClosedBBBBstartingAt(oneBefore, dir) ||
+                isNotClosedBBBBstartingAt(point, dir))
+            {
+                numOpenFours++;
+            }
+        }
+
+        return numOpenFours;
+    }
+
+    private bool isNotClosedBBBBstartingAt(Point point, DIRECTION dir)
+    {
+        Point oneBefore = get_point_steps_after(point, -1, dir);
+        Point twoBefore = get_point_steps_after(point, -2, dir);
+        Point oneAfter = get_point_steps_after(point, 1, dir);
+        Point twoAfter = get_point_steps_after(point, 2, dir);
+        Point threeAfter = get_point_steps_after(point, 3, dir);
+        Point fourAfter = get_point_steps_after(point, 4, dir);
+        Point fiveAfter = get_point_steps_after(point, 5, dir);
+
+        if ((get_point_state(point) == STATE.WHITE || current_point_being_checked.Equals(point)) &&
+            (get_point_state(oneAfter) == STATE.WHITE || current_point_being_checked.Equals(oneAfter)) &&
+            (get_point_state(twoAfter) == STATE.WHITE || current_point_being_checked.Equals(twoAfter)) &&
+            (get_point_state(threeAfter) == STATE.WHITE || current_point_being_checked.Equals(threeAfter)))
+        {
+            if (get_point_state(oneBefore) == STATE.None) //check if open 4 can be made by assuming black piece appended to tail of open 3
+            {
+                return get_point_state(twoBefore) != STATE.WHITE;
+            }
+
+            if (get_point_state(fourAfter) == STATE.None) //check if open 4 can be made by assuming black piece appended to head of open 3
+            {
+                return get_point_state(fiveAfter) != STATE.WHITE;
+            }
+        }
+
+        return false;
+    }
+
+    private bool isNotClosedBBBNBorBBNBBorBNBBBstartingAt(Point point, DIRECTION dir)
+    {
+        int numBlackPiecesFound = 0;
+
+        Point oneBefore = get_point_steps_after(point, -1, dir);
+        Point oneAfter = get_point_steps_after(point, 1, dir);
+        Point twoAfter = get_point_steps_after(point, 2, dir);
+        Point threeAfter = get_point_steps_after(point, 3, dir);
+        Point fourAfter = get_point_steps_after(point, 4, dir);
+        Point fiveAfter = get_point_steps_after(point, 5, dir);
+
+        if (get_point_state(oneBefore) == STATE.WHITE ||
+            get_point_state(fiveAfter) == STATE.WHITE)
+        {
+            return false; //cannot produce 5 in a row due to overline hazard
+        }
+
+        if (get_point_state(oneAfter) == STATE.BLACK ||
+            get_point_state(twoAfter) == STATE.BLACK ||
+            get_point_state(threeAfter) == STATE.BLACK)
+        {
+            //ensure no white pieces in the middle
+            return false;
+        }
+
+        if (get_point_state(point) != STATE.WHITE && !current_point_being_checked.Equals(point) ||
+            get_point_state(fourAfter) != STATE.WHITE && !current_point_being_checked.Equals(fourAfter))
+        {
+            //ensure leftmost and rightmost pieces are black
+            return false;
+        }
+
+        if (get_point_state(oneAfter) == STATE.WHITE || current_point_being_checked.Equals(oneAfter))
+        {
+            numBlackPiecesFound++;
+        }
+        if (get_point_state(twoAfter) == STATE.WHITE || current_point_being_checked.Equals(twoAfter))
+        {
+            numBlackPiecesFound++;
+        }
+        if (get_point_state(threeAfter) == STATE.WHITE || current_point_being_checked.Equals(threeAfter))
+        {
+            numBlackPiecesFound++;
+        }
+
+        return numBlackPiecesFound == 2;
+    }
+    #endregion
+
+    public bool product_five_win(Point point, STATE playerColourOccupancyState)
+    {
+        if (playerColourOccupancyState == STATE.BLACK)
+        {
+            foreach (DIRECTION dir in Enum.GetValues(typeof(DIRECTION)))
+            {
+                Point fiveBefore = get_point_steps_after(point, -5, dir);
+                Point fourBefore = get_point_steps_after(point, -4, dir);
+                Point threeBefore = get_point_steps_after(point, -3, dir);
+                Point twoBefore = get_point_steps_after(point, -2, dir);
+                Point oneBefore = get_point_steps_after(point, -1, dir);
+                Point oneAfter = get_point_steps_after(point, 1, dir);
+                Point twoAfter = get_point_steps_after(point, 2, dir);
+                Point threeAfter = get_point_steps_after(point, 3, dir);
+                Point fourAfter = get_point_steps_after(point, 4, dir);
+                Point fiveAfter = get_point_steps_after(point, 5, dir);
+
+                if (get_point_state(fiveBefore) != playerColourOccupancyState &&
+                    get_point_state(fourBefore) == playerColourOccupancyState &&
+                    get_point_state(threeBefore) == playerColourOccupancyState &&
+                    get_point_state(twoBefore) == playerColourOccupancyState &&
+                    get_point_state(oneBefore) == playerColourOccupancyState &&
+                    get_point_state(oneAfter) != playerColourOccupancyState)
+                {
+                    return true;
+                }
+
+                if (get_point_state(fourBefore) != playerColourOccupancyState &&
+                    get_point_state(threeBefore) == playerColourOccupancyState &&
+                    get_point_state(twoBefore) == playerColourOccupancyState &&
+                    get_point_state(oneBefore) == playerColourOccupancyState &&
+                    get_point_state(oneAfter) == playerColourOccupancyState &&
+                    get_point_state(twoAfter) != playerColourOccupancyState)
+                {
+                    return true;
+                }
+
+                if (get_point_state(threeBefore) != playerColourOccupancyState &&
+                    get_point_state(twoBefore) == playerColourOccupancyState &&
+                    get_point_state(oneBefore) == playerColourOccupancyState &&
+                    get_point_state(oneAfter) == playerColourOccupancyState &&
+                    get_point_state(twoAfter) == playerColourOccupancyState &&
+                    get_point_state(threeAfter) != playerColourOccupancyState)
+                {
+                    return true;
+                }
+
+                if (get_point_state(twoBefore) != playerColourOccupancyState &&
+                    get_point_state(oneBefore) == playerColourOccupancyState &&
+                    get_point_state(oneAfter) == playerColourOccupancyState &&
+                    get_point_state(twoAfter) == playerColourOccupancyState &&
+                    get_point_state(threeAfter) == playerColourOccupancyState &&
+                    get_point_state(fourAfter) != playerColourOccupancyState)
+                {
+                    return true;
+                }
+
+                if (get_point_state(oneBefore) != playerColourOccupancyState &&
+                    get_point_state(oneAfter) == playerColourOccupancyState &&
+                    get_point_state(twoAfter) == playerColourOccupancyState &&
+                    get_point_state(threeAfter) == playerColourOccupancyState &&
+                    get_point_state(fourAfter) == playerColourOccupancyState &&
+                    get_point_state(fiveAfter) != playerColourOccupancyState)
+                {
+                    return true;
+                }
+            }
+        }
+        else if (playerColourOccupancyState == STATE.WHITE)
+        {
+            foreach (DIRECTION dir in Enum.GetValues(typeof(DIRECTION)))
+            {
+                Point fiveBefore = get_point_steps_after(point, -5, dir);
+                Point fourBefore = get_point_steps_after(point, -4, dir);
+                Point threeBefore = get_point_steps_after(point, -3, dir);
+                Point twoBefore = get_point_steps_after(point, -2, dir);
+                Point oneBefore = get_point_steps_after(point, -1, dir);
+                Point oneAfter = get_point_steps_after(point, 1, dir);
+                Point twoAfter = get_point_steps_after(point, 2, dir);
+                Point threeAfter = get_point_steps_after(point, 3, dir);
+                Point fourAfter = get_point_steps_after(point, 4, dir);
+                Point fiveAfter = get_point_steps_after(point, 5, dir);
+
+                if (get_point_state(fiveBefore) != playerColourOccupancyState &&
+                    get_point_state(fourBefore) == playerColourOccupancyState &&
+                    get_point_state(threeBefore) == playerColourOccupancyState &&
+                    get_point_state(twoBefore) == playerColourOccupancyState &&
+                    get_point_state(oneBefore) == playerColourOccupancyState &&
+                    get_point_state(oneAfter) != playerColourOccupancyState)
+                {
+                    return true;
+                }
+
+                if (get_point_state(fourBefore) != playerColourOccupancyState &&
+                    get_point_state(threeBefore) == playerColourOccupancyState &&
+                    get_point_state(twoBefore) == playerColourOccupancyState &&
+                    get_point_state(oneBefore) == playerColourOccupancyState &&
+                    get_point_state(oneAfter) == playerColourOccupancyState &&
+                    get_point_state(twoAfter) != playerColourOccupancyState)
+                {
+                    return true;
+                }
+
+                if (get_point_state(threeBefore) != playerColourOccupancyState &&
+                    get_point_state(twoBefore) == playerColourOccupancyState &&
+                    get_point_state(oneBefore) == playerColourOccupancyState &&
+                    get_point_state(oneAfter) == playerColourOccupancyState &&
+                    get_point_state(twoAfter) == playerColourOccupancyState &&
+                    get_point_state(threeAfter) != playerColourOccupancyState)
+                {
+                    return true;
+                }
+
+                if (get_point_state(twoBefore) != playerColourOccupancyState &&
+                    get_point_state(oneBefore) == playerColourOccupancyState &&
+                    get_point_state(oneAfter) == playerColourOccupancyState &&
+                    get_point_state(twoAfter) == playerColourOccupancyState &&
+                    get_point_state(threeAfter) == playerColourOccupancyState &&
+                    get_point_state(fourAfter) != playerColourOccupancyState)
+                {
+                    return true;
+                }
+
+                if (get_point_state(oneBefore) != playerColourOccupancyState &&
+                    get_point_state(oneAfter) == playerColourOccupancyState &&
+                    get_point_state(twoAfter) == playerColourOccupancyState &&
+                    get_point_state(threeAfter) == playerColourOccupancyState &&
+                    get_point_state(fourAfter) == playerColourOccupancyState &&
+                    get_point_state(fiveAfter) != playerColourOccupancyState)
+                {
+                    return true;
+                }
+
+                //백돌은 6목으로 승리가 가능하다
+                if (get_point_state(oneBefore) == playerColourOccupancyState &&
+                    get_point_state(oneAfter) == playerColourOccupancyState)
+                {
+                    if (get_point_state(fourBefore) == playerColourOccupancyState &&
+                        get_point_state(threeBefore) == playerColourOccupancyState &&
+                        get_point_state(twoBefore) == playerColourOccupancyState)
+                    {
+                        return true;
+                    }
+
+                    if (get_point_state(threeBefore) == playerColourOccupancyState &&
+                        get_point_state(twoBefore) == playerColourOccupancyState &&
+                        get_point_state(twoAfter) == playerColourOccupancyState)
+                    {
+                        return true;
+                    }
+
+                    if (get_point_state(twoBefore) == playerColourOccupancyState &&
+                        get_point_state(twoAfter) == playerColourOccupancyState &&
+                        get_point_state(threeAfter) == playerColourOccupancyState)
+                    {
+                        return true;
+                    }
+
+                    if (get_point_state(twoAfter) == playerColourOccupancyState &&
+                        get_point_state(threeAfter) == playerColourOccupancyState &&
+                        get_point_state(fourAfter) == playerColourOccupancyState)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public Point get_point_steps_after(Point point, int steps, DIRECTION dir)
+    {
+        int deltaX = 0;
+        int deltaY = 0;
+
+        switch (dir)
+        {
+            case DIRECTION.S_N:
+                deltaX = 0;
+                deltaY = 1;
+                break;
+            case DIRECTION.SW_NE:
+                deltaX = 1;
+                deltaY = 1;
+                break;
+            case DIRECTION.W_E:
+                deltaX = 1;
+                deltaY = 0;
+                break;
+            case DIRECTION.NW_SE:
+                deltaX = 1;
+                deltaY = -1;
+                break;
+        }
+
+        if (point.x + steps * deltaX < 0 || point.y + steps * deltaY < 0 || point.x + steps * deltaX > 14 || point.y + steps * deltaY > 14)
+        {
+            return new Point((byte)(point.x + steps * deltaX), (byte)(point.y + steps * deltaY));
+        }
+
+        return ai_board[point.x + steps * deltaX, point.y + steps * deltaY];
+    }
+
     public Coordinate get_move_status()
     {
         bool getState = true;
@@ -253,13 +817,24 @@ public class AIBrain : MonoBehaviour
         return (best_field);
     }
 
+    public STATE get_point_state(Point point)
+    {
+        if (point.x < 0 || point.y < 0 || point.x >= 15 || point.y >= 15)
+        {
+            return STATE.OutsideOfBoard;
+        }
+        return ai_board[point.x, point.y].state;
+    }
+
+    //백돌의 금수 확인 end
+
     private bool get_move_normal()
     {
         Debug.Log("GetMoveNormal");
         Debug.Assert(threatsequence == null);
 
         // If only one field, skip sequence search
-        ArrayList intFields = fieldagent.ReallyInterestingFields(board, 1);
+        ArrayList intFields = fieldagent.ReallyInterestingFields(board, 1, non_allow_moves);
         if (intFields.Count > 1)
         {
             // Search for winning threat sequence
@@ -284,9 +859,19 @@ public class AIBrain : MonoBehaviour
 
     private Coordinate AlphaBeta_move()
     {
-        ArrayList intFields = fieldagent.ReallyInterestingFields(board, 1);
+        ArrayList intFields = fieldagent.ReallyInterestingFields(board, 1, non_allow_moves);
 
         ArrayList defFields = null;
+
+        //처음에는 멍청하게
+        if (point_history.Count < 6)
+        {
+            maximumsearchdepth = 6;
+        }
+        else
+        {
+            maximumsearchdepth = 10;
+        }
 
         // Only get the defensive fields if we have a choice
         if (intFields.Count > 1)
@@ -332,6 +917,271 @@ public class AIBrain : MonoBehaviour
                 iterative_AlphaBeta(lastoppmove, maximumsearchdepth);
         }
         return (best_field);
+    }
+
+    private int iterative_AlphaBeta(Coordinate field, int maxDepth)
+    {
+        int[,] boardsave = (int[,])board.Clone();
+        InterestingFieldAgent fieldagentbackup = (InterestingFieldAgent)fieldagent.Clone();
+
+        bool timeout = false;
+        int bestalpha = 0;
+        int curdepth = 0;
+        int founddepth = 0;
+
+        TimeSpan resttime = TimeSpan.Zero;
+        TimeSpan usedtime = TimeSpan.Zero;
+
+        statusStr.AppendFormat("AB ({0}): ", maxDepth);
+        while (curdepth < maxDepth && bestalpha < StatValEvaluator.WINBORDER && bestalpha > -StatValEvaluator.WINBORDER)
+        {
+            DateTime starttime = DateTime.Now;
+            try
+            {
+                curdepth += 2;
+                statusStr.AppendFormat("{0},", curdepth);
+
+                int alpha = -StatValEvaluator.WIN;
+                int beta = StatValEvaluator.WIN;
+                Console.WriteLine("Starting alphabeta, ply: {0}", curdepth / 2);
+                board = (int[,])boardsave.Clone();
+
+                Debug.Log("AI_IQ=> " + DataManager.instance.AI_IQ+ ", curdepth=> "+ curdepth + ", maxDepth=> " + maxDepth);
+                if (DataManager.instance.AI_IQ < 3)
+                {
+                    alpha = smAlphaBeta(lastoppmove, 0, alpha, beta, curdepth, 0);
+                }
+                else
+                {
+                    alpha = AlphaBeta(lastoppmove, 0, alpha, beta, curdepth, 0);
+                }
+                best_field = tmpbestfield;
+                bestalpha = alpha;
+                founddepth = curdepth;
+
+                usedtime = DateTime.Now.Subtract(starttime);
+                resttime = expiretime.Subtract(DateTime.Now);
+            }
+            catch (ABSearchTimeoutException)
+            {
+                resttime = TimeSpan.Zero;
+                statusStr.Append("timeout!, ");
+
+                Console.WriteLine("Alpha-Beta stopped by timeout.");
+                timeout = true;
+            }
+        }
+
+        board = boardsave;
+        fieldagent = fieldagentbackup;
+
+        return bestalpha;
+    }
+
+    private int smAlphaBeta(Coordinate field, int boardvalue, int alpha, int beta, int depthbound, int depth)
+    {
+        //상대방의 수만을 체크해서 방어 
+        int attacker = -1;
+        //공격은 상대방
+
+        InterestingFieldAgent fieldagentbackup = (InterestingFieldAgent)fieldagent.Clone();
+        //threatList, interestiongField를 받기 전에 현재 상태를 백업을 해준다.
+
+        //내가 공격할때는 field.Val이 음수
+        board[field.X, field.Y] = -1 * attacker; // remember: field comes still from the upper level. 
+
+        fieldagent.UpdateInterestingFieldArray(board, field);
+        fieldagent.UpdateThreatLists(board, field, -1 * attacker);
+
+        boardvalue += field.Val;
+
+        if (boardvalue > StatValEvaluator.WINBORDER || boardvalue < -StatValEvaluator.WINBORDER) //상대방의 수를 우선시 해서 방어
+        {//위에서 체크한 필드 값이 900000을 넘어서면 
+            board[field.X, field.Y] = 0;
+            if (attacker == 1)//내 차례일때
+                return boardvalue - depth * 10000;
+            else //상대방 차례일때
+                return boardvalue + depth * 10000;
+        }
+
+        ArrayList fields = null;
+        fields = firstMoveFields;
+        board[field.X, field.Y] = attacker;
+        int userX = field.X;
+        int userY = field.Y;
+        // Calculate the static value for all fields
+        for (int i = 0; i < fields.Count; ++i)
+        {
+            Coordinate c = (Coordinate)fields[i];
+            board[c.X, c.Y] = attacker;
+            InterestingFieldAgent valifabackup = (InterestingFieldAgent)fieldagent.Clone();
+            fieldagent.UpdateThreatLists(board, c, attacker);
+            c.Val = eval.smstatVal(board, c, attacker, userX, userY, WHITE_illegal_move_list);
+            fieldagent = valifabackup;//처음상태로 복귀
+            board[c.X, c.Y] = 0;
+            fields[i] = c;
+        }
+
+        fields.Sort();
+        //상대방의 차례 일때
+        //MIN node
+        //결과가 가장 낮은 순으로 정렬
+        foreach (Coordinate ifield in fields)
+        {
+            if (depth == 0)
+            {
+                tmpbestfield = ifield;
+            }
+            board[field.X, field.Y] = 0;
+            alpha = ifield.Val;
+            return alpha;
+        }
+        fieldagent = fieldagentbackup;
+        board[field.X, field.Y] = 0;
+        return alpha;
+    }
+
+    private int expirenodecnt;
+    private DateTime expiretime;
+
+    public class ABSearchTimeoutException : ApplicationException
+    {
+
+    }
+
+    private int AlphaBeta(Coordinate field, int boardvalue, int alpha, int beta, int depthbound, int depth)
+    {
+        ++expirenodecnt;
+        if (expirenodecnt >= 3000)
+        {
+            expirenodecnt = 0;
+            Debug.Log("Checking timeout");
+            //if (DateTime.Now > expiretime)
+            //{
+            //Console.WriteLine("Timeout: {0}", DateTime.Now);
+            //}
+            throw new ABSearchTimeoutException();
+        }
+
+        int attacker = (depth % 2 == 0) ? 1 : -1;
+
+        InterestingFieldAgent fieldagentbackup = (InterestingFieldAgent)fieldagent.Clone();
+
+        board[field.X, field.Y] = -1 * attacker; // remember: field comes still from the upper level.
+        fieldagent.UpdateInterestingFieldArray(board, field);
+        fieldagent.UpdateThreatLists(board, field, -1 * attacker);
+
+        boardvalue += field.Val;
+
+        if (boardvalue > StatValEvaluator.WINBORDER || boardvalue < -StatValEvaluator.WINBORDER) //상대방의 수를 우선시 해서 방어
+        {//위에서 체크한 필드 값이 900000을 넘어서면 
+            board[field.X, field.Y] = 0;
+            if (attacker == 1)//내 차례일때
+                return boardvalue - depth * 10000;
+            else //상대방 차례일때
+                return boardvalue + depth * 10000;
+        }
+
+        if (depth == depthbound)
+        {//Max
+            board[field.X, field.Y] = 0;//해당 필드 값을 0으로 변경 하고
+            return boardvalue;//값 반환
+        }
+
+        ArrayList fields = null;
+        if (depth == 0)//재귀를 하지 않았을때
+        {
+            fields = firstMoveFields;
+        }
+        else//재귀 중일 때
+        {
+            fields = fieldagent.ReallyInterestingFields(board, attacker, non_allow_moves);//interesting 필드를 넣어준다.
+        }
+
+        // Calculate the static value for all fields
+        for (int i = 0; i < fields.Count; ++i)
+        {
+            Coordinate c = (Coordinate)fields[i];
+            board[c.X, c.Y] = attacker;
+            InterestingFieldAgent valifabackup = (InterestingFieldAgent)fieldagent.Clone();
+            fieldagent.UpdateThreatLists(board, c, attacker);
+            c.Val = eval.statVal(board, c, attacker, WHITE_illegal_move_list);
+            fieldagent = valifabackup;//처음상태로 복귀
+            board[c.X, c.Y] = 0;
+            fields[i] = c;
+        }
+
+        fields.Sort();
+        if (depth % 2 == 0) //내차례 일때
+        {
+            //MAX node
+            fields.Reverse();//점수가 높은순으로 정렬
+            foreach (Coordinate ifield in fields)
+            {
+                int max = alpha;
+                if ((max = AlphaBeta(ifield, boardvalue, alpha, beta, depthbound, depth + 1)) > alpha)
+                {
+                    alpha = max;
+                    if (depth == 0)
+                    {
+                        tmpbestfield = ifield;
+                    }
+                }
+                if (depth == 0)//처음 함수가 돌때
+                {
+                    //Console.WriteLine("Got max from {0}: {1}", ifield, max);//각각의 필드의 max값을 가져온다.
+                }
+                if (alpha >= beta)
+                {
+                    fieldagent = fieldagentbackup;
+                    if (depth == 0)
+                    {
+                        tmpbestfield = ifield;
+                    }
+                    board[field.X, field.Y] = 0;
+                    return beta;
+                }
+            }
+            fieldagent = fieldagentbackup;
+            board[field.X, field.Y] = 0;
+            return alpha;
+        }
+        else
+        {//상대방의 차례 일때
+         //MIN node
+         //결과가 가장 낮은 순으로 정렬
+            foreach (Coordinate ifield in fields)
+            {
+                if (depth == 0) tmpbestfield = ifield;
+                int min = beta;
+
+                if ((min = AlphaBeta(ifield, boardvalue, alpha, beta, depthbound, depth + 1)) < beta)
+                {
+                    beta = min;
+                    if (depth == 0)
+                    {
+                        tmpbestfield = ifield;
+                    }
+                }
+                if (alpha >= beta)
+                {
+                    fieldagent = fieldagentbackup;
+                    if (depth == 0)
+                    {
+                        tmpbestfield = ifield;
+                    }
+                    board[field.X, field.Y] = 0;
+                    return alpha;
+                }
+            }
+            fieldagent = fieldagentbackup;
+            board[field.X, field.Y] = 0;
+            return beta;
+        }
+
+        ////
+        ///
+
     }
 
     private bool get_move_attack()
@@ -391,7 +1241,7 @@ public class AIBrain : MonoBehaviour
 
         // Check if the move is in the interesting fields, which basically
         // asserts us there is no opponent threat we have to respond to.
-        ArrayList fields = fieldagent.ReallyInterestingFields(board, 1);
+        ArrayList fields = fieldagent.ReallyInterestingFields(board, 1, non_allow_moves);
         Coordinate wantmove = new Coordinate(threatsequence.attacker.X,
             threatsequence.attacker.Y);
 
@@ -418,104 +1268,7 @@ public class AIBrain : MonoBehaviour
     }
 
 
-    private int iterative_AlphaBeta(Coordinate field, int maxDepth)
-    {
-        int[,] boardsave = (int[,])board.Clone();
-        InterestingFieldAgent fieldagentbackup = (InterestingFieldAgent)fieldagent.Clone();
-
-        bool timeout = false;
-        int bestalpha = 0;
-        int curdepth = 0;
-        int founddepth = 0;
-
-        TimeSpan resttime = TimeSpan.Zero;
-        TimeSpan usedtime = TimeSpan.Zero;
-
-        statusStr.AppendFormat("AB ({0}): ", maxDepth);
-        while (curdepth < maxDepth && bestalpha < StatValEvaluator.WINBORDER && bestalpha > -StatValEvaluator.WINBORDER)
-        {
-            curdepth += 2;
-            statusStr.AppendFormat("{0},", curdepth);
-
-            int alpha = -StatValEvaluator.WIN;
-            int beta = StatValEvaluator.WIN;
-            Console.WriteLine("Starting alphabeta, ply: {0}", curdepth / 2);
-            board = (int[,])boardsave.Clone();
-
-            alpha = AlphaBeta(lastoppmove, 0, alpha, beta, curdepth, 0);
-            best_field = tmpbestfield;
-            bestalpha = alpha;
-            founddepth = curdepth;
-        }
-
-        board = boardsave;
-        fieldagent = fieldagentbackup;
-
-        return bestalpha;
-    }
-
-    private int AlphaBeta(Coordinate field, int boardvalue, int alpha, int beta, int depthbound, int depth)
-    {
-        //상대방의 수만을 체크해서 방어 
-        int attacker = -1;
-        //공격은 상대방
-
-        InterestingFieldAgent fieldagentbackup = (InterestingFieldAgent)fieldagent.Clone();
-        //threatList, interestiongField를 받기 전에 현재 상태를 백업을 해준다.
-
-        //내가 공격할때는 field.Val이 음수
-        board[field.X, field.Y] = -1 * attacker; // remember: field comes still from the upper level. 
-
-        fieldagent.UpdateInterestingFieldArray(board, field);
-        fieldagent.UpdateThreatLists(board, field, -1 * attacker);
-
-        boardvalue += field.Val;
-
-        if (boardvalue > StatValEvaluator.WINBORDER || boardvalue < -StatValEvaluator.WINBORDER) //상대방의 수를 우선시 해서 방어
-        {//위에서 체크한 필드 값이 900000을 넘어서면 
-            board[field.X, field.Y] = 0;
-            if (attacker == 1)//내 차례일때
-                return boardvalue - depth * 10000;
-            else //상대방 차례일때
-                return boardvalue + depth * 10000;
-        }
-
-        ArrayList fields = null;
-        fields = firstMoveFields;
-        board[field.X, field.Y] = attacker;
-        int userX = field.X;
-        int userY = field.Y;
-        // Calculate the static value for all fields
-        for (int i = 0; i < fields.Count; ++i)
-        {
-            Coordinate c = (Coordinate)fields[i];
-            board[c.X, c.Y] = attacker;
-            InterestingFieldAgent valifabackup = (InterestingFieldAgent)fieldagent.Clone();
-            fieldagent.UpdateThreatLists(board, c, attacker);
-            c.Val = eval.smstatVal(board, c, attacker, userX, userY);
-            fieldagent = valifabackup;//처음상태로 복귀
-            board[c.X, c.Y] = 0;
-            fields[i] = c;
-        }
-
-        fields.Sort();
-        //상대방의 차례 일때
-        //MIN node
-        //결과가 가장 낮은 순으로 정렬
-        foreach (Coordinate ifield in fields)
-        {
-            if (depth == 0)
-            {
-                tmpbestfield = ifield;
-            }
-            board[field.X, field.Y] = 0;
-            alpha = ifield.Val;
-            return alpha;
-        }
-        fieldagent = fieldagentbackup;
-        board[field.X, field.Y] = 0;
-        return alpha;
-    }
+  
 
     /** Check if there is a visible winning threat sequence for the opponent
 	 * on the given board.
@@ -676,6 +1429,8 @@ public class AIBrain : MonoBehaviour
 
     private void reset()
     {
+        point_history.Clear();//백돌의 금수 확인 클리어
+
         ai_board = new Point[15, 15];
         for (byte i = 0; i < 15; i++)
         {

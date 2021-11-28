@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Threading;
 
 public class UIManager : SingletonMonobehaviour<UIManager>
 {
@@ -194,6 +195,9 @@ public class UIManager : SingletonMonobehaviour<UIManager>
                         }
 
                         set_ston(player_index, state, select_x, select_y);
+
+                        yield return new WaitForSecondsRealtime(0.5f);
+                        StartCoroutine(send_turn_end(player_index));
                     }
                     break;
 
@@ -400,6 +404,7 @@ public class UIManager : SingletonMonobehaviour<UIManager>
     //플레이어가 선택한 point의 데이터를 gameroom에 전달한다
     public void send_select_point()
     {
+        Debug.Log("send_select_point");
         //선택한 슬롯이 없을 경우와 이미 선택한 경우에는 return을 해준다
         if (select || select_omok_slot == null)
         {
@@ -497,7 +502,11 @@ public class UIManager : SingletonMonobehaviour<UIManager>
 
         put_mark.SetActive(true);
         put_mark.transform.position = new Vector3(point_slot.transform.position.x, point_slot.transform.position.y);
+        
+    }
 
+    IEnumerator send_turn_end(int player_index)
+    {
         if (player_index == player_me_index)
         {
             List<string> msg = new List<string>();
@@ -518,6 +527,7 @@ public class UIManager : SingletonMonobehaviour<UIManager>
             other_timer_image.color = new Color32(0, 255, 100, 255);
             other_timer_image.fillAmount = 1;
         }
+        yield return 0;
     }
 
     IEnumerator other_select_timer()

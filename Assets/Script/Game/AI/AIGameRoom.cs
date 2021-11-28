@@ -17,10 +17,10 @@ public class AIGameRoom : MonoBehaviour
         {
             switch (i)
             {
-                case 0:
+                case 0://³ª
                     this.players.Add(new AIPlayer(i, AISendManager.send_to_ui, this));
                     break;
-                case 1:
+                case 1://ai
                     this.players.Add(new AIPlayer(i, null, this));
                     break;
             }
@@ -124,6 +124,7 @@ public class AIGameRoom : MonoBehaviour
 
             case PROTOCOL.SELECT_SLOT:
                 {
+                    Debug.Log("AiGameRoom_SELECT_SLOT");
                     clear_received_protocol();
                     get_player_select_point(player_index, msg_list);
                 }
@@ -131,6 +132,7 @@ public class AIGameRoom : MonoBehaviour
 
             case PROTOCOL.TURN_END:
                 {
+                    Debug.Log("AiGameRoom_TURN_END");
                     if (this.engine.game_over)
                     {
                         clear_received_protocol();
@@ -181,6 +183,7 @@ public class AIGameRoom : MonoBehaviour
 
     void get_player_select_point(byte player_index, List<string> msg)
     {
+        Debug.Log("get_player_select_point");
         byte x = Converter.to_byte(PopAt(msg));
         byte y = Converter.to_byte(PopAt(msg));
         DataController data = this.engine.player_select_point(player_index, x, y);

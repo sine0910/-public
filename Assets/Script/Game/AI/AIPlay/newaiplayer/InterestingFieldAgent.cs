@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using UnityEngine;
 
 public class InterestingFieldAgent : ICloneable
 {
@@ -238,7 +239,7 @@ public class InterestingFieldAgent : ICloneable
 	 * interesting moves.
 	 *
 	 */
-	public ArrayList ReallyInterestingFields(int[,] board, int attacker)
+	public ArrayList ReallyInterestingFields(int[,] board, int attacker, ArrayList non_allow_move)
 	{
 		int minoppcat = 3;
 		ArrayList allfields = InterestingFields();
@@ -308,6 +309,24 @@ public class InterestingFieldAgent : ICloneable
 				}
 			}
 			*/
+		}
+
+		if (non_allow_move.Count != 0)
+		{
+			try
+			{
+				foreach (Coordinate field in non_allow_move)
+				{
+					if (fields.Contains(field))
+					{
+						fields.Remove(field);
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Debug.Log("non_allow_move try error=> " + e.ToString());
+			}
 		}
 		return fields;
 	}

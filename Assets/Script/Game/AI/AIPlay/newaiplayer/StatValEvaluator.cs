@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using UnityEngine;
 
 public class StatValEvaluator
 {
@@ -171,9 +173,9 @@ public class StatValEvaluator
 		Console.WriteLine("Generating static values: finished");
 	}
 
-	public int smstatVal(int[,] board, Coordinate node, int attacker, int userX, int userY)
+	public int smstatVal(int[,] board, Coordinate node, int attacker, int userX, int userY, ArrayList white_illegal_move_list)
 	{
-		Console.WriteLine("statVal의 입력 값: board=> " + board + ", node=> " + node + ", attacker=> " + attacker);
+		//Console.WriteLine("statVal의 입력 값: board=> " + board + ", node=> " + node + ", attacker=> " + attacker);
 		int turn = attacker;
 		if (turn != board[node.X, node.Y]) throw new Exception();
 		int init = board[node.X, node.Y];
@@ -352,10 +354,10 @@ public class StatValEvaluator
 		}
 
 		board[node.X, node.Y] = init;
-		Console.WriteLine("Value for horizontal row: {0}", 3 * digit1);
-		Console.WriteLine("Value for vertical row: {0}", 3 * digit2);
-		Console.WriteLine("Value for diag1 row: {0}", 3 * digit3);
-		Console.WriteLine("Value for diag2 row: {0}", 3 * digit4);
+		//Console.WriteLine("Value for horizontal row: {0}", 3 * digit1);
+		//Console.WriteLine("Value for vertical row: {0}", 3 * digit2);
+		//Console.WriteLine("Value for diag1 row: {0}", 3 * digit3);
+		//Console.WriteLine("Value for diag2 row: {0}", 3 * digit4);
 		
 		tmpval += 3 * digit1;
 		tmpval += 3 * digit2;
@@ -366,12 +368,36 @@ public class StatValEvaluator
         {
 			if (userY - 2 < node.Y && node.Y < userY + 2)
 			{
-				Console.WriteLine("주변 필드");
+				//Console.WriteLine("주변 필드");
 				tmpval += 2;
 			}
 		}
 
-		Console.WriteLine("statVal의 반환 값=> " + (tmpval * turn));
+		//Debug.Log("AI_IQ=> " + DataManager.instance.AI_IQ);
+		if (DataManager.instance.AI_IQ > 1)
+		{
+			if (white_illegal_move_list.Count != 0)
+			{
+				Debug.Log("white_illegal_move_list");
+				try
+				{
+					foreach (Coordinate field in white_illegal_move_list)
+					{
+						if (field.X == node.X && field.Y == node.Y)
+						{
+							tmpval += 50;
+
+						}
+					}
+				}
+				catch (Exception e)
+				{
+					Debug.Log(e.ToString());
+				}
+			}
+		}
+
+		//Debug.Log("statVal의 반환 값=> " + (tmpval * turn)+ "tmpval=> "+ tmpval+ ", turn=>" + turn);
 		return (tmpval * turn);
 	}
 
@@ -382,7 +408,7 @@ public class StatValEvaluator
 	 * @param node The node to be rated
 	 * @returns the static value of the Node.
 	 */
-	public int statVal(int[,] board, Coordinate node, int attacker)
+	public int statVal(int[,] board, Coordinate node, int attacker, ArrayList white_illegal_move_list)
 	{
 		//Console.WriteLine("statVal의 입력 값: board=> " + board + ", node=> " + node + ", attacker=> " + attacker);
 		int turn = attacker;
@@ -465,6 +491,27 @@ public class StatValEvaluator
 		tmpval += statValues[digit2];
 		tmpval += statValues[digit3];
 		tmpval += statValues[digit4];
+
+
+		if (white_illegal_move_list.Count != 0)
+		{
+			//Debug.Log("white_illegal_move_list");
+			try
+			{
+				foreach (Coordinate field in white_illegal_move_list)
+				{
+					if (field.X == node.X && field.Y == node.Y)
+					{
+						tmpval += 50;
+
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Debug.Log(e.ToString());
+			}
+		}
 
 		// look up the threat-situation
 		int ownthreatbonus = 0;

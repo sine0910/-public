@@ -199,7 +199,7 @@ public class HomeManager : SingletonMonobehaviour<HomeManager>
         }
     }
 
-    public void complete_select_type()
+    public void complete_select_type()//ai 연습의 확인 버튼
     {
         if (player_select_type != byte.MaxValue)
         {
@@ -242,12 +242,45 @@ public class HomeManager : SingletonMonobehaviour<HomeManager>
         }
     }
 
-    void PlayAIGame()
+    void PlayAIGame()//ai 게임
     {
-        GameManager.instance.set_player_data(0, GameManager.instance.get_my_player_type(),
-            DataManager.instance.my_name, DataManager.instance.my_tier, DataManager.instance.my_old, DataManager.instance.my_gender, DataManager.instance.my_country);
-        GameManager.instance.set_player_data(1, GameManager.instance.get_other_player_type(),
-            "AI", TIER.PRACTICE, OLD.NONE, GENDER.NONE, DataManager.instance.my_country);
+        GameManager.instance.set_player_data(
+            0, 
+            GameManager.instance.get_my_player_type(),
+            DataManager.instance.my_name, 
+            DataManager.instance.my_tier, 
+            DataManager.instance.my_old, 
+            DataManager.instance.my_gender, 
+            DataManager.instance.my_country
+            );
+
+        string ai;
+        if (DataManager.instance.my_tier < TIER.GRADE_11TH)
+        {
+            DataManager.instance.AI_IQ = 1;
+            ai = "IQ 90";
+        }
+        else if (DataManager.instance.my_tier < TIER.GRADE_10TH)
+        {
+            DataManager.instance.AI_IQ = 2;
+            ai = "IQ 100";
+        }
+        else
+        {
+            DataManager.instance.AI_IQ = 3;
+            ai = "IQ 110";
+        }     
+
+
+        GameManager.instance.set_player_data(
+            1, 
+            GameManager.instance.get_other_player_type(),
+            ai, 
+            TIER.PRACTICE, 
+            OLD.NONE, 
+            GENDER.NONE, 
+            DataManager.instance.my_country
+            );
         GameManager.instance.play_mode = PLAY.AI;
         SceneManager.LoadScene("PlayScene");
     }

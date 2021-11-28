@@ -31,6 +31,9 @@ public class DataManager : SingletonMonobehaviour<DataManager>
         public string my_name;
         public RATING my_rating;
         public TIER my_tier;
+
+        public int AI_IQ;
+
         public GENDER my_gender;
         public OLD my_old;
         public COUNTRY my_country;
@@ -119,6 +122,9 @@ public class DataManager : SingletonMonobehaviour<DataManager>
     public string my_name;
     public RATING my_rating;
     public TIER my_tier;
+
+    public int AI_IQ;
+
     public OLD my_old;
     public GENDER my_gender;
     public COUNTRY my_country;
