@@ -2,8 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 {
@@ -57,12 +57,12 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
 
     public string version_info;
 
-    GameObject matchng_effect;
+    GameObject matching_effect;
 
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
-        matchng_effect = Resources.Load<GameObject>("Prefab/MatchingEffect");
+        matching_effect = Resources.Load<GameObject>("Prefab/MatchingEffect");
         matching_score = 1;
     }
 
@@ -399,6 +399,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
         }
 
         matching_status_info_page.SetActive(true);
+        matching_status_info_page_button.gameObject.SetActive(true);
     }
 
     void success_find_user()
@@ -470,7 +471,7 @@ public class MatchingManager : SingletonMonobehaviour<MatchingManager>
         GameManager.instance.set_player_data(1, GameManager.instance.get_other_player_type(),
             name, tier, old, gender, country);
 
-        MatchngEffect effect = Instantiate(matchng_effect).GetComponent<MatchngEffect>();
+        MatchngEffect effect = Instantiate(matching_effect).GetComponent<MatchngEffect>();
         yield return StartCoroutine(effect.on_effect(DataManager.instance.my_name, DataManager.instance.my_tier, DataManager.instance.my_country, name, tier, country));
 
         FirebaseManager.instance.offline();

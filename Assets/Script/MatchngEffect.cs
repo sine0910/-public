@@ -51,20 +51,20 @@ public class MatchngEffect : MonoBehaviour
         this.other_tier = this.other_zone.transform.Find("TierText").GetComponent<Text>();
         this.other_country = this.other_zone.transform.Find("CountryImage").GetComponent<Image>();
 
-        this.my_zone.transform.localPosition = new Vector3(-Screen.width, 0);
-        this.other_zone.transform.localPosition = new Vector3(Screen.width, 0);
+        this.my_zone.transform.localPosition = new Vector3(Screen.width, 0);
+        this.other_zone.transform.localPosition = new Vector3(-Screen.width, 0);
     }
 
     IEnumerator Effect()
     {
         Debug.Log("Matching Effect On");
-        yield return StartCoroutine(MoveTo(my_zone, new Vector3(0, 0, 0), 7500));
         yield return StartCoroutine(MoveTo(other_zone, new Vector3(0, 0, 0), 7500));
+        yield return StartCoroutine(MoveTo(my_zone, new Vector3(0, 0, 0), 7500));
 
         yield return new WaitForSecondsRealtime(1f);
 
-        StartCoroutine(MoveTo(my_zone, new Vector3(-Screen.width, 0, 0), 750));
-        StartCoroutine(MoveTo(other_zone, new Vector3(Screen.width, 0, 0), 750));
+        StartCoroutine(MoveTo(my_zone, new Vector3(Screen.width, 0, 0), 750));
+        StartCoroutine(MoveTo(other_zone, new Vector3(-Screen.width, 0, 0), 750));
         StartCoroutine(ScaleTo(effect));
 
         Destroy();
