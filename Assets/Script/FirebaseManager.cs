@@ -77,7 +77,7 @@ public class FirebaseManager : SingletonMonobehaviour<FirebaseManager>
     void Auth()
     {
         Debug.Log("Login_Auth");
-        FirebaseAuth.DefaultInstance.SignInWithEmailAndPasswordAsync("omockgame_user@omock.com", "omockgame");
+        FirebaseAuth.DefaultInstance.SignInWithEmailAndPasswordAsync("", "");
     }
 
     public void get_notice_token()
